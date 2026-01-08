@@ -1,0 +1,82 @@
+# Initial Concept
+
+**Goal:** Build a "Trading Journal" Web Application using **Nuxt 3** with **TypeScript**.
+
+**Strict Tech Stack:**
+* **Framework:** Nuxt 3 (Vue 3 + Vite).
+* **Language:** **TypeScript** (Strict mode enabled).
+* **Styling:** **Tailwind CSS** (Utility-first, no custom CSS).
+* **Backend:** Nuxt Server Routes (Nitro) located in `server/api`.
+* **Database:** Google Sheets (via `googleapis` Node client).
+* **Version Control:** Git.
+
+**Context:**
+I am building a trading journal where Google Sheets acts as the database.
+* **`Master` Sheet:** Stores trade logs (Date, Pair, PnL, Images, etc.).
+* **`Chips` Sheet:** Stores configuration for dropdowns. Columns = Categories (e.g., "Strategies"), Rows = Options.
+
+**Key Features:**
+
+1.  **Type-Safe "Chips" System**
+    * **Logic:** Fetch `Chips.csv` on init. Define a TypeScript interface `ChipConfig` mapping categories to string arrays.
+    * **Component:** Create a generic `<ChipSelect />` component.
+        * Props: `category: string`, `modelValue: string | string[]`, `multiple?: boolean`.
+        * UI: Use Tailwind pills. Map "Win"/"Loss" tags to Green/Red colors dynamically.
+
+2.  **Trade Entry Form**
+    * **Inputs:** Strongly typed form state (e.g., `interface TradeEntry`).
+    * **Fields:** Pair, Price, PnL, Image URLs (text input), and Chip Selects.
+    * **Action:** POST data to `/api/trades`.
+
+3.  **Dashboard Views**
+    * **Gallery:** CSS Grid cards displaying "Before/After" images with PnL badges.
+    * **List:** Dense table view.
+    * **Theme:** Dark mode ("Financial Terminal" aesthetic: `bg-slate-900`, `text-slate-300`).
+
+**Backend Architecture (Nuxt Nitro):**
+* Create `server/utils/googleSheets.ts` to handle authentication using Service Account credentials.
+* **Endpoints:**
+    * `GET /api/config`: Returns typed `Chips` data.
+    * `GET /api/trades`: Returns `Trade[]` from Master sheet.
+    * `POST /api/trades`: Validates body against `TradeEntry` interface and appends row to Master.
+
+**Step-by-Step Instructions (Execute in Order):**
+
+1.  **Project Initialization:**
+    * Scaffold a new Nuxt 3 project.
+    * **Initialize a local Git repository.**
+    * Create a `.gitignore` specifically ignoring `.env`, `node_modules`, and `.output`.
+    * Install dependencies: `googleapis`, `tailwindcss`, `autoprefixer`, `postcss`.
+2.  **Configuration:**
+    * Set up `nuxt.config.ts` with Tailwind.
+    * Create a `.env.example` file for the Google Service Account credentials.
+3.  **Backend Service:**
+    * Create the `server/utils/googleSheets.ts` service.
+4.  **Types:**
+    * Define shared TypeScript interfaces in `types/index.ts`.
+5.  **Frontend Implementation:**
+    * Build the `<ChipSelect>` component and Pages.
+
+## Target Audience
+*   **Primary User:** Solo Retail Swing Trader (Self).
+*   **Goal:** To improve trading performance through disciplined tracking, reflection, and analysis of past trades.
+
+## User Workflow
+*   **Primary Workflow:** Pre-trade journaling (planning the trade before execution).
+*   **Secondary Workflow:** Post-entry logging (capturing trades executed opportunistically).
+*   **Key Behavior:** The system supports both detailed pre-planning and quick capture, accommodating the swing trading style where analysis often precedes action, but market agility is sometimes required.
+
+## Key Features & Data Points
+*   **Database Structure (Google Sheets):**
+    *   **Dynamic Configuration:** The Google Sheet ID must be easily configurable (e.g., via environment variables) to allow for quick switching of the backend database without code changes.
+    *   **`Master` Sheet:** The central repository for all trade logs. Stores core data like Date, Pair, PnL, Entry/Exit Price.
+    *   **`Chips` Sheet:** The configuration hub. Columns represent Categories (e.g., "Psychology", "Strategy", "Timeframe"), and Rows contain the specific Options for those categories. The application is agnostic to the specific tag content; it dynamically renders whatever is present in this sheet.
+*   **Dynamic Tagging System ("Chips"):**
+    *   **Psychology:** Tags to track emotional state (e.g., "FOMO", "Confident", "Hesitant").
+    *   **Strategy:** Tags to identify the specific setup used (e.g., "Breakout", "Reversal", "Trend Following").
+    *   **Performance:** Tags to classify outcome quality beyond just PnL.
+    *   **Time Metrics:** Tags or fields to capture trade duration and timing.
+*   **Trade Review & Analysis:**
+    *   **Before/After Gallery:** A core feature for reviewing trades.
+    *   **Multi-Image Support:** The system supports multiple images for both "Before" (analysis/plan) and "After" (result) states (e.g., 3 before images, 5 after images).
+    *   **Visual Comparison:** The UI emphasizes side-by-side or toggled comparison of these image sets to facilitate learning.
