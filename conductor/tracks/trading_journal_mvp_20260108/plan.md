@@ -3,7 +3,7 @@
 ## Phase 1: Project Scaffolding & Configuration
 - [x] Task: Initialize Nuxt 3 project with TypeScript and Tailwind CSS. (15c78b8)
 - [x] Task: Set up `.env` with Google Service Account credentials and Spreadsheet ID. (a1cc693)
-- [ ] Task: Define shared TypeScript interfaces in `types/index.ts`.
+- [x] Task: Define shared TypeScript interfaces in `types/index.ts`. (a3809b3)
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Project Scaffolding & Configuration' (Protocol in workflow.md)
 
 ## Phase 2: Backend Integration (Google Sheets)
