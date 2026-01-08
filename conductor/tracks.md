@@ -4,5 +4,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [ ] Track: Build the core Trading Journal functionality
+## [~] Track: Build the core Trading Journal functionality
 *Link: [./conductor/tracks/trading_journal_mvp_20260108/](./conductor/tracks/trading_journal_mvp_20260108/)*

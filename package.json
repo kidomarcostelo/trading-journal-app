@@ -1,0 +1,30 @@
+{
+  "name": "trading-journal-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "googleapis": "^144.0.0",
+    "lucide-vue-next": "^0.471.0",
+    "nuxt": "^3.15.1",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@nuxt/test-utils": "^3.15.1",
+    "@nuxtjs/tailwindcss": "^6.12.2",
+    "@types/node": "^22.10.5",
+    "happy-dom": "^15.11.7",
+    "playwright-core": "^1.49.1",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.3",
+    "vitest": "^3.2.0"
+  }
+}
