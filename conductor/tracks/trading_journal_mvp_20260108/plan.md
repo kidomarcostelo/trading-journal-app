@@ -1,7 +1,7 @@
 # Plan: Trading Journal MVP
 
 ## Phase 1: Project Scaffolding & Configuration
-- [~] Task: Initialize Nuxt 3 project with TypeScript and Tailwind CSS.
+- [x] Task: Initialize Nuxt 3 project with TypeScript and Tailwind CSS. (15c78b8)
 - [ ] Task: Set up `.env` with Google Service Account credentials and Spreadsheet ID.
 - [ ] Task: Define shared TypeScript interfaces in `types/index.ts`.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Project Scaffolding & Configuration' (Protocol in workflow.md)
