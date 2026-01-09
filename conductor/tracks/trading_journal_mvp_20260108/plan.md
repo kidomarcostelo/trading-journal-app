@@ -9,12 +9,12 @@
 ## Phase 2: Backend Integration (Google Sheets)
 - [x] Task: Implement `server/utils/googleSheets.ts` for Google Sheets authentication and data access. dded7c1
 - [x] Task: Create `GET /api/config` endpoint to fetch and parse the `Chips` sheet. f34023a
-- [ ] Task: Create `GET /api/trades` endpoint to fetch trade logs from the `Master` sheet.
+- [x] Task: Create `GET /api/trades` endpoint to fetch trade logs from the `Master` sheet. 0554cc9
 - [ ] Task: Create `POST /api/trades` endpoint to append new trades to the `Master` sheet.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Backend Integration (Google Sheets)' (Protocol in workflow.md)
 
 ## Phase 3: Frontend - Core Components
-- [ ] Task: Implement the dynamic `<ChipSelect />` component with Tailwind styling.
+- [x] Task: Implement the dynamic `<ChipSelect />` component with Tailwind styling.
 - [ ] Task: Create the Trade Entry Form with validation and `POST /api/trades` integration.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Frontend - Core Components' (Protocol in workflow.md)
 
