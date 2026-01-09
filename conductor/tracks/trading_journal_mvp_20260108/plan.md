@@ -1,13 +1,13 @@
 # Plan: Trading Journal MVP
 
-## Phase 1: Project Scaffolding & Configuration
+## Phase 1: Project Scaffolding & Configuration [checkpoint: 09f0552]
 - [x] Task: Initialize Nuxt 3 project with TypeScript and Tailwind CSS. a122aec
 - [x] Task: Set up `.env` with Google Service Account credentials and Spreadsheet ID. 6d374e3
 - [x] Task: Define shared TypeScript interfaces in `types/index.ts`. 29dce4c
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Project Scaffolding & Configuration' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Project Scaffolding & Configuration' (Protocol in workflow.md) 09f0552
 
 ## Phase 2: Backend Integration (Google Sheets)
-- [ ] Task: Implement `server/utils/googleSheets.ts` for Google Sheets authentication and data access.
+- [x] Task: Implement `server/utils/googleSheets.ts` for Google Sheets authentication and data access. dded7c1
 - [ ] Task: Create `GET /api/config` endpoint to fetch and parse the `Chips` sheet.
 - [ ] Task: Create `GET /api/trades` endpoint to fetch trade logs from the `Master` sheet.
 - [ ] Task: Create `POST /api/trades` endpoint to append new trades to the `Master` sheet.
