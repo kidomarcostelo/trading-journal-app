@@ -13,12 +13,12 @@
 **Context:**
 I am building a trading journal where Google Sheets acts as the database.
 * **`Master` Sheet:** Stores trade logs (Date, Pair, PnL, Images, etc.).
-* **`Chips` Sheet:** Stores configuration for dropdowns. Columns = Categories (e.g., "Strategies"), Rows = Options.
+* **`Chips` Sheet:** Stores configuration for dropdowns. Columns = Categories (e.g., "Strategies"), Rows = Options. The application parses this column-wise to allow dynamic category management.
 
 **Key Features:**
 
 1.  **Type-Safe "Chips" System**
-    * **Logic:** Fetch `Chips.csv` on init. Define a TypeScript interface `ChipConfig` mapping categories to string arrays.
+    * **Logic:** Fetch `Chips` sheet data via `/api/config`. Define a TypeScript interface `ChipCategory` representing each column (Category ID and its Values).
     * **Component:** Create a generic `<ChipSelect />` component.
         * Props: `category: string`, `modelValue: string | string[]`, `multiple?: boolean`.
         * UI: Use Tailwind pills. Map "Win"/"Loss" tags to Green/Red colors dynamically.
@@ -36,9 +36,9 @@ I am building a trading journal where Google Sheets acts as the database.
 **Backend Architecture (Nuxt Nitro):**
 * Create `server/utils/googleSheets.ts` to handle authentication using Service Account credentials.
 * **Endpoints:**
-    * `GET /api/config`: Returns typed `Chips` data.
-    * `GET /api/trades`: Returns `Trade[]` from Master sheet.
-    * `POST /api/trades`: Validates body against `TradeEntry` interface and appends row to Master.
+    * `GET /api/config`: Returns an array of `ChipCategory` objects parsed from the Chips sheet columns.
+    * `GET /api/trades`: Returns trade logs where keys match the spreadsheet headers. Automatically parses `=IMAGE()` formulas and comma-separated lists for image columns.
+    * `POST /api/trades`: Dynamically maps JSON keys to spreadsheet headers. Auto-generates incremental IDs and formats dates as `mm/dd/yyyy`.
 
 **Step-by-Step Instructions (Execute in Order):**
 
