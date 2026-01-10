@@ -1,8 +1,8 @@
 ## Visual Aesthetic: Modern Minimalist Dashboard
-*   **Theme:** Refined Dark Mode (Slate/Zinc).
+*   **Theme:** Dual Theme (Light & Dark). Default: Dark.
 *   **Color Palette:**
-    *   **Background:** Soft slate backgrounds (`bg-slate-950`).
-    *   **Text:** Muted grays for secondary info, clear white for primary (`text-slate-400`, `text-slate-100`).
+    *   **Background:** Zinc-950 (`#09090b`) for Dark, White (`#ffffff`) for Light.
+    *   **Text:** Zinc-400/100 (Dark), Zinc-600/950 (Light).
     *   **Accents:** 
         *   **Profit (Win):** Soft forest green (`text-emerald-500`, `bg-emerald-500/10`).
         *   **Loss:** Subdued crimson (`text-rose-500`, `bg-rose-500/10`).
