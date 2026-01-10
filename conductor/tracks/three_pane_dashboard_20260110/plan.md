@@ -1,0 +1,36 @@
+# Plan: Three-Pane Dashboard & Trade Detail
+
+## Phase 1: Layout & Core Navigation
+- [ ] Task: Update `types/index.ts` to include new fields (Market, Status, MAE) and update existing interfaces.
+- [ ] Task: Write tests for the 3-Pane Layout component structure.
+- [ ] Task: Implement the high-level layout (`Pane 1: Nav`, `Pane 2: List`, `Pane 3: Detail`) in `app.vue`.
+- [ ] Task: Create the Navigation Sidebar component (Pane 1) with basic routing placeholders.
+- [ ] Task: Conductor - User Manual Verification 'Phase 1: Layout & Core Navigation' (Protocol in workflow.md)
+
+## Phase 2: Trade List (Pane 2)
+- [ ] Task: Write tests for Trade List filtering (Week/Month) and sorting (Status).
+- [ ] Task: Implement filtering and sorting logic in a new `useTrades` composable or store.
+- [ ] Task: Create the `TradeSummaryCard` component for the list.
+- [ ] Task: Implement the scrollable `TradeList` component in Pane 2 with active state handling.
+- [ ] Task: Conductor - User Manual Verification 'Phase 2: Trade List (Pane 2)' (Protocol in workflow.md)
+
+## Phase 3: Trade Detail - Data Table & Stats
+- [ ] Task: Write tests for the editable Data Table (input validation and state updates).
+- [ ] Task: Implement the `TradeDataTable` component with editable inputs for core metrics.
+- [ ] Task: Create the `TradeStats` component to display Win%, Cum PnL, etc.
+- [ ] Task: Implement the auto-save (or explicit save) logic for Data Table changes via `POST /api/trades` or a new update endpoint.
+- [ ] Task: Conductor - User Manual Verification 'Phase 3: Trade Detail - Data Table & Stats' (Protocol in workflow.md)
+
+## Phase 4: Strategy Grid & Interactive Tags
+- [ ] Task: Write tests for the categorized Chip Grid (grouping and toggling).
+- [ ] Task: Implement the `StrategyAccordion` component to group active chips by category.
+- [ ] Task: Refactor `Combobox` or create a new `TagToggle` for inline editing within the grid.
+- [ ] Task: Integrate the grid into Pane 3 with collapse/expand functionality.
+- [ ] Task: Conductor - User Manual Verification 'Phase 4: Strategy Grid & Interactive Tags' (Protocol in workflow.md)
+
+## Phase 5: Image Comparison & Traversal
+- [ ] Task: Write tests for image traversal logic (indexing) and TradingView URL parsing.
+- [ ] Task: Implement the `ImageComparison` component with side-by-side "Before" and "After" panes.
+- [ ] Task: Add navigation buttons (Next/Prev) for traversing multiple images on each side.
+- [ ] Task: Implement automatic rendering for pasted TradingView image links.
+- [ ] Task: Conductor - User Manual Verification 'Phase 5: Image Comparison & Traversal' (Protocol in workflow.md)
