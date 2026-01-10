@@ -1,3 +1,7 @@
+export type TradeStatus = 'Open' | 'Closed' | 'Cancelled' | 'Missed'
+export type TradeMarket = 'Crypto' | 'Forex' | 'Indices' | 'Stocks' | 'Commodities'
+export type TradeDirection = 'Long' | 'Short'
+
 export interface ChipOption {
   label: string
   color?: string // Optional, as we might just have string values now
@@ -20,6 +24,20 @@ export interface TradeEntry {
 export interface Trade extends TradeEntry {
   id: string
   createdAt: string
+  
+  // Core Fields
+  pair?: string
+  status?: TradeStatus
+  market?: TradeMarket
+  direction?: TradeDirection
+  date?: string
+  
+  // Metrics
+  entryPrice?: number
+  exitPrice?: number
+  size?: number
+  pnl?: number
+  mae?: number
 }
 
 export interface AppConfig {
