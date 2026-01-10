@@ -24,3 +24,10 @@
 - [x] Task: Create the main Dashboard page with a toggle between Gallery and List views. (c0e1382)
 - [x] Task: Apply the "Financial Terminal" dark mode aesthetic across the application. (c0e1382)
 - [x] Task: Conductor - User Manual Verification 'Phase 4: Dashboard & Gallery' (Protocol in workflow.md)
+
+## Phase 5: Visual Overhaul (Modern Minimalist)
+- [ ] Task: Update `tailwind.config.ts` with the new "Modern Minimalist" color palette.
+- [ ] Task: Refactor `App.vue` layout and typography.
+- [ ] Task: Update `TradeForm.vue` and `Combobox.vue` to use subtle borders and rounded corners.
+- [ ] Task: Update `TradeList.vue` and `TradeGallery.vue` to match the new aesthetic.
+- [ ] Task: Conductor - User Manual Verification 'Phase 5: Visual Overhaul' (Protocol in workflow.md)
