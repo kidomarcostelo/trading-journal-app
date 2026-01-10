@@ -10,6 +10,8 @@ vi.mock('lucide-vue-next', () => ({
   List: { render: () => h('div', { 'data-testid': 'list-icon' }) },
   RefreshCw: { render: () => h('div', { 'data-testid': 'refresh-icon' }) },
   LayoutDashboard: { render: () => h('div', { 'data-testid': 'dashboard-icon' }) },
+  Moon: { render: () => h('div', { 'data-testid': 'moon-icon' }) },
+  Sun: { render: () => h('div', { 'data-testid': 'sun-icon' }) },
   Save: { render: () => h('div') },
   Loader2: { render: () => h('div') },
   Image: { render: () => h('div') },
@@ -56,16 +58,6 @@ describe('App.vue', () => {
     await new Promise(resolve => setTimeout(resolve, 50))
     expect(wrapper.text()).toContain('Trading Journal')
   })
-
-  // I removed the Terminal icon from the main view (replaced with LayoutDashboard inside a div) 
-  // actually I kept Terminal as a placeholder in imports but used LayoutDashboard in the template. 
-  // Let's check the template: 
-  // <div class="p-2 ..."><LayoutDashboard ... /></div> 
-  // So 'terminal-icon' (mock for Terminal) might NOT be there if I removed <Terminal />.
-  // Wait, I see <Terminal class="w-8 h-8..." /> is gone?
-  // In previous App.vue: <Terminal ... />
-  // In new App.vue: <LayoutDashboard ... />
-  // So I should check for dashboard-icon.
 
   it('contains the dashboard icon', async () => {
     const wrapper = mountSuspense(App)
