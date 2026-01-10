@@ -13,15 +13,15 @@ describe('GET /api/config', () => {
     process.env.GOOGLE_SPREADSHEET_ID = 'test-sheet-id'
   })
 
-  it('fetches and parses chips from Google Sheets', async () => {
-    const mockValues = [
-      ['id', 'label', 'color', 'category'], // Header
-      ['1', 'Trend Following', 'blue', 'Strategy'],
-      ['2', 'FOMO', 'red', 'Psychology']
+  it('fetches and parses chips from Google Sheets in column format', async () => {
+    // Mocking response with majorDimension: 'COLUMNS'
+    const mockColumns = [
+      ['Strategy', 'Trend', 'Breakout'], // Column 1
+      ['Psychology', 'FOMO', 'Revenge']  // Column 2
     ]
 
     const mockGet = vi.fn().mockResolvedValue({
-      data: { values: mockValues }
+      data: { values: mockColumns }
     })
 
     const mockClient = {
@@ -34,19 +34,18 @@ describe('GET /api/config', () => {
 
     vi.mocked(googleSheets.getSheetsClient).mockResolvedValue(mockClient as any)
 
-    // Simulate h3 event (can be minimal for this handler)
-    const event = {} as any
-    const response = await handler(event)
+    const response = await handler({} as any)
 
     expect(googleSheets.getSheetsClient).toHaveBeenCalled()
     expect(mockGet).toHaveBeenCalledWith({
       spreadsheetId: 'test-sheet-id',
-      range: 'Chips!A:D', // Assuming 4 columns
+      range: 'Chips!A:Z',
+      majorDimension: 'COLUMNS'
     })
 
     expect(response).toEqual([
-      { id: '1', label: 'Trend Following', color: 'blue', category: 'Strategy' },
-      { id: '2', label: 'FOMO', color: 'red', category: 'Psychology' }
+      { id: 'Strategy', values: ['Trend', 'Breakout'] },
+      { id: 'Psychology', values: ['FOMO', 'Revenge'] }
     ])
   })
 
@@ -56,9 +55,7 @@ describe('GET /api/config', () => {
     })
     
     const mockClient = {
-      spreadsheets: {
-        values: { get: mockGet }
-      }
+      spreadsheets: { values: { get: mockGet } }
     }
     vi.mocked(googleSheets.getSheetsClient).mockResolvedValue(mockClient as any)
 

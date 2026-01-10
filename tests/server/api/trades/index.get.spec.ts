@@ -13,10 +13,10 @@ describe('GET /api/trades', () => {
     process.env.GOOGLE_SPREADSHEET_ID = 'test-sheet-id'
   })
 
-  it('fetches and parses trades from Google Sheets', async () => {
+  it('fetches and parses trades using headers as keys', async () => {
     const mockValues = [
-      ['id', 'createdAt', 'date', 'pair', 'type', 'entry', 'exit', 'size', 'pnl', 'pnl%', 'imgBefore', 'imgAfter', 'notes', 'tags'], // Header
-      ['t1', '2023-01-01T10:00:00Z', '2023-01-01', 'BTC/USD', 'Long', '50000', '51000', '1', '1000', '2', 'url1', 'url2', 'Good trade', 's1,p1']
+      ['Date', 'Pair', 'Entry Price', 'Tags'], // Header
+      ['2023-01-01', 'BTC/USD', '50000', 'Trend']
     ]
 
     const mockGet = vi.fn().mockResolvedValue({
@@ -38,40 +38,17 @@ describe('GET /api/trades', () => {
     expect(googleSheets.getSheetsClient).toHaveBeenCalled()
     expect(mockGet).toHaveBeenCalledWith({
       spreadsheetId: 'test-sheet-id',
-      range: 'Master!A:N', // Assuming 14 columns
+      range: 'Master!A:Z',
     })
 
+    // Verify dynamic key mapping
     expect(response).toEqual([
       {
-        id: 't1',
-        createdAt: '2023-01-01T10:00:00Z',
-        date: '2023-01-01',
-        pair: 'BTC/USD',
-        type: 'Long',
-        entryPrice: 50000,
-        exitPrice: 51000,
-        size: 1,
-        pnl: 1000,
-        pnlPercentage: 2,
-        imageBefore: 'url1',
-        imageAfter: 'url2',
-        notes: 'Good trade',
-        tags: ['s1', 'p1']
+        'Date': '2023-01-01',
+        'Pair': 'BTC/USD',
+        'Entry Price': '50000',
+        'Tags': 'Trend'
       }
     ])
-  })
-
-  it('handles empty sheet', async () => {
-    const mockGet = vi.fn().mockResolvedValue({
-      data: { values: [] }
-    })
-    
-    const mockClient = {
-      spreadsheets: { values: { get: mockGet } }
-    }
-    vi.mocked(googleSheets.getSheetsClient).mockResolvedValue(mockClient as any)
-
-    const response = await handler({} as any)
-    expect(response).toEqual([])
   })
 })

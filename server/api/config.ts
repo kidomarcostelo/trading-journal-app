@@ -1,6 +1,6 @@
 import { defineEventHandler } from 'h3'
 import { getSheetsClient } from '../utils/googleSheets'
-import type { ChipConfig } from '../../types'
+import type { ChipCategory } from '../../types'
 
 export default defineEventHandler(async (event) => {
   const client = await getSheetsClient()
@@ -8,21 +8,23 @@ export default defineEventHandler(async (event) => {
 
   const response = await client.spreadsheets.values.get({
     spreadsheetId,
-    range: 'Chips!A:D',
+    range: 'Chips!A:Z', // Fetch all columns
+    majorDimension: 'COLUMNS' // Fetch by column to make parsing easier
   })
 
-  const rows = response.data.values
-  if (!rows || rows.length === 0) {
+  const columns = response.data.values
+  if (!columns || columns.length === 0) {
     return []
   }
 
-  // Skip header row
-  const data = rows.slice(1)
+  const chips: ChipCategory[] = columns.map((col: string[]) => {
+    const id = col[0] // First row is the header/ID
+    const values = col.slice(1).filter(v => v !== '' && v !== undefined) // Rest are values
+    return {
+      id,
+      values
+    }
+  })
 
-  return data.map((row: string[]) => ({
-    id: row[0],
-    label: row[1],
-    color: row[2],
-    category: row[3]
-  })) as ChipConfig[]
+  return chips
 })
