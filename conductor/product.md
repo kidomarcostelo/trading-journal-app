@@ -17,21 +17,21 @@ I am building a trading journal where Google Sheets acts as the database.
 
 **Key Features:**
 
-1.  **Type-Safe "Chips" System**
-    * **Logic:** Fetch `Chips` sheet data via `/api/config`. Define a TypeScript interface `ChipCategory` representing each column (Category ID and its Values).
-    * **Component:** Create a generic `<ChipSelect />` component.
-        * Props: `category: string`, `modelValue: string | string[]`, `multiple?: boolean`.
-        * UI: Use Tailwind pills. Map "Win"/"Loss" tags to Green/Red colors dynamically.
+1.  **Searchable "Combobox" Tagging System**
+    * **Logic:** Fetch `Chips` sheet data via `/api/config`. Map categories to searchable inputs.
+    * **Component:** A custom `<Combobox />` component that supports both single selection (e.g., for Pairs) and multiple selection (e.g., for Strategies).
+    * **UX:** Users can type to filter existing options or enter custom values. Selected tags appear as chips inside the input field.
+    * **Aesthetic:** Modern minimalist style with subtle emerald (win) and rose (loss) highlighting.
 
 2.  **Trade Entry Form**
     * **Inputs:** Strongly typed form state (e.g., `interface TradeEntry`).
-    * **Fields:** Pair, Price, PnL, Image URLs (text input), and Chip Selects.
+    * **Fields:** Pair, Price, PnL, Image URLs (text input), and Comboboxes.
     * **Action:** POST data to `/api/trades`.
 
 3.  **Dashboard Views**
     * **Gallery:** CSS Grid cards displaying "Before/After" images with PnL badges.
     * **List:** Dense table view.
-    * **Theme:** Dark mode ("Financial Terminal" aesthetic: `bg-slate-900`, `text-slate-300`).
+    * **Theme:** Modern Dark Dashboard (`bg-slate-950`, `text-slate-200`).
 
 **Backend Architecture (Nuxt Nitro):**
 * Create `server/utils/googleSheets.ts` to handle authentication using Service Account credentials.
