@@ -18,9 +18,9 @@
 - [x] Task: Create the Trade Entry Form with validation and `POST /api/trades` integration. (f0b4391)
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Frontend - Core Components' (Protocol in workflow.md)
 
-## Phase 4: Dashboard & Gallery
-- [~] Task: Implement the Trade List view (dense table).
-- [ ] Task: Implement the Trade Gallery view (side-by-side "Before/After" images).
-- [ ] Task: Create the main Dashboard page with a toggle between Gallery and List views.
-- [ ] Task: Apply the "Financial Terminal" dark mode aesthetic across the application.
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Dashboard & Gallery' (Protocol in workflow.md)
+## Phase 4: Dashboard & Gallery [checkpoint: c0e1382]
+- [x] Task: Implement the Trade List view (dense table). (c0e1382)
+- [x] Task: Implement the Trade Gallery view (side-by-side "Before/After" images). (c0e1382)
+- [x] Task: Create the main Dashboard page with a toggle between Gallery and List views. (c0e1382)
+- [x] Task: Apply the "Financial Terminal" dark mode aesthetic across the application. (c0e1382)
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Dashboard & Gallery' (Protocol in workflow.md)
