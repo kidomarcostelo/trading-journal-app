@@ -70,21 +70,13 @@ const onInput = (e: Event) => {
 }
 
 const onEnter = () => {
-  // If there is text in the input
   if (query.value.trim()) {
-    // Check if it matches an option exactly (case insensitive)
     const match = filteredOptions.value.find(o => o.toLowerCase() === query.value.toLowerCase())
-    
     if (match) {
       selectOption(match)
     } else {
-      // Custom value
       selectOption(query.value.trim())
     }
-  } else if (isOpen.value && filteredOptions.value.length > 0) {
-      // If no text but dropdown open, maybe select first? 
-      // User experience varies here. Let's strictly stick to "Type > Enter" logic for now.
-      // If empty input + Enter -> do nothing (prevent submit)
   }
 }
 
@@ -98,31 +90,30 @@ const handleClickOutside = (e: MouseEvent) => {
 onMounted(() => document.addEventListener('click', handleClickOutside))
 onUnmounted(() => document.removeEventListener('click', handleClickOutside))
 
-// Initialize query for single mode
 if (!props.multiple && typeof props.modelValue === 'string') {
   query.value = props.modelValue
 }
 </script>
 
 <template>
-  <div ref="containerRef" class="space-y-1">
-    <label class="block text-xs uppercase tracking-widest text-terminal-text/60 font-semibold mb-1">
+  <div ref="containerRef" class="space-y-1.5">
+    <label class="block text-xs font-medium text-terminal-text/70 ml-1">
       {{ label }}
     </label>
 
     <!-- Combined Input Container -->
     <div 
-      class="relative w-full bg-terminal-black border border-terminal-gray focus-within:border-terminal-accent transition-colors flex flex-wrap items-center p-1.5 gap-1.5"
+      class="relative w-full bg-terminal-black/50 border border-terminal-gray rounded-lg focus-within:border-terminal-accent focus-within:ring-1 focus-within:ring-terminal-accent/20 transition-all flex flex-wrap items-center p-1.5 gap-1.5"
     >
-      <!-- Selected Chips (Multiple Mode) -->
+      <!-- Selected Chips -->
       <span
         v-if="multiple"
         v-for="val in selectedValues"
         :key="val"
-        class="bg-terminal-accent/20 border border-terminal-accent text-terminal-accent px-2 py-0.5 rounded text-xs flex items-center gap-1 font-medium"
+        class="bg-terminal-dark border border-terminal-gray text-terminal-highlight px-2 py-0.5 rounded-md text-xs flex items-center gap-1 font-medium shadow-sm"
       >
         {{ val }}
-        <button @click="removeOption(val)" type="button" class="hover:text-white transition-colors">
+        <button @click="removeOption(val)" type="button" class="hover:text-terminal-accent transition-colors">
           <X class="w-3 h-3" />
         </button>
       </span>
@@ -136,8 +127,8 @@ if (!props.multiple && typeof props.modelValue === 'string') {
           @input="onInput"
           @keydown.enter.prevent="onEnter"
           @focus="isOpen = true"
-          class="w-full bg-transparent border-none outline-none text-terminal-text font-mono text-sm placeholder-terminal-text/30"
-          :placeholder="multiple && selectedValues.length === 0 ? 'Search...' : (multiple ? '' : 'Select or type...')"
+          class="w-full bg-transparent border-none outline-none text-terminal-highlight text-sm placeholder-terminal-text/30 px-1"
+          :placeholder="multiple && selectedValues.length === 0 ? 'Search...' : (multiple ? '' : 'Select...')"
         />
       </div>
 
@@ -145,7 +136,7 @@ if (!props.multiple && typeof props.modelValue === 'string') {
       <button 
         type="button"
         @click="toggleOpen"
-        class="absolute right-2 top-1/2 -translate-y-1/2 text-terminal-text/50 hover:text-terminal-accent"
+        class="absolute right-2 top-1/2 -translate-y-1/2 text-terminal-text/40 hover:text-terminal-highlight transition-colors"
       >
         <ChevronsUpDown class="w-4 h-4" />
       </button>
@@ -154,7 +145,7 @@ if (!props.multiple && typeof props.modelValue === 'string') {
     <!-- Dropdown -->
     <div
       v-if="isOpen && filteredOptions.length > 0"
-      class="absolute z-50 w-full max-w-[calc(100%-3rem)] md:max-w-md mt-1 bg-terminal-dark border border-terminal-gray shadow-xl max-h-60 overflow-auto py-1"
+      class="absolute z-50 w-full max-w-[calc(100%-3rem)] md:max-w-md mt-1 bg-terminal-dark border border-terminal-gray rounded-lg shadow-xl ring-1 ring-black/5 max-h-60 overflow-auto py-1"
       :style="{ width: containerRef ? `${containerRef.offsetWidth}px` : '100%' }"
     >
       <button
@@ -162,7 +153,7 @@ if (!props.multiple && typeof props.modelValue === 'string') {
         :key="option"
         type="button"
         @click="selectOption(option)"
-        class="w-full text-left px-3 py-2 text-sm text-terminal-text hover:bg-terminal-accent/10 hover:text-terminal-accent flex items-center justify-between group font-mono"
+        class="w-full text-left px-3 py-2 text-sm text-terminal-text hover:bg-terminal-gray/50 hover:text-terminal-highlight flex items-center justify-between group transition-colors"
       >
         <span>{{ option }}</span>
         <Check v-if="selectedValues.includes(option)" class="w-3 h-3 text-terminal-accent" />

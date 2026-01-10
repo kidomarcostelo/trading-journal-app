@@ -76,16 +76,21 @@ const submitTrade = async () => {
 </script>
 
 <template>
-  <div class="bg-terminal-dark border border-terminal-gray p-6 rounded shadow-xl">
-    <div class="flex items-center gap-2 mb-6 border-b border-terminal-accent/20 pb-4">
-      <Save class="w-5 h-5 text-terminal-accent" />
-      <h2 class="text-xl font-bold text-terminal-accent uppercase tracking-tighter">New Entry</h2>
+  <div class="bg-terminal-dark border border-terminal-gray p-8 rounded-xl shadow-lg shadow-black/20">
+    <div class="flex items-center gap-3 mb-8 border-b border-terminal-gray/50 pb-6">
+      <div class="p-2 bg-terminal-black border border-terminal-gray rounded-lg">
+        <Save class="w-5 h-5 text-terminal-accent" />
+      </div>
+      <div>
+        <h2 class="text-lg font-semibold text-terminal-highlight">Log Entry</h2>
+        <p class="text-xs text-terminal-text/60">Capture trade details</p>
+      </div>
     </div>
 
-    <form @submit.prevent="submitTrade" class="space-y-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <form @submit.prevent="submitTrade" class="space-y-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <!-- Basic Info -->
-        <div class="space-y-4">
+        <div class="space-y-6">
           <!-- Pair Input: Dynamic Combobox or Fallback Text -->
           <div v-if="pairCategory">
              <Combobox
@@ -95,87 +100,88 @@ const submitTrade = async () => {
              />
           </div>
           <div v-else>
-            <label class="block text-xs uppercase text-terminal-text/50 mb-1 font-mono">Pair</label>
+            <label class="block text-xs font-medium text-terminal-text/70 mb-1.5 ml-1">Pair</label>
             <input
               v-model="form.Pair"
               name="Pair"
               required
-              class="w-full bg-terminal-black border border-terminal-gray focus:border-terminal-accent text-terminal-text px-3 py-2 outline-none font-mono"
+              class="w-full bg-terminal-black/50 border border-terminal-gray rounded-lg focus:border-terminal-accent focus:ring-1 focus:ring-terminal-accent/20 text-terminal-highlight px-3 py-2 outline-none font-mono text-sm placeholder-terminal-text/30"
               placeholder="e.g. BTC/USD"
             />
           </div>
           
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs uppercase text-terminal-text/50 mb-1 font-mono">Entry Price</label>
+              <label class="block text-xs font-medium text-terminal-text/70 mb-1.5 ml-1">Entry Price</label>
               <input
                 v-model="form['Entry Price']"
                 type="number"
                 step="any"
-                class="w-full bg-terminal-black border border-terminal-gray focus:border-terminal-accent text-terminal-text px-3 py-2 outline-none font-mono"
+                class="w-full bg-terminal-black/50 border border-terminal-gray rounded-lg focus:border-terminal-accent focus:ring-1 focus:ring-terminal-accent/20 text-terminal-highlight px-3 py-2 outline-none font-mono text-sm"
               />
             </div>
             <div>
-              <label class="block text-xs uppercase text-terminal-text/50 mb-1 font-mono">Size</label>
+              <label class="block text-xs font-medium text-terminal-text/70 mb-1.5 ml-1">Size</label>
               <input
                 v-model="form['Size']"
                 type="number"
                 step="any"
-                class="w-full bg-terminal-black border border-terminal-gray focus:border-terminal-accent text-terminal-text px-3 py-2 outline-none font-mono"
+                class="w-full bg-terminal-black/50 border border-terminal-gray rounded-lg focus:border-terminal-accent focus:ring-1 focus:ring-terminal-accent/20 text-terminal-highlight px-3 py-2 outline-none font-mono text-sm"
               />
             </div>
           </div>
 
           <div>
-            <label class="block text-xs uppercase text-terminal-text/50 mb-1 font-mono">Exit Price</label>
+            <label class="block text-xs font-medium text-terminal-text/70 mb-1.5 ml-1">Exit Price</label>
             <input
               v-model="form['Exit Price']"
               type="number"
               step="any"
-              class="w-full bg-terminal-black border border-terminal-gray focus:border-terminal-accent text-terminal-text px-3 py-2 outline-none font-mono"
+              class="w-full bg-terminal-black/50 border border-terminal-gray rounded-lg focus:border-terminal-accent focus:ring-1 focus:ring-terminal-accent/20 text-terminal-highlight px-3 py-2 outline-none font-mono text-sm"
             />
           </div>
         </div>
 
         <!-- Images & Notes -->
-        <div class="space-y-4">
+        <div class="space-y-6">
           <div>
-            <label class="block text-xs uppercase text-terminal-text/50 mb-1 font-mono">
-              <div class="flex items-center gap-1">
-                <ImageIcon class="w-3 h-3" /> Before Picture (CSV)
+            <label class="block text-xs font-medium text-terminal-text/70 mb-1.5 ml-1">
+              <div class="flex items-center gap-1.5">
+                <ImageIcon class="w-3.5 h-3.5" /> Before Image (URL)
               </div>
             </label>
             <input
               v-model="form['Before Picture']"
-              class="w-full bg-terminal-black border border-terminal-gray focus:border-terminal-accent text-terminal-text px-3 py-2 outline-none text-xs"
-              placeholder="URL, URL..."
+              class="w-full bg-terminal-black/50 border border-terminal-gray rounded-lg focus:border-terminal-accent focus:ring-1 focus:ring-terminal-accent/20 text-terminal-highlight px-3 py-2 outline-none text-xs font-mono placeholder-terminal-text/30"
+              placeholder="Paste image link..."
             />
           </div>
           <div>
-            <label class="block text-xs uppercase text-terminal-text/50 mb-1 font-mono">
-              <div class="flex items-center gap-1">
-                <ImageIcon class="w-3 h-3" /> After Picture (CSV)
+            <label class="block text-xs font-medium text-terminal-text/70 mb-1.5 ml-1">
+              <div class="flex items-center gap-1.5">
+                <ImageIcon class="w-3.5 h-3.5" /> After Image (URL)
               </div>
             </label>
             <input
               v-model="form['After Picture']"
-              class="w-full bg-terminal-black border border-terminal-gray focus:border-terminal-accent text-terminal-text px-3 py-2 outline-none text-xs"
-              placeholder="URL, URL..."
+              class="w-full bg-terminal-black/50 border border-terminal-gray rounded-lg focus:border-terminal-accent focus:ring-1 focus:ring-terminal-accent/20 text-terminal-highlight px-3 py-2 outline-none text-xs font-mono placeholder-terminal-text/30"
+              placeholder="Paste image link..."
             />
           </div>
           <div>
-            <label class="block text-xs uppercase text-terminal-text/50 mb-1 font-mono">Notes</label>
+            <label class="block text-xs font-medium text-terminal-text/70 mb-1.5 ml-1">Notes</label>
             <textarea
               v-model="form.Notes"
-              rows="3"
-              class="w-full bg-terminal-black border border-terminal-gray focus:border-terminal-accent text-terminal-text px-3 py-2 outline-none font-mono text-sm resize-none"
+              rows="4"
+              class="w-full bg-terminal-black/50 border border-terminal-gray rounded-lg focus:border-terminal-accent focus:ring-1 focus:ring-terminal-accent/20 text-terminal-highlight px-3 py-2 outline-none text-sm resize-none placeholder-terminal-text/30"
+              placeholder="Strategy execution details..."
             ></textarea>
           </div>
         </div>
       </div>
 
       <!-- Dynamic Comboboxes for Categories -->
-      <div v-if="!loadingConfig && otherCategories" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-4 border-t border-terminal-gray">
+      <div v-if="!loadingConfig && otherCategories" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-6 border-t border-terminal-gray/50">
         <Combobox
           v-for="cat in otherCategories"
           :key="cat.id"
@@ -187,19 +193,20 @@ const submitTrade = async () => {
       </div>
 
       <!-- Submit -->
-      <div class="flex items-center justify-between pt-6 border-t border-terminal-gray">
-        <div v-if="message.text" :class="message.type === 'success' ? 'text-terminal-accent' : 'text-rose-400'" class="text-sm font-mono italic">
-          > {{ message.text }}
+      <div class="flex items-center justify-between pt-8 border-t border-terminal-gray/50">
+        <div v-if="message.text" :class="message.type === 'success' ? 'text-emerald-400' : 'text-rose-400'" class="text-sm font-medium flex items-center gap-2">
+          <span class="w-1.5 h-1.5 rounded-full" :class="message.type === 'success' ? 'bg-emerald-400' : 'bg-rose-400'"></span>
+          {{ message.text }}
         </div>
         <div v-else></div>
         
         <button
           type="submit"
           :disabled="isSubmitting"
-          class="bg-terminal-accent hover:bg-terminal-accent/80 disabled:opacity-50 text-terminal-black font-bold py-2 px-8 uppercase tracking-widest transition-all flex items-center gap-2"
+          class="bg-terminal-highlight hover:bg-white text-terminal-black border border-transparent font-semibold py-2.5 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Loader2 v-if="isSubmitting" class="w-4 h-4 animate-spin" />
-          {{ isSubmitting ? 'Processing...' : 'Save Trade' }}
+          {{ isSubmitting ? 'Saving...' : 'Save Trade' }}
         </button>
       </div>
     </form>
