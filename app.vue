@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Terminal, PlusCircle, LayoutGrid, List as ListIcon, RefreshCw } from 'lucide-vue-next'
+import { LayoutDashboard, PlusCircle, LayoutGrid, List as ListIcon, RefreshCw } from 'lucide-vue-next'
 import TradeForm from './components/TradeForm.vue'
 import TradeList from './components/TradeList.vue'
 import TradeGallery from './components/TradeGallery.vue'
@@ -18,32 +18,34 @@ const onTradeSuccess = () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-terminal-black text-terminal-text font-mono p-4 md:p-8">
+  <div class="min-h-screen bg-terminal-black text-terminal-text font-sans p-6 md:p-10">
     <!-- Header -->
-    <header class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between mb-8 border-b border-terminal-gray pb-6 gap-4">
+    <header class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
       <div class="flex items-center gap-3">
-        <Terminal class="w-8 h-8 text-terminal-accent" />
+        <div class="p-2 bg-terminal-dark border border-terminal-gray rounded-lg shadow-sm">
+          <LayoutDashboard class="w-6 h-6 text-terminal-accent" />
+        </div>
         <div>
-          <h1 class="text-2xl font-bold text-terminal-accent uppercase tracking-tighter">
-            Trading Journal System <span class="animate-pulse">_</span>
+          <h1 class="text-xl font-semibold text-terminal-highlight tracking-tight">
+            Trading Journal
           </h1>
-          <p class="text-[10px] text-terminal-text/40 uppercase tracking-widest">Version 1.0.0 // DB: Google Sheets // Connection: Active</p>
+          <p class="text-xs text-terminal-text/60">Overview</p>
         </div>
       </div>
 
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-3">
         <!-- View Toggle -->
-        <div v-if="!showForm" class="flex bg-terminal-dark border border-terminal-gray p-1 rounded">
+        <div v-if="!showForm" class="flex bg-terminal-dark border border-terminal-gray p-1 rounded-lg shadow-sm">
           <button 
             @click="viewMode = 'gallery'"
-            :class="['p-2 rounded transition-all', viewMode === 'gallery' ? 'bg-terminal-accent text-terminal-black' : 'text-terminal-text/50 hover:text-terminal-accent']"
+            :class="['p-2 rounded-md transition-all', viewMode === 'gallery' ? 'bg-terminal-gray text-terminal-highlight shadow-sm' : 'text-terminal-text/60 hover:text-terminal-text']"
             title="Gallery View"
           >
             <LayoutGrid class="w-4 h-4" />
           </button>
           <button 
             @click="viewMode = 'list'"
-            :class="['p-2 rounded transition-all', viewMode === 'list' ? 'bg-terminal-accent text-terminal-black' : 'text-terminal-text/50 hover:text-terminal-accent']"
+            :class="['p-2 rounded-md transition-all', viewMode === 'list' ? 'bg-terminal-gray text-terminal-highlight shadow-sm' : 'text-terminal-text/60 hover:text-terminal-text']"
             title="List View"
           >
             <ListIcon class="w-4 h-4" />
@@ -52,41 +54,40 @@ const onTradeSuccess = () => {
 
         <button 
           @click="refresh"
-          class="p-2 text-terminal-text/50 hover:text-terminal-accent border border-terminal-gray rounded hover:border-terminal-accent/30 transition-all"
+          class="p-2.5 text-terminal-text/60 hover:text-terminal-highlight bg-terminal-dark border border-terminal-gray rounded-lg hover:border-terminal-text/30 transition-all shadow-sm"
           :disabled="pending"
+          title="Refresh Data"
         >
           <RefreshCw :class="['w-4 h-4', pending ? 'animate-spin' : '']" />
         </button>
 
         <button 
           @click="showForm = !showForm"
-          class="flex items-center gap-2 bg-terminal-accent/10 border border-terminal-accent text-terminal-accent px-4 py-2 hover:bg-terminal-accent hover:text-terminal-black transition-all uppercase text-sm font-bold tracking-widest"
+          class="flex items-center gap-2 bg-terminal-accent hover:bg-terminal-accent/90 text-white px-5 py-2.5 rounded-lg shadow-lg shadow-terminal-accent/20 transition-all text-sm font-medium"
         >
           <PlusCircle class="w-4 h-4" />
-          {{ showForm ? 'Close Entry' : 'New Trade' }}
+          {{ showForm ? 'Cancel Entry' : 'New Trade' }}
         </button>
       </div>
     </header>
 
     <main class="max-w-7xl mx-auto">
       <!-- Form View -->
-      <div v-if="showForm" class="mb-12 max-w-4xl mx-auto">
+      <div v-if="showForm" class="mb-12 max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-300">
         <TradeForm @success="onTradeSuccess" />
       </div>
 
       <!-- Dashboard View -->
       <div v-else>
-        <div v-if="pending" class="py-20 text-center">
-          <div class="inline-block w-8 h-8 border-4 border-terminal-accent border-t-transparent rounded-full animate-spin"></div>
-          <p class="mt-4 text-terminal-accent animate-pulse uppercase text-xs tracking-widest">Fetching data from core...</p>
+        <div v-if="pending" class="py-32 text-center">
+          <div class="inline-block w-8 h-8 border-2 border-terminal-gray border-t-terminal-accent rounded-full animate-spin"></div>
+          <p class="mt-4 text-terminal-text/40 text-sm">Loading data...</p>
         </div>
         
-        <div v-else>
-          <!-- Summary Bar (Optional) -->
-          <div class="flex items-center gap-4 mb-6 text-[10px] uppercase tracking-widest text-terminal-text/30">
-             <span>Total Records: {{ trades?.length || 0 }}</span>
-             <span class="w-1 h-1 bg-terminal-gray rounded-full"></span>
-             <span>System: Operational</span>
+        <div v-else class="animate-in fade-in duration-500">
+          <!-- Summary Bar -->
+          <div class="flex items-center justify-between mb-6 px-1">
+             <span class="text-sm text-terminal-text/60 font-medium">Total Records: <span class="text-terminal-highlight font-mono">{{ trades?.length || 0 }}</span></span>
           </div>
 
           <!-- Gallery -->
@@ -99,9 +100,9 @@ const onTradeSuccess = () => {
     </main>
     
     <!-- Footer -->
-    <footer class="max-w-7xl mx-auto mt-20 pt-8 border-t border-terminal-gray text-[10px] text-terminal-text/20 uppercase tracking-[0.2em] flex justify-between">
-      <span>&copy; 2026 Trading Journal Corp</span>
-      <span>Secured via G-Auth</span>
+    <footer class="max-w-7xl mx-auto mt-24 pt-8 border-t border-terminal-gray/50 text-xs text-terminal-text/30 flex justify-between">
+      <span>&copy; 2026 Trading Journal</span>
+      <span>Connected to Google Sheets</span>
     </footer>
   </div>
 </template>
