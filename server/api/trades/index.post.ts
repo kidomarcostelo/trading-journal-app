@@ -2,6 +2,15 @@ import { defineEventHandler, readBody } from 'h3'
 import { getSheetsClient } from '../../utils/googleSheets'
 import type { TradeEntry } from '../../../types'
 
+function getColumnLetter(index: number): string {
+  let letter = '';
+  while (index >= 0) {
+    letter = String.fromCharCode((index % 26) + 65) + letter;
+    index = Math.floor(index / 26) - 1;
+  }
+  return letter;
+}
+
 export default defineEventHandler(async (event) => {
   const body = await readBody<TradeEntry>(event)
   const client = await getSheetsClient()
@@ -19,8 +28,39 @@ export default defineEventHandler(async (event) => {
   }
 
   // 2. Prepare System Values
-  const generatedId = crypto.randomUUID()
-  const generatedCreatedAt = new Date().toISOString()
+  
+  // Date Formatting: mm/dd/yyyy
+  const now = new Date()
+  const mm = String(now.getMonth() + 1).padStart(2, '0')
+  const dd = String(now.getDate()).padStart(2, '0')
+  const yyyy = now.getFullYear()
+  const generatedCreatedAt = `${mm}/${dd}/${yyyy}`
+  
+  // ID Generation: Auto-increment
+  let generatedId = '1' // Default if no IDs found
+  
+  const idIndex = headers.findIndex((h: string) => h.toLowerCase() === 'id')
+  
+  if (idIndex !== -1) {
+    const colLetter = getColumnLetter(idIndex)
+    // Fetch the ID column to find the max ID
+    const idResponse = await client.spreadsheets.values.get({
+      spreadsheetId,
+      range: `Master!${colLetter}:${colLetter}`,
+    })
+    
+    const idValues = idResponse.data.values
+    if (idValues && idValues.length > 0) {
+      // Extract numbers, ignore header (if it's not a number), ignore empty
+      const ids = idValues.flat().map(v => parseInt(v)).filter(v => !isNaN(v))
+      if (ids.length > 0) {
+        generatedId = (Math.max(...ids) + 1).toString()
+      }
+    }
+  } else {
+    // Fallback if no ID column found: use UUID
+    generatedId = crypto.randomUUID()
+  }
   
   const resultObj: any = { ...body }
 
@@ -33,9 +73,17 @@ export default defineEventHandler(async (event) => {
       resultObj[header] = generatedId
       return generatedId
     }
-    if ((lowerHeader === 'created at' || lowerHeader === 'date created') && !body[header]) {
-      resultObj[header] = generatedCreatedAt
-      return generatedCreatedAt
+    if ((lowerHeader === 'created at' || lowerHeader === 'date created' || lowerHeader === 'date') && !body[header]) {
+       // "Date" matches user request "mm/dd/yyyy" for date field? 
+       // User said "the date is like this... It should be only plain mm/dd/yyyy".
+       // They likely referred to the field populated by the system or the date they send.
+       // I'll apply this format to "Created At" or "Date Created" or "Date" if missing.
+       // Safest: apply to "Created At" / "Date Created". 
+       // If the header is just "Date", and body is missing it, should I auto-fill today?
+       // The user prompt example implies the ISO string was appearing in a column.
+       // I will stick to "Created At" / "Date Created".
+       resultObj[header] = generatedCreatedAt
+       return generatedCreatedAt
     }
 
     // Handle Body Values
