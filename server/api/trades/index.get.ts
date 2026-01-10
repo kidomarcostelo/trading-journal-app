@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
 
   const response = await client.spreadsheets.values.get({
     spreadsheetId,
-    range: 'Master!A:N',
+    range: 'Master!A:Z',
   })
 
   const rows = response.data.values
@@ -16,25 +16,18 @@ export default defineEventHandler(async (event) => {
     return []
   }
 
-  // Skip header
-  const data = rows.slice(1)
+  const headers = rows[0]
+  const dataRows = rows.slice(1)
 
-  return data.map((row: string[]) => {
-    return {
-      id: row[0],
-      createdAt: row[1],
-      date: row[2],
-      pair: row[3],
-      type: row[4] as 'Long' | 'Short',
-      entryPrice: parseFloat(row[5]),
-      exitPrice: row[6] ? parseFloat(row[6]) : undefined,
-      size: parseFloat(row[7]),
-      pnl: row[8] ? parseFloat(row[8]) : undefined,
-      pnlPercentage: row[9] ? parseFloat(row[9]) : undefined,
-      imageBefore: row[10] || undefined,
-      imageAfter: row[11] || undefined,
-      notes: row[12] || undefined,
-      tags: row[13] ? row[13].split(',').filter(Boolean) : []
-    }
+  return dataRows.map((row: string[]) => {
+    const trade: any = {}
+    headers.forEach((header: string, index: number) => {
+      // Map header to value. 
+      // We do NOT normalize to camelCase as per user request: "all the colum header as the attribute name"
+      if (header) {
+          trade[header] = row[index]
+      }
+    })
+    return trade
   }) as Trade[]
 })

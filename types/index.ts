@@ -1,23 +1,20 @@
-export interface ChipConfig {
-  id: string
+export interface ChipOption {
   label: string
-  color: string
-  category: 'Strategy' | 'Psychology' | 'Mistake' | 'Setup' | string
+  color?: string // Optional, as we might just have string values now
 }
 
+export interface ChipCategory {
+  id: string // The header name (e.g., "Strategies")
+  values: string[] // The column values
+}
+
+// Deprecating the old ChipConfig for now, or aliasing it
+export type ChipConfig = ChipCategory
+
 export interface TradeEntry {
-  date: string
-  pair: string
-  type: 'Long' | 'Short'
-  entryPrice: number
-  exitPrice?: number
-  size: number
-  pnl?: number
-  pnlPercentage?: number
-  imageBefore?: string
-  imageAfter?: string
-  notes?: string
-  tags: string[] // IDs of ChipConfigs
+  [key: string]: any // Allow dynamic keys based on headers
+  id?: string
+  createdAt?: string
 }
 
 export interface Trade extends TradeEntry {
@@ -27,5 +24,5 @@ export interface Trade extends TradeEntry {
 
 export interface AppConfig {
   spreadsheetId: string
-  chips: ChipConfig[]
+  chips: ChipCategory[]
 }
