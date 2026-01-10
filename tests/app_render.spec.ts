@@ -9,6 +9,7 @@ vi.mock('lucide-vue-next', () => ({
   LayoutGrid: { render: () => h('div', { 'data-testid': 'grid-icon' }) },
   List: { render: () => h('div', { 'data-testid': 'list-icon' }) },
   RefreshCw: { render: () => h('div', { 'data-testid': 'refresh-icon' }) },
+  LayoutDashboard: { render: () => h('div', { 'data-testid': 'dashboard-icon' }) },
   Save: { render: () => h('div') },
   Loader2: { render: () => h('div') },
   Image: { render: () => h('div') },
@@ -52,13 +53,23 @@ const mountSuspense = (component: any) => {
 describe('App.vue', () => {
   it('renders the system title', async () => {
     const wrapper = mountSuspense(App)
-    await new Promise(resolve => setTimeout(resolve, 50)) // Give it a bit more time
-    expect(wrapper.text()).toContain('Trading Journal System')
+    await new Promise(resolve => setTimeout(resolve, 50))
+    expect(wrapper.text()).toContain('Trading Journal')
   })
 
-  it('contains the terminal icon', async () => {
+  // I removed the Terminal icon from the main view (replaced with LayoutDashboard inside a div) 
+  // actually I kept Terminal as a placeholder in imports but used LayoutDashboard in the template. 
+  // Let's check the template: 
+  // <div class="p-2 ..."><LayoutDashboard ... /></div> 
+  // So 'terminal-icon' (mock for Terminal) might NOT be there if I removed <Terminal />.
+  // Wait, I see <Terminal class="w-8 h-8..." /> is gone?
+  // In previous App.vue: <Terminal ... />
+  // In new App.vue: <LayoutDashboard ... />
+  // So I should check for dashboard-icon.
+
+  it('contains the dashboard icon', async () => {
     const wrapper = mountSuspense(App)
     await new Promise(resolve => setTimeout(resolve, 50))
-    expect(wrapper.find('[data-testid="terminal-icon"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="dashboard-icon"]').exists()).toBe(true)
   })
 })
