@@ -4,12 +4,23 @@ interface Props {
   options: string[]
   modelValue: string[]
   category?: string
+  single?: boolean
 }
 
 const props = defineProps<Props>()
 const emit = defineEmits(['update:modelValue'])
 
 const toggleOption = (option: string) => {
+  if (props.single) {
+    // Single selection mode: always replace with the new option, or deselect if clicking same
+    if (props.modelValue.includes(option)) {
+      emit('update:modelValue', [])
+    } else {
+      emit('update:modelValue', [option])
+    }
+    return
+  }
+
   const newValue = [...props.modelValue]
   const index = newValue.indexOf(option)
   if (index === -1) {
@@ -21,8 +32,7 @@ const toggleOption = (option: string) => {
 }
 
 const isSelected = (option: string) => props.modelValue.includes(option)
-
-// Category-based colors
+// ... (rest of style logic remains same)
 const getChipClass = (option: string) => {
   const selected = isSelected(option)
   const cat = props.category?.toLowerCase() || ''

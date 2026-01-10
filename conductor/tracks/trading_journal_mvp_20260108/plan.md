@@ -14,9 +14,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Backend Integration (Google Sheets)' (Protocol in workflow.md)
 
 ## Phase 3: Frontend - Core Components
-- [ ] Task: Implement the dynamic `<ChipSelect />` component with Tailwind styling.
-- [ ] Task: Create the Trade Entry Form with validation and `POST /api/trades` integration.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Frontend - Core Components' (Protocol in workflow.md)
+- [x] Task: Implement the dynamic `<ChipSelect />` component with Tailwind styling. (dfc4f0f)
+- [x] Task: Create the Trade Entry Form with validation and `POST /api/trades` integration. (f0b4391)
+- [~] Task: Conductor - User Manual Verification 'Phase 3: Frontend - Core Components' (Protocol in workflow.md)
 
 ## Phase 4: Dashboard & Gallery
 - [ ] Task: Implement the Trade List view (dense table).
