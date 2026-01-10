@@ -7,7 +7,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Project Scaffolding & Configuration' (Protocol in workflow.md)
 
 ## Phase 2: Backend Integration (Google Sheets)
-- [ ] Task: Implement `server/utils/googleSheets.ts` for Google Sheets authentication and data access.
+- [x] Task: Implement `server/utils/googleSheets.ts` for Google Sheets authentication and data access. (fd77cb4)
 - [ ] Task: Create `GET /api/config` endpoint to fetch and parse the `Chips` sheet.
 - [ ] Task: Create `GET /api/trades` endpoint to fetch trade logs from the `Master` sheet.
 - [ ] Task: Create `POST /api/trades` endpoint to append new trades to the `Master` sheet.
