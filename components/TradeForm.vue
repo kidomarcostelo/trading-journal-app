@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import type { ChipCategory } from '~/types'
 import { Save, Loader2, Image as ImageIcon } from 'lucide-vue-next'
 
@@ -27,6 +27,16 @@ if (categories.value) {
   })
 }
 
+// Special handling for "Pair" category if it exists
+const pairCategory = computed(() => {
+  return categories.value?.find(c => ['pair', 'pairs'].includes(c.id.toLowerCase()))
+})
+
+// Filter out Pair from the bottom list
+const otherCategories = computed(() => {
+  return categories.value?.filter(c => !['pair', 'pairs'].includes(c.id.toLowerCase())) || []
+})
+
 const isSubmitting = ref(false)
 const message = ref({ text: '', type: '' })
 
@@ -38,6 +48,9 @@ const submitTrade = async () => {
     // Merge tags into the main form data
     const payload = { ...form }
     Object.keys(tags).forEach(catId => {
+      // Don't include the special Pair category from the tags object if it was there
+      if (pairCategory.value && catId === pairCategory.value.id) return
+      
       if (tags[catId].length > 0) {
         payload[catId] = tags[catId]
       }
@@ -73,7 +86,15 @@ const submitTrade = async () => {
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Basic Info -->
         <div class="space-y-4">
-          <div>
+          <!-- Pair Input: Dynamic Combobox or Fallback Text -->
+          <div v-if="pairCategory">
+             <Combobox
+               :label="pairCategory.id"
+               :options="pairCategory.values"
+               v-model="form.Pair"
+             />
+          </div>
+          <div v-else>
             <label class="block text-xs uppercase text-terminal-text/50 mb-1 font-mono">Pair</label>
             <input
               v-model="form.Pair"
@@ -153,14 +174,15 @@ const submitTrade = async () => {
         </div>
       </div>
 
-      <!-- Dynamic Chips -->
-      <div v-if="!loadingConfig && categories" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-4 border-t border-terminal-gray">
-        <ChipSelect
-          v-for="cat in categories"
+      <!-- Dynamic Comboboxes for Categories -->
+      <div v-if="!loadingConfig && otherCategories" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-4 border-t border-terminal-gray">
+        <Combobox
+          v-for="cat in otherCategories"
           :key="cat.id"
           :label="cat.id"
           :options="cat.values"
           v-model="tags[cat.id]"
+          :multiple="true"
         />
       </div>
 
