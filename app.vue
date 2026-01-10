@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { LayoutDashboard, PlusCircle, LayoutGrid, List as ListIcon, RefreshCw } from 'lucide-vue-next'
+import { ref, watch, onMounted } from 'vue'
+import { LayoutDashboard, PlusCircle, LayoutGrid, List as ListIcon, RefreshCw, Moon, Sun } from 'lucide-vue-next'
 import TradeForm from './components/TradeForm.vue'
 import TradeList from './components/TradeList.vue'
 import TradeGallery from './components/TradeGallery.vue'
 
 const showForm = ref(false)
 const viewMode = ref<'gallery' | 'list'>('gallery')
+const isDark = ref(true)
 
 // Fetch Trades
 const { data: trades, refresh, pending } = await useFetch<any[]>('/api/trades')
@@ -15,18 +16,39 @@ const onTradeSuccess = () => {
   showForm.value = false
   refresh()
 }
+
+// Theme Logic
+const toggleTheme = () => {
+  isDark.value = !isDark.value
+  updateTheme()
+}
+
+const updateTheme = () => {
+  if (import.meta.client) {
+    const html = document.documentElement
+    if (isDark.value) {
+      html.classList.add('dark')
+    } else {
+      html.classList.remove('dark')
+    }
+  }
+}
+
+onMounted(() => {
+  updateTheme()
+})
 </script>
 
 <template>
-  <div class="min-h-screen bg-terminal-black text-terminal-text font-sans p-6 md:p-10">
+  <div class="min-h-screen bg-terminal-black text-terminal-text font-sans p-6 md:p-10 transition-colors duration-300">
     <!-- Header -->
     <header class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
       <div class="flex items-center gap-3">
-        <div class="p-2 bg-terminal-dark border border-terminal-gray rounded-lg shadow-sm">
+        <div class="p-2 bg-terminal-dark border border-terminal-gray rounded-lg shadow-sm transition-colors">
           <LayoutDashboard class="w-6 h-6 text-terminal-accent" />
         </div>
         <div>
-          <h1 class="text-xl font-semibold text-terminal-highlight tracking-tight">
+          <h1 class="text-xl font-semibold text-terminal-highlight tracking-tight transition-colors">
             Trading Journal
           </h1>
           <p class="text-xs text-terminal-text/60">Overview</p>
@@ -34,8 +56,18 @@ const onTradeSuccess = () => {
       </div>
 
       <div class="flex items-center gap-3">
+        <!-- Theme Toggle -->
+        <button
+          @click="toggleTheme"
+          class="p-2.5 text-terminal-text/60 hover:text-terminal-highlight hover:bg-terminal-dark border border-transparent hover:border-terminal-gray rounded-lg transition-all"
+          :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+        >
+          <Moon v-if="isDark" class="w-4 h-4" />
+          <Sun v-else class="w-4 h-4" />
+        </button>
+
         <!-- View Toggle -->
-        <div v-if="!showForm" class="flex bg-terminal-dark border border-terminal-gray p-1 rounded-lg shadow-sm">
+        <div v-if="!showForm" class="flex bg-terminal-dark border border-terminal-gray p-1 rounded-lg shadow-sm transition-colors">
           <button 
             @click="viewMode = 'gallery'"
             :class="['p-2 rounded-md transition-all', viewMode === 'gallery' ? 'bg-terminal-gray text-terminal-highlight shadow-sm' : 'text-terminal-text/60 hover:text-terminal-text']"
@@ -100,7 +132,7 @@ const onTradeSuccess = () => {
     </main>
     
     <!-- Footer -->
-    <footer class="max-w-7xl mx-auto mt-24 pt-8 border-t border-terminal-gray/50 text-xs text-terminal-text/30 flex justify-between">
+    <footer class="max-w-7xl mx-auto mt-24 pt-8 border-t border-terminal-gray/50 text-xs text-terminal-text/30 flex justify-between transition-colors">
       <span>&copy; 2026 Trading Journal</span>
       <span>Connected to Google Sheets</span>
     </footer>
