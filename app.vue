@@ -1,31 +1,43 @@
 <script setup lang="ts">
-import { Terminal } from 'lucide-vue-next'
+import { ref } from 'vue'
+import { Terminal, PlusCircle } from 'lucide-vue-next'
+const showForm = ref(false)
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col items-center justify-center p-4">
-    <div class="border border-terminal-accent p-8 rounded shadow-lg shadow-terminal-accent/20 max-w-2xl w-full">
-      <div class="flex items-center gap-2 mb-6 border-b border-terminal-accent/30 pb-4">
-        <Terminal class="w-6 h-6 text-terminal-accent" />
-        <h1 class="text-2xl font-bold text-terminal-accent tracking-tighter uppercase">
-          Trading Journal System <span class="animate-pulse">_</span>
-        </h1>
-      </div>
-      
-      <p class="mb-4 leading-relaxed">
-        System initialized. Database connection (Google Sheets) pending...
-      </p>
-      
-      <div class="bg-terminal-dark p-4 rounded border border-terminal-gray font-mono text-sm overflow-x-auto">
-        <div class="text-terminal-accent">$ nuxi init .</div>
-        <div class="text-terminal-text">✔ Nuxt 3 project initialized</div>
-        <div class="text-terminal-accent">$ npm install tailwindcss</div>
-        <div class="text-terminal-text">✔ Tailwind CSS configured</div>
-        <div class="text-terminal-accent">$ ls -F</div>
-        <div class="text-terminal-text opacity-70">
-          assets/  conductor/  node_modules/  package.json  public/  server/  tsconfig.json ...
+  <div class="min-h-screen bg-terminal-black text-terminal-text font-mono p-4 md:p-8">
+    <header class="max-w-7xl mx-auto flex items-center justify-between mb-8 border-b border-terminal-gray pb-6">
+      <div class="flex items-center gap-3">
+        <Terminal class="w-8 h-8 text-terminal-accent" />
+        <div>
+          <h1 class="text-2xl font-bold text-terminal-accent uppercase tracking-tighter">
+            Trading Journal System <span class="animate-pulse">_</span>
+          </h1>
+          <p class="text-[10px] text-terminal-text/40 uppercase tracking-widest">Version 1.0.0 // Connection: Active</p>
         </div>
       </div>
-    </div>
+
+      <button 
+        @click="showForm = !showForm"
+        class="flex items-center gap-2 bg-terminal-accent/10 border border-terminal-accent text-terminal-accent px-4 py-2 hover:bg-terminal-accent hover:text-terminal-black transition-all uppercase text-sm font-bold tracking-widest"
+      >
+        <PlusCircle class="w-4 h-4" />
+        {{ showForm ? 'Close Entry' : 'New Trade' }}
+      </button>
+    </header>
+
+    <main class="max-w-7xl mx-auto">
+      <div v-if="showForm" class="mb-12">
+        <TradeForm @success="showForm = false" />
+      </div>
+
+      <div v-else class="text-center py-20 border border-dashed border-terminal-gray rounded">
+        <p class="text-terminal-text/50 italic mb-4">No active dashboard views. Select a function to begin.</p>
+        <button @click="showForm = true" class="text-terminal-accent hover:underline uppercase text-xs tracking-widest font-bold">
+          [ Initiate New Trade Entry ]
+        </button>
+      </div>
+    </main>
   </div>
 </template>
+
