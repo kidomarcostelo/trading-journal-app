@@ -6,5 +6,16 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   typescript: {
     strict: true
+  },
+  // Add this block
+  devServer: {
+    host: '0.0.0.0',
+    port: 3000
+  },
+
+  nitro: {
+    devProxy: {
+        host: '0.0.0.0'
+    }
   }
 })
