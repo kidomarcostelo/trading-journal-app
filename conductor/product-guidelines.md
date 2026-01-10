@@ -1,20 +1,19 @@
-## Visual Aesthetic: Financial Terminal
-*   **Theme:** Dark mode is the primary and only theme.
+## Visual Aesthetic: Modern Minimalist Dashboard
+*   **Theme:** Refined Dark Mode (Slate/Zinc).
 *   **Color Palette:**
-    *   **Background:** Deep slates and zincs (`bg-slate-900`, `bg-zinc-950`).
-    *   **Text:** High-readability grays and whites (`text-slate-300`, `text-white`).
+    *   **Background:** Soft slate backgrounds (`bg-slate-950`).
+    *   **Text:** Muted grays for secondary info, clear white for primary (`text-slate-400`, `text-slate-100`).
     *   **Accents:** 
-        *   **Profit (Win):** Vibrant green (`text-emerald-400`, `bg-emerald-900/30`).
-        *   **Loss:** Sharp red (`text-rose-400`, `bg-rose-900/30`).
-*   **Atmosphere:** Serious, data-driven, and focused. Minimal distractions, using borders and subtle background shifts instead of heavy shadows or bright colors.
+        *   **Profit (Win):** Soft forest green (`text-emerald-500`, `bg-emerald-500/10`).
+        *   **Loss:** Subdued crimson (`text-rose-500`, `bg-rose-500/10`).
+*   **Atmosphere:** Clean, professional, and calm. Prioritizes white space, subtle depth (shadows), and rounded corners over sharp borders and high-contrast glowing elements.
 
-## Component Design: Vibrant & Categorized "Chips"
+## Component Design: Clean & Subtle Tags
 *   **Logic:** The "Chips" system uses a color-coding strategy to differentiate categories (e.g., Psychology, Strategy, Performance).
 *   **Style:**
-    *   Pills are utility-first (Tailwind).
-    *   Each category is assigned a distinct color scheme (e.g., Strategy = Indigo, Psychology = Amber, etc.).
-    *   The user has the flexibility to customize these color mappings within the code or configuration.
-*   **Interaction:** Active chips should have a clear "selected" state (e.g., brighter border or subtle glow).
+    *   Subtle background fills and rounded corners (`rounded-lg`).
+    *   Low-saturation color mappings to avoid visual clutter.
+*   **Interaction:** Active chips should have a clear "selected" state (e.g., brighter border).
 
 ## Image Gallery: Side-by-Side Comparison
 *   **Layout:** A split-screen or dual-column layout is prioritized for trade reviews.
@@ -24,6 +23,6 @@
 *   **Navigation:** If multiple images exist within a state (e.g., 3 "Before" images), they should be easily navigable via a sub-carousel or thumbnails within their respective column.
 
 ## User Interface Principles
-*   **Density:** Aim for a relatively dense UI that maximizes information visibility without feeling cluttered.
-*   **Typography:** Use clean, monospaced or highly legible sans-serif fonts (e.g., JetBrains Mono, Inter) to reinforce the technical/financial feel.
+*   **Density:** Balanced spacing to provide "room to breathe."
+*   **Typography:** Primary focus on clean sans-serif fonts (e.g., Inter, Geist) for a modern SaaS feel.
 *   **Immediate Feedback:** Ensure clear visual cues for all user actions, especially when saving trades or selecting tags.
