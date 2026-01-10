@@ -13,13 +13,13 @@
 - [x] Task: Create `POST /api/trades` endpoint to append new trades to the `Master` sheet. (7d75af1)
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Backend Integration (Google Sheets)' (Protocol in workflow.md)
 
-## Phase 3: Frontend - Core Components
+## Phase 3: Frontend - Core Components [checkpoint: 4b8c31e]
 - [x] Task: Implement the dynamic `<ChipSelect />` component with Tailwind styling. (dfc4f0f)
 - [x] Task: Create the Trade Entry Form with validation and `POST /api/trades` integration. (f0b4391)
-- [~] Task: Conductor - User Manual Verification 'Phase 3: Frontend - Core Components' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Frontend - Core Components' (Protocol in workflow.md)
 
 ## Phase 4: Dashboard & Gallery
-- [ ] Task: Implement the Trade List view (dense table).
+- [~] Task: Implement the Trade List view (dense table).
 - [ ] Task: Implement the Trade Gallery view (side-by-side "Before/After" images).
 - [ ] Task: Create the main Dashboard page with a toggle between Gallery and List views.
 - [ ] Task: Apply the "Financial Terminal" dark mode aesthetic across the application.
