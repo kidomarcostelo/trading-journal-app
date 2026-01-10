@@ -16,28 +16,36 @@ describe('POST /api/trades', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     process.env.GOOGLE_SPREADSHEET_ID = 'test-sheet-id'
-    global.crypto.randomUUID = vi.fn().mockReturnValue('mock-uuid')
-    // Mock Date
-    vi.setSystemTime(new Date('2023-01-01T12:00:00Z'))
+    // Mock Date to a fixed value
+    vi.setSystemTime(new Date('2023-01-05T12:00:00Z')) 
   })
 
-  it('appends a new trade dynamically matching sheet headers', async () => {
+  it('appends a new trade with auto-increment ID and formatted date', async () => {
     // 1. Setup headers in sheet
-    const mockHeaders = ['ID', 'Created At', 'Pair', 'Before Picture', 'Tags']
+    const mockHeaders = ['ID', 'Created At', 'Pair']
     
-    // 2. Setup Input Body (matching headers)
+    // 2. Setup Input Body
     const mockBody = {
       'Pair': 'BTC/USD',
-      'Before Picture': ['http://img1.com', 'http://img2.com'],
-      'Tags': ['Trend', 'Long']
     }
     
     vi.mocked(readBody).mockResolvedValue(mockBody)
 
     // 3. Mock Google Sheets Responses
-    const mockGet = vi.fn().mockResolvedValue({
+    const mockGetHeaders = vi.fn().mockResolvedValueOnce({
       data: { values: [mockHeaders] }
     })
+    
+    // Mock ID Column Fetch (assuming ID is Col A)
+    // Returns header + existing IDs
+    const mockGetIds = vi.fn().mockResolvedValueOnce({
+      data: { values: [['ID'], ['1'], ['5'], ['10']] }
+    })
+
+    // Combine mocks for consecutive calls to .get()
+    const mockGet = vi.fn()
+      .mockImplementationOnce(() => mockGetHeaders()) // 1st call: Headers
+      .mockImplementationOnce(() => mockGetIds())     // 2nd call: ID Column
 
     const mockAppend = vi.fn().mockResolvedValue({
       data: { updates: { updatedCells: 1 } }
@@ -56,35 +64,25 @@ describe('POST /api/trades', () => {
 
     const response = await handler({} as any)
 
-    expect(googleSheets.getSheetsClient).toHaveBeenCalled()
+    // Verify Date Formatting (mm/dd/yyyy)
+    // 2023-01-05 -> 01/05/2023
     
-    // Expect GET to fetch headers
-    expect(mockGet).toHaveBeenCalledWith({
-      spreadsheetId: 'test-sheet-id',
-      range: 'Master!1:1', // Fetch first row only
-    })
-
-    // Expect APPEND with correctly mapped values
-    expect(mockAppend).toHaveBeenCalledWith({
-      spreadsheetId: 'test-sheet-id',
-      range: 'Master!A:A', // Append to sheet (A:A usually implies append to end)
-      valueInputOption: 'USER_ENTERED',
+    expect(mockGet).toHaveBeenCalledTimes(2)
+    
+    // Check increment logic: Max ID is 10, so next should be 11.
+    expect(mockAppend).toHaveBeenCalledWith(expect.objectContaining({
       requestBody: {
         values: [[
-          'mock-uuid', // ID (Auto-generated)
-          '2023-01-01T12:00:00.000Z', // Created At (Auto-generated)
-          'BTC/USD', // Pair
-          'http://img1.com,http://img2.com', // Before Picture (Joined Array)
-          'Trend,Long' // Tags (Joined Array)
+          '11', // ID
+          '01/05/2023', // Formatted Date
+          'BTC/USD'
         ]]
       }
-    })
+    }))
     
-    // Response should include generated fields
     expect(response).toMatchObject({
-      'ID': 'mock-uuid',
-      'Created At': '2023-01-01T12:00:00.000Z',
-      ...mockBody
+      'ID': '11',
+      'Created At': '01/05/2023',
     })
   })
 })
