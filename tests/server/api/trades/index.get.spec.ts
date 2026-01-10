@@ -39,6 +39,7 @@ describe('GET /api/trades', () => {
     expect(mockGet).toHaveBeenCalledWith({
       spreadsheetId: 'test-sheet-id',
       range: 'Master!A:Z',
+      valueRenderOption: 'FORMULA' // Ensure we ask for formulas
     })
 
     // Verify dynamic key mapping
@@ -48,6 +49,34 @@ describe('GET /api/trades', () => {
         'Pair': 'BTC/USD',
         'Entry Price': '50000',
         'Tags': 'Trend'
+      }
+    ])
+  })
+
+  it('parses image formulas and comma-separated links correctly', async () => {
+    const mockValues = [
+      ['Date', 'Before Picture', 'After Picture'],
+      ['2023-01-01', '=IMAGE("https://img1.com")', 'https://img2.com, https://img3.com']
+    ]
+
+    const mockGet = vi.fn().mockResolvedValue({
+      data: { values: mockValues }
+    })
+
+    const mockClient = {
+      spreadsheets: {
+        values: { get: mockGet }
+      }
+    }
+    vi.mocked(googleSheets.getSheetsClient).mockResolvedValue(mockClient as any)
+
+    const response = await handler({} as any)
+
+    expect(response).toEqual([
+      {
+        'Date': '2023-01-01',
+        'Before Picture': ['https://img1.com'],
+        'After Picture': ['https://img2.com', 'https://img3.com']
       }
     ])
   })
