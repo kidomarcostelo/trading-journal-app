@@ -11,7 +11,7 @@
 - [x] Task: Create `GET /api/config` endpoint to fetch and parse the `Chips` sheet. (b7384ad)
 - [x] Task: Create `GET /api/trades` endpoint to fetch trade logs from the `Master` sheet. (45e62f8)
 - [x] Task: Create `POST /api/trades` endpoint to append new trades to the `Master` sheet. (7d75af1)
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Backend Integration (Google Sheets)' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Phase 2: Backend Integration (Google Sheets)' (Protocol in workflow.md)
 
 ## Phase 3: Frontend - Core Components
 - [ ] Task: Implement the dynamic `<ChipSelect />` component with Tailwind styling.
