@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { 
   LayoutDashboard, 
   PlusCircle, 
@@ -8,7 +8,9 @@ import {
   List as ListIcon, 
   RefreshCw, 
   Moon, 
-  Sun 
+  Sun,
+  ChevronsLeft,
+  ChevronsRight
 } from 'lucide-vue-next'
 import TradeForm from './components/TradeForm.vue'
 import TradeList from './components/TradeList.vue'
@@ -21,7 +23,11 @@ const activeTab = ref('daily-trades')
 // Pane Resizing Logic
 const sidebarWidth = ref(256) // default w-64
 const listWidth = ref(320)    // default w-80
+const lastListWidth = ref(320)
 const isResizing = ref<'sidebar' | 'list' | null>(null)
+
+const isSidebarCollapsed = computed(() => sidebarWidth.value < 100)
+const isListCollapsed = computed(() => listWidth.value <= 100)
 
 const startResize = (pane: 'sidebar' | 'list') => {
   isResizing.value = pane
@@ -33,19 +39,19 @@ const doResize = (e: MouseEvent) => {
   if (!isResizing.value) return
 
   if (isResizing.value === 'sidebar') {
-    // Snap to 0 if less than 50px, otherwise min 64px, max 400px
+    // Snap to 64px (icon mode) if less than 150px, otherwise min 150px, max 400px
     let newWidth = Math.min(e.clientX, 400)
-    if (newWidth < 50) {
-      newWidth = 0
-    } else {
-      newWidth = Math.max(64, newWidth)
+    if (newWidth < 150) {
+      newWidth = 64
     }
     sidebarWidth.value = newWidth
   } else if (isResizing.value === 'list') {
-    // Min width 100px (to show just Pair/Date), Max width 600px
-    // Note: e.clientX is absolute, so subtract sidebarWidth and handle widths (approx)
+    // Min width 100px, Max width 600px
     const newWidth = Math.max(100, Math.min(e.clientX - sidebarWidth.value, 600))
     listWidth.value = newWidth
+    if (newWidth > 100) {
+        lastListWidth.value = newWidth
+    }
   }
 }
 
@@ -53,6 +59,15 @@ const stopResize = () => {
   isResizing.value = null
   document.body.style.cursor = ''
   document.body.style.userSelect = ''
+}
+
+const toggleListCollapse = () => {
+  if (isListCollapsed.value) {
+    listWidth.value = Math.max(320, lastListWidth.value)
+  } else {
+    lastListWidth.value = listWidth.value
+    listWidth.value = 100
+  }
 }
 
 // Fetch Trades
@@ -97,19 +112,14 @@ onUnmounted(() => {
     <!-- Pane 1: Navigation Sidebar -->
     <div 
       :style="{ width: `${sidebarWidth}px` }" 
-      class="flex-shrink-0 relative transition-[width] duration-0 ease-linear"
-      :class="{ 'overflow-hidden': sidebarWidth < 64 }"
+      class="flex-shrink-0 relative transition-[width] duration-0 ease-linear overflow-hidden"
     >
-      <div 
-        class="h-full transition-opacity duration-200"
-        :class="{ 'opacity-0 pointer-events-none': sidebarWidth < 64 }"
-      >
-        <PaneNav 
-          v-model:active-tab="activeTab" 
-          :is-dark="isDark" 
-          @toggle-theme="toggleTheme" 
-        />
-      </div>
+      <PaneNav 
+        v-model:active-tab="activeTab" 
+        :is-dark="isDark" 
+        :collapsed="isSidebarCollapsed"
+        @toggle-theme="toggleTheme" 
+      />
     </div>
 
     <!-- Handle 1 -->
@@ -122,12 +132,21 @@ onUnmounted(() => {
     <section 
       data-testid="pane-list" 
       :style="{ width: `${listWidth}px` }"
-      class="flex-shrink-0 border-r border-terminal-gray flex flex-col bg-terminal-black overflow-hidden relative"
+      class="flex-shrink-0 border-r border-terminal-gray flex flex-col bg-terminal-black overflow-hidden relative transition-[width] duration-100 ease-in-out"
     >
       <div class="p-4 border-b border-terminal-gray flex items-center justify-between">
-        <h2 class="font-medium text-terminal-highlight">Trades</h2>
-        <div class="flex items-center gap-2">
+        <h2 class="font-medium text-terminal-highlight truncate">Trades</h2>
+        <div class="flex items-center gap-1">
           <button 
+            @click="toggleListCollapse"
+            class="p-1.5 text-terminal-text/60 hover:text-terminal-highlight transition-all"
+            :title="isListCollapsed ? 'Expand List' : 'Collapse to Pair only'"
+          >
+            <ChevronsRight v-if="isListCollapsed" class="w-4 h-4" />
+            <ChevronsLeft v-else class="w-4 h-4" />
+          </button>
+          <button 
+            v-if="!isListCollapsed"
             @click="() => refresh()"
             class="p-1.5 text-terminal-text/60 hover:text-terminal-highlight transition-all"
             :disabled="pending"
@@ -135,6 +154,7 @@ onUnmounted(() => {
             <RefreshCw :class="['w-4 h-4', pending ? 'animate-spin' : '']" />
           </button>
           <button 
+             v-if="!isListCollapsed"
             @click="showForm = true"
             class="p-1.5 text-terminal-accent hover:bg-terminal-accent/10 rounded-md transition-all"
           >
@@ -143,7 +163,7 @@ onUnmounted(() => {
         </div>
       </div>
       
-      <div class="flex-1 overflow-y-auto">
+      <div class="flex-1 overflow-y-auto overflow-x-hidden">
         <div v-if="pending" class="p-8 text-center">
           <div class="inline-block w-6 h-6 border-2 border-terminal-gray border-t-terminal-accent rounded-full animate-spin"></div>
         </div>
