@@ -24,7 +24,9 @@ vi.mock('lucide-vue-next', () => ({
   PanelLeftOpen: { render: () => h('div') },
   Check: { render: () => h('div') },
   X: { render: () => h('div') },
-  ArrowRight: { render: () => h('div') }
+  ArrowRight: { render: () => h('div') },
+  Filter: { render: () => h('div') },
+  ArrowUpDown: { render: () => h('div') }
 }))
 
 // Mock useFetch

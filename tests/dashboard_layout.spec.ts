@@ -25,7 +25,9 @@ vi.mock('lucide-vue-next', () => ({
   ArrowRight: { render: () => h('div') },
   DailyReport: { render: () => h('div') },
   Settings: { render: () => h('div') },
-  FileText: { render: () => h('div') }
+  FileText: { render: () => h('div') },
+  Filter: { render: () => h('div') },
+  ArrowUpDown: { render: () => h('div') }
 }))
 
 // Mock useFetch
