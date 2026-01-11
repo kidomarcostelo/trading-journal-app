@@ -19,6 +19,11 @@ import PaneNav from './components/PaneNav.vue'
 const showForm = ref(false)
 const isDark = ref(true)
 const activeTab = ref('daily-trades')
+const selectedTradeId = ref<string | null>(null)
+
+const activeTrade = computed(() => {
+  return trades.value?.find(t => t.ID === selectedTradeId.value)
+})
 
 // Pane Resizing Logic
 const sidebarWidth = ref(256) // default w-64
@@ -180,7 +185,12 @@ onUnmounted(() => {
         <div v-if="pending" class="p-8 text-center">
           <div class="inline-block w-6 h-6 border-2 border-terminal-gray border-t-terminal-accent rounded-full animate-spin"></div>
         </div>
-        <TradeList v-else :trades="trades || []" />
+        <TradeList 
+          v-else 
+          :trades="trades || []" 
+          :active-id="selectedTradeId"
+          @select="selectedTradeId = $event"
+        />
       </div>
     </section>
 
@@ -203,7 +213,31 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <div class="p-8 max-w-4xl mx-auto">
+      <div v-if="activeTrade" class="p-8 max-w-4xl mx-auto">
+        <div class="mb-8">
+           <h1 class="text-2xl font-bold text-terminal-highlight mb-2">{{ activeTrade.Pair }}</h1>
+           <div class="flex items-center gap-3 text-sm text-terminal-text/60">
+             <span class="bg-terminal-gray/20 px-2 py-0.5 rounded">{{ activeTrade.Market }}</span>
+             <span>{{ activeTrade.Date }}</span>
+             <span :class="activeTrade.Status === 'Open' ? 'text-emerald-400' : ''">{{ activeTrade.Status }}</span>
+           </div>
+        </div>
+        
+        <!-- Placeholder for Phase 3 components -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+           <div class="bg-terminal-black/30 border border-terminal-gray p-6 rounded-lg">
+             <h3 class="font-medium text-terminal-highlight mb-4">Trade Data</h3>
+             <pre class="text-xs text-terminal-text/40 overflow-auto max-h-60">{{ activeTrade }}</pre>
+           </div>
+           
+           <div class="bg-terminal-black/30 border border-terminal-gray p-6 rounded-lg">
+             <h3 class="font-medium text-terminal-highlight mb-4">Strategy</h3>
+             <p class="text-sm text-terminal-text/60">Strategy chips will go here.</p>
+           </div>
+        </div>
+      </div>
+
+      <div v-else class="p-8 max-w-4xl mx-auto">
         <div class="text-center py-20 text-terminal-text/40">
           <LayoutDashboard class="w-12 h-12 mx-auto mb-4 opacity-20" />
           <h3 class="text-lg font-medium text-terminal-highlight/60">Select a trade to view details</h3>
