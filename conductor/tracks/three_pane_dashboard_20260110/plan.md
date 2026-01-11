@@ -8,8 +8,8 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Layout & Core Navigation' (Protocol in workflow.md) [commit: 2c142f6]
 
 ## Phase 2: Trade List (Pane 2)
-- [ ] Task: Write tests for Trade List filtering (Week/Month) and sorting (Status).
-- [ ] Task: Implement filtering and sorting logic in a new `useTrades` composable or store.
+- [x] Task: Write tests for Trade List filtering (Week/Month) and sorting (Status). [commit: bc0e1b9]
+- [~] Task: Implement filtering and sorting logic in a new `useTrades` composable or store.
 - [ ] Task: Create the `TradeSummaryCard` component for the list.
 - [ ] Task: Implement the scrollable `TradeList` component in Pane 2 with active state handling.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Trade List (Pane 2)' (Protocol in workflow.md)
