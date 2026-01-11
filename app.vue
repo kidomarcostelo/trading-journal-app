@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { 
   LayoutDashboard, 
   PlusCircle, 
@@ -17,6 +17,38 @@ import PaneNav from './components/PaneNav.vue'
 const showForm = ref(false)
 const isDark = ref(true)
 const activeTab = ref('daily-trades')
+
+// Pane Resizing Logic
+const sidebarWidth = ref(256) // default w-64
+const listWidth = ref(320)    // default w-80
+const isResizing = ref<'sidebar' | 'list' | null>(null)
+
+const startResize = (pane: 'sidebar' | 'list') => {
+  isResizing.value = pane
+  document.body.style.cursor = 'col-resize'
+  document.body.style.userSelect = 'none'
+}
+
+const doResize = (e: MouseEvent) => {
+  if (!isResizing.value) return
+
+  if (isResizing.value === 'sidebar') {
+    // Min width 64px, Max width 400px
+    const newWidth = Math.max(64, Math.min(e.clientX, 400))
+    sidebarWidth.value = newWidth
+  } else if (isResizing.value === 'list') {
+    // Calculate list width based on sidebar width
+    // Min width 200px, Max width 600px
+    const newWidth = Math.max(200, Math.min(e.clientX - sidebarWidth.value, 600))
+    listWidth.value = newWidth
+  }
+}
+
+const stopResize = () => {
+  isResizing.value = null
+  document.body.style.cursor = ''
+  document.body.style.userSelect = ''
+}
 
 // Fetch Trades
 const { data: trades, refresh, pending } = await useFetch<any[]>('/api/trades')
@@ -45,25 +77,43 @@ const updateTheme = () => {
 
 onMounted(() => {
   updateTheme()
+  window.addEventListener('mousemove', doResize)
+  window.addEventListener('mouseup', stopResize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('mousemove', doResize)
+  window.removeEventListener('mouseup', stopResize)
 })
 </script>
 
 <template>
   <div class="h-screen flex overflow-hidden bg-terminal-black text-terminal-text font-sans transition-colors duration-300">
     <!-- Pane 1: Navigation Sidebar -->
-    <PaneNav 
-      v-model:active-tab="activeTab" 
-      :is-dark="isDark" 
-      @toggle-theme="toggleTheme" 
-    />
+    <div :style="{ width: `${sidebarWidth}px` }" class="flex-shrink-0 relative">
+      <PaneNav 
+        v-model:active-tab="activeTab" 
+        :is-dark="isDark" 
+        @toggle-theme="toggleTheme" 
+      />
+      <!-- Resize Handle 1 -->
+      <div 
+        @mousedown.prevent="startResize('sidebar')"
+        class="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-terminal-accent/50 transition-colors z-10"
+      ></div>
+    </div>
 
     <!-- Pane 2: Trade List -->
-    <section data-testid="pane-list" class="w-80 border-r border-terminal-gray flex flex-col bg-terminal-black overflow-hidden">
+    <section 
+      data-testid="pane-list" 
+      :style="{ width: `${listWidth}px` }"
+      class="flex-shrink-0 border-r border-terminal-gray flex flex-col bg-terminal-black overflow-hidden relative"
+    >
       <div class="p-4 border-b border-terminal-gray flex items-center justify-between">
         <h2 class="font-medium text-terminal-highlight">Trades</h2>
         <div class="flex items-center gap-2">
           <button 
-            @click="refresh"
+            @click="() => refresh()"
             class="p-1.5 text-terminal-text/60 hover:text-terminal-highlight transition-all"
             :disabled="pending"
           >
@@ -84,6 +134,12 @@ onMounted(() => {
         </div>
         <TradeList v-else :trades="trades || []" />
       </div>
+
+      <!-- Resize Handle 2 -->
+      <div 
+        @mousedown.prevent="startResize('list')"
+        class="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-terminal-accent/50 transition-colors z-10"
+      ></div>
     </section>
 
     <!-- Pane 3: Main Detail View -->
