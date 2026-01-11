@@ -4,30 +4,37 @@ import TradeList from '../../components/TradeList.vue'
 
 describe('TradeList', () => {
   const mockTrades = [
-    { 'ID': '1', 'Pair': 'BTC/USD', 'PnL': '100', 'Tags': ['Trend'] },
-    { 'ID': '2', 'Pair': 'ETH/USD', 'PnL': '-50', 'Tags': ['FOMO'] }
+    { 'ID': '1', 'Pair': 'BTC/USD' },
+    { 'ID': '2', 'Pair': 'ETH/USD' }
   ]
 
-  it('renders a table with trade data', () => {
+  it('renders a list of trade cards', () => {
     const wrapper = mount(TradeList, {
-      props: { trades: mockTrades }
+      props: { trades: mockTrades },
+      global: {
+          stubs: { TradeSummaryCard: true }
+      }
     })
     
-    expect(wrapper.find('table').exists()).toBe(true)
-    expect(wrapper.text()).toContain('BTC/USD')
-    expect(wrapper.text()).toContain('ETH/USD')
+    expect(wrapper.findAllComponents({ name: 'TradeSummaryCard' }).length).toBe(2)
   })
 
-  it('identifies columns from trade keys', () => {
+  it('emits select event when a card is clicked', async () => {
     const wrapper = mount(TradeList, {
       props: { trades: mockTrades }
     })
     
-    const headers = wrapper.findAll('th')
-    const headerTexts = headers.map(h => h.text())
-    expect(headerTexts).toContain('Pair')
-    expect(headerTexts).toContain('Action')
-    expect(headerTexts).toContain('Status')
-    expect(headerTexts).not.toContain('PnL')
+    const cards = wrapper.findAll('.cursor-pointer')
+    await cards[0].trigger('click')
+    
+    expect(wrapper.emitted('select')?.[0]).toEqual(['1'])
+  })
+
+  it('shows empty message when no trades', () => {
+    const wrapper = mount(TradeList, {
+      props: { trades: [] }
+    })
+    
+    expect(wrapper.text()).toContain('No trades found')
   })
 })
