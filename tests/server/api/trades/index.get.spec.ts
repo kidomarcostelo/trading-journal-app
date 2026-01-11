@@ -48,7 +48,8 @@ describe('GET /api/trades', () => {
         'Date': '2023-01-01',
         'Pair': 'BTC/USD',
         'Entry Price': '50000',
-        'Tags': 'Trend'
+        'Tags': 'Trend',
+        'ID': 'row-0'
       }
     ])
   })
@@ -76,7 +77,8 @@ describe('GET /api/trades', () => {
       {
         'Date': '2023-01-01',
         'Before Picture': ['https://img1.com'],
-        'After Picture': ['https://img2.com', 'https://img3.com']
+        'After Picture': ['https://img2.com', 'https://img3.com'],
+        'ID': 'row-0'
       }
     ])
   })
