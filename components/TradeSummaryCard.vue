@@ -60,14 +60,13 @@ const displayDate = computed(() => {
 
 <template>
   <div 
-    class="p-3 border-b border-terminal-gray/50 hover:bg-terminal-gray/10 transition-colors cursor-pointer group relative overflow-hidden"
+    class="border-b border-terminal-gray/50 transition-colors cursor-pointer group relative overflow-hidden"
     :class="[
-      active ? 'bg-terminal-gray/20' : ''
+      active ? 'bg-terminal-gray/20 border-l-4 border-l-terminal-accent' : 'hover:bg-terminal-gray/10 border-l-4 border-l-transparent',
+      collapsed ? 'p-3' : 'p-3'
     ]"
     :title="collapsed ? trade.Pair : ''"
   >
-    <div v-if="active" class="absolute left-0 top-0 bottom-0 w-1 bg-terminal-accent"></div>
-    
     <div 
       class="grid gap-2 items-center text-[11px]"
       :class="collapsed ? 'grid-cols-1' : 'grid-cols-[1.2fr_0.8fr_1fr_0.8fr_1.2fr]'"
@@ -75,6 +74,7 @@ const displayDate = computed(() => {
       <!-- Col 1: Pair -->
       <div 
         class="font-bold text-terminal-highlight truncate"
+        :class="collapsed ? 'text-xs' : ''"
       >
         {{ trade.Pair || 'Untitled' }}
       </div>

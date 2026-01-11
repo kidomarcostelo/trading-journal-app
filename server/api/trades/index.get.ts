@@ -20,13 +20,19 @@ export default defineEventHandler(async (event) => {
   const headers = rows[0]
   const dataRows = rows.slice(1)
 
-  return dataRows.map((row: string[]) => {
+  return dataRows.map((row: string[], rowIndex: number) => {
     const trade: any = {}
     headers.forEach((header: string, index: number) => {
       if (header) {
           trade[header] = parseCell(header, row[index])
       }
     })
+    
+    // Ensure unique ID
+    if (!trade.ID && !trade.id) {
+        trade.ID = `row-${rowIndex}`
+    }
+    
     return trade
   }) as Trade[]
 })
