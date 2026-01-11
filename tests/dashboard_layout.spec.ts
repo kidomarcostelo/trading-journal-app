@@ -50,7 +50,6 @@ const mountSuspense = (component: any) => {
         TradeList: true,
         TradeGallery: true,
         Combobox: true,
-        PaneNav: true,
         PaneList: true,
         PaneDetail: true
       }
