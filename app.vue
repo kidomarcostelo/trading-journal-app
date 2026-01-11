@@ -35,13 +35,25 @@ const activeTrade = computed(() => {
   return trades.value?.find(t => (t.ID || t.id) === selectedTradeId.value)
 })
 
-const handleTradeUpdate = (updatedFields: any) => {
+const handleTradeUpdate = async (updatedFields: any) => {
   if (!activeTrade.value || !trades.value) return
   
   // Update local state immediately for responsiveness
   const index = trades.value.findIndex(t => (t.ID || t.id) === selectedTradeId.value)
   if (index !== -1) {
-    trades.value[index] = { ...trades.value[index], ...updatedFields }
+    const updatedTrade = { ...trades.value[index], ...updatedFields }
+    trades.value[index] = updatedTrade
+
+    // Persist to backend
+    try {
+      await $fetch('/api/trades', {
+        method: 'PUT',
+        body: updatedFields // Send only the fields that changed + the ID
+      })
+    } catch (err) {
+      console.error('Failed to auto-save trade:', err)
+      // Optional: Rollback or show error notification
+    }
   }
 }
 
