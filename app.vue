@@ -18,6 +18,7 @@ import {
 import TradeForm from './components/TradeForm.vue'
 import TradeList from './components/TradeList.vue'
 import TradeDataTable from './components/TradeDataTable.vue'
+import TradeStats from './components/TradeStats.vue'
 import PaneNav from './components/PaneNav.vue'
 
 const showForm = ref(false)
@@ -286,6 +287,11 @@ onUnmounted(() => {
              <span>{{ activeTrade.Date }}</span>
              <span :class="activeTrade.Status === 'Open' ? 'text-emerald-400' : ''">{{ activeTrade.Status }}</span>
            </div>
+        </div>
+
+        <!-- Global Stats -->
+        <div class="mb-8">
+          <TradeStats :trades="trades || []" />
         </div>
         
         <!-- Phase 3 components -->
