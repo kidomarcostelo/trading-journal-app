@@ -1,35 +1,66 @@
 import { computed, ref, type Ref } from 'vue'
 import type { Trade } from '../types'
 
-export type FilterPeriod = 'week' | 'month' | 'all'
+export type FilterPeriod = 'week' | 'month' | 'last-week' | 'last-month' | 'all'
 export type SortField = 'Status' | 'Date' | 'Pair'
+export type SortDir = 'asc' | 'desc'
 
 export const useTrades = (trades: Ref<Trade[]>) => {
   const filterPeriod = ref<FilterPeriod>('all')
   const sortBy = ref<SortField>('Date')
+  const sortDir = ref<SortDir>('desc')
 
   const filteredTrades = computed(() => {
     let result = [...trades.value]
 
+    // Helper to parse date from trade
+    const getTradeDate = (t: any): Date | null => {
+      // check multiple keys
+      const val = t.Date || t['Date Created'] || t['Created At'] || t.date
+      if (!val) return null
+
+      // Check for Excel Serial (number or string-number > 20000)
+      if (!isNaN(Number(val)) && Number(val) > 20000) {
+        // (Serial - 25569) * 86400 * 1000
+        return new Date((Number(val) - 25569) * 86400 * 1000)
+      }
+      
+      const d = new Date(val)
+      return isNaN(d.getTime()) ? null : d
+    }
+
     // Filtering
     if (filterPeriod.value !== 'all') {
-      const now = new Date('2026-01-11') // Mocked current date for logic consistency
+      const now = new Date() // Use real current date
       
+      // Calculate start of current week (Sunday)
+      const startOfThisWeek = new Date(now)
+      startOfThisWeek.setDate(now.getDate() - now.getDay())
+      startOfThisWeek.setHours(0, 0, 0, 0)
+
       result = result.filter(t => {
-        if (!t.Date) return false
-        const tDate = new Date(t.Date)
-        if (isNaN(tDate.getTime())) return false
+        const tDate = getTradeDate(t)
+        if (!tDate) return false
 
         if (filterPeriod.value === 'week') {
-          // Calculate start of week (Sunday)
-          const startOfWeek = new Date(now)
-          startOfWeek.setDate(now.getDate() - now.getDay())
-          startOfWeek.setHours(0, 0, 0, 0)
-          return tDate >= startOfWeek
+          return tDate >= startOfThisWeek
+        }
+
+        if (filterPeriod.value === 'last-week') {
+          const startOfLastWeek = new Date(startOfThisWeek)
+          startOfLastWeek.setDate(startOfLastWeek.getDate() - 7)
+          return tDate >= startOfLastWeek && tDate < startOfThisWeek
         }
 
         if (filterPeriod.value === 'month') {
           return tDate.getMonth() === now.getMonth() && tDate.getFullYear() === now.getFullYear()
+        }
+
+        if (filterPeriod.value === 'last-month') {
+          const lastMonthDate = new Date(now)
+          lastMonthDate.setDate(1) // Avoid edge cases with day overflow (e.g. March 31 -> Feb 28)
+          lastMonthDate.setMonth(now.getMonth() - 1)
+          return tDate.getMonth() === lastMonthDate.getMonth() && tDate.getFullYear() === lastMonthDate.getFullYear()
         }
 
         return true
@@ -38,24 +69,23 @@ export const useTrades = (trades: Ref<Trade[]>) => {
 
     // Sorting
     result.sort((a, b) => {
+      let diff = 0
+      
       if (sortBy.value === 'Status') {
         const order = { 'Open': 0, 'Closed': 1, 'Cancelled': 2, 'Missed': 3 }
         const aVal = order[a.Status as keyof typeof order] ?? 99
         const bVal = order[b.Status as keyof typeof order] ?? 99
-        return aVal - bVal
-      }
-      
-      if (sortBy.value === 'Date') {
-        const aDate = new Date(a.Date || 0).getTime()
-        const bDate = new Date(b.Date || 0).getTime()
-        return bDate - aDate // Descending
-      }
-
-      if (sortBy.value === 'Pair') {
-        return (a.Pair || '').localeCompare(b.Pair || '')
+        diff = aVal - bVal
+      } else if (sortBy.value === 'Date') {
+        const aDate = getTradeDate(a)?.getTime() || 0
+        const bDate = getTradeDate(b)?.getTime() || 0
+        diff = aDate - bDate 
+      } else if (sortBy.value === 'Pair') {
+        diff = (a.Pair || '').localeCompare(b.Pair || '')
       }
 
-      return 0
+      // Apply Direction
+      return sortDir.value === 'asc' ? diff : -diff
     })
 
     return result
@@ -64,6 +94,7 @@ export const useTrades = (trades: Ref<Trade[]>) => {
   return {
     filterPeriod,
     sortBy,
+    sortDir,
     filteredTrades
   }
 }

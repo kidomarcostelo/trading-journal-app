@@ -93,7 +93,7 @@ const getAfterImages = (trade: any) => {
       <div class="p-4 bg-terminal-dark flex flex-col gap-3">
         <div class="flex flex-wrap gap-1.5">
           <template v-for="(val, key) in trade">
-            <template v-if="Array.isArray(val) && !isImageColumn(key)">
+            <template v-if="Array.isArray(val) && !isImageColumn(String(key))">
                <span v-for="tag in val" :key="tag" class="px-2 py-0.5 bg-terminal-accent/10 text-terminal-accent text-[10px] rounded-md border border-terminal-accent/20 font-medium">
                  {{ tag }}
                </span>
