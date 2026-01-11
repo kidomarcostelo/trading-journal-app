@@ -4,7 +4,7 @@ import TradeList from '../../components/TradeList.vue'
 
 describe('TradeList Filtering and Sorting', () => {
   const mockTrades = [
-    { ID: '1', Pair: 'BTC/USD', Action: 'Long', Market: 'Crypto', Status: 'Open', Date: '01/10/2026' },
+    { ID: '1', Pair: 'BTC/USD', Action: 'Long', Market: 'Crypto', Status: 'Open', Date: '01/11/2026' },
     { ID: '2', Pair: 'ETH/USD', Action: 'Short', Market: 'Crypto', Status: 'Closed', Date: '01/05/2026' },
     { ID: '3', Pair: 'AAPL', Action: 'Long', Market: 'Stocks', Status: 'Cancelled', Date: '12/25/2025' }
   ]
