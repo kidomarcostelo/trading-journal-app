@@ -1,10 +1,24 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, toRef, watch, ref } from 'vue'
 import { Image as ImageIcon } from 'lucide-vue-next'
+import { useTrades, type FilterPeriod, type SortField } from '../composables/useTrades'
 
 const props = defineProps<{
   trades: any[]
+  filterPeriod?: FilterPeriod
+  sortBy?: SortField
 }>()
+
+const { filteredTrades, filterPeriod, sortBy } = useTrades(toRef(props, 'trades'))
+
+// Sync props to internal composable state
+watch(() => props.filterPeriod, (newVal) => {
+  if (newVal) filterPeriod.value = newVal
+}, { immediate: true })
+
+watch(() => props.sortBy, (newVal) => {
+  if (newVal) sortBy.value = newVal
+}, { immediate: true })
 
 const COLUMNS = [
   { key: 'Pair', label: 'Pair', class: 'w-24' },
@@ -62,7 +76,7 @@ const formatValue = (header: string, value: any) => {
       </thead>
       <tbody>
         <tr 
-          v-for="(trade, idx) in trades" 
+          v-for="(trade, idx) in filteredTrades" 
           :key="trade.ID || idx" 
           class="border-b border-terminal-gray/30 hover:bg-terminal-gray/20 transition-colors group cursor-pointer"
         >
@@ -85,7 +99,7 @@ const formatValue = (header: string, value: any) => {
       </tbody>
     </table>
     
-    <div v-if="trades.length === 0" class="py-16 text-center text-terminal-text/40 text-sm">
+    <div v-if="filteredTrades.length === 0" class="py-16 text-center text-terminal-text/40 text-sm">
       No data records found.
     </div>
   </div>
