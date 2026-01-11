@@ -74,7 +74,6 @@ const displayDate = computed(() => {
       <!-- Col 1: Pair -->
       <div 
         class="font-bold text-terminal-highlight truncate"
-        :class="collapsed ? 'text-xs' : ''"
       >
         {{ trade.Pair || 'Untitled' }}
       </div>
