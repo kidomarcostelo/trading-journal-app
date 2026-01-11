@@ -7,8 +7,8 @@ const props = defineProps<{
 }>()
 
 const COLUMNS = [
-  { key: 'Date', label: 'Date', class: 'w-24' },
   { key: 'Pair', label: 'Pair', class: 'w-24' },
+  { key: 'Date', label: 'Date', class: 'w-24' },
   { key: 'Action', label: 'Action', class: 'w-20' },
   { key: 'Market', label: 'Market', class: 'w-20' },
   { key: 'Status', label: 'Status', class: 'w-24' },
