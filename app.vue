@@ -33,13 +33,18 @@ const doResize = (e: MouseEvent) => {
   if (!isResizing.value) return
 
   if (isResizing.value === 'sidebar') {
-    // Min width 64px, Max width 400px
-    const newWidth = Math.max(64, Math.min(e.clientX, 400))
+    // Snap to 0 if less than 50px, otherwise min 64px, max 400px
+    let newWidth = Math.min(e.clientX, 400)
+    if (newWidth < 50) {
+      newWidth = 0
+    } else {
+      newWidth = Math.max(64, newWidth)
+    }
     sidebarWidth.value = newWidth
   } else if (isResizing.value === 'list') {
-    // Calculate list width based on sidebar width
-    // Min width 200px, Max width 600px
-    const newWidth = Math.max(200, Math.min(e.clientX - sidebarWidth.value, 600))
+    // Min width 100px (to show just Pair/Date), Max width 600px
+    // Note: e.clientX is absolute, so subtract sidebarWidth and handle widths (approx)
+    const newWidth = Math.max(100, Math.min(e.clientX - sidebarWidth.value, 600))
     listWidth.value = newWidth
   }
 }
@@ -90,18 +95,28 @@ onUnmounted(() => {
 <template>
   <div class="h-screen flex overflow-hidden bg-terminal-black text-terminal-text font-sans transition-colors duration-300">
     <!-- Pane 1: Navigation Sidebar -->
-    <div :style="{ width: `${sidebarWidth}px` }" class="flex-shrink-0 relative">
-      <PaneNav 
-        v-model:active-tab="activeTab" 
-        :is-dark="isDark" 
-        @toggle-theme="toggleTheme" 
-      />
-      <!-- Resize Handle 1 -->
+    <div 
+      :style="{ width: `${sidebarWidth}px` }" 
+      class="flex-shrink-0 relative transition-[width] duration-0 ease-linear"
+      :class="{ 'overflow-hidden': sidebarWidth < 64 }"
+    >
       <div 
-        @mousedown.prevent="startResize('sidebar')"
-        class="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-terminal-accent/50 transition-colors z-10"
-      ></div>
+        class="h-full transition-opacity duration-200"
+        :class="{ 'opacity-0 pointer-events-none': sidebarWidth < 64 }"
+      >
+        <PaneNav 
+          v-model:active-tab="activeTab" 
+          :is-dark="isDark" 
+          @toggle-theme="toggleTheme" 
+        />
+      </div>
     </div>
+
+    <!-- Handle 1 -->
+    <div 
+      @mousedown.prevent="startResize('sidebar')"
+      class="w-1 h-full cursor-col-resize hover:bg-terminal-accent/50 transition-colors z-20 flex-shrink-0 bg-terminal-gray/10"
+    ></div>
 
     <!-- Pane 2: Trade List -->
     <section 
@@ -134,13 +149,13 @@ onUnmounted(() => {
         </div>
         <TradeList v-else :trades="trades || []" />
       </div>
-
-      <!-- Resize Handle 2 -->
-      <div 
-        @mousedown.prevent="startResize('list')"
-        class="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-terminal-accent/50 transition-colors z-10"
-      ></div>
     </section>
+
+    <!-- Handle 2 -->
+    <div 
+      @mousedown.prevent="startResize('list')"
+      class="w-1 h-full cursor-col-resize hover:bg-terminal-accent/50 transition-colors z-20 flex-shrink-0 bg-terminal-gray/10"
+    ></div>
 
     <!-- Pane 3: Main Detail View -->
     <main data-testid="pane-detail" class="flex-1 bg-terminal-dark overflow-y-auto relative">
