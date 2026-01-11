@@ -43,7 +43,8 @@ describe('TradeList Filtering and Sorting', () => {
     const wrapper = mount(TradeList, {
       props: { 
         trades: mockTrades,
-        sortBy: 'Status'
+        sortBy: 'Status',
+        sortDir: 'asc'
       }
     })
     

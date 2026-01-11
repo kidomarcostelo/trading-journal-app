@@ -1,20 +1,33 @@
 <script setup lang="ts">
 import { toRef, watch } from 'vue'
-import { useTrades, type FilterPeriod, type SortField } from '../composables/useTrades'
+import { useTrades, type FilterPeriod, type SortField, type SortDir } from '../composables/useTrades'
 import TradeSummaryCard from './TradeSummaryCard.vue'
 
 const props = defineProps<{
   trades: any[]
   filterPeriod?: FilterPeriod
   sortBy?: SortField
+  sortDir?: SortDir
   activeId?: string
+  collapsed?: boolean
 }>()
 
 const emit = defineEmits<{
   (e: 'select', id: string): void
 }>()
 
-const { filteredTrades, filterPeriod, sortBy } = useTrades(toRef(props, 'trades'))
+const { filteredTrades, filterPeriod, sortBy, sortDir } = useTrades(toRef(props, 'trades'))
+
+// Helper to get ID consistently
+const getTradeId = (trade: any) => {
+  return trade.ID || trade.id
+}
+
+const isTradeActive = (trade: any) => {
+  const tid = getTradeId(trade)
+  // Ensure both are treated as strings for comparison
+  return tid && String(tid) === String(props.activeId)
+}
 
 // Sync props to internal composable state
 watch(() => props.filterPeriod, (newVal) => {
@@ -24,20 +37,40 @@ watch(() => props.filterPeriod, (newVal) => {
 watch(() => props.sortBy, (newVal) => {
   if (newVal) sortBy.value = newVal
 }, { immediate: true })
+
+watch(() => props.sortDir, (newVal) => {
+  if (newVal) sortDir.value = newVal
+}, { immediate: true })
 </script>
 
 <template>
-  <div class="flex flex-col bg-terminal-black">
-    <TradeSummaryCard
-      v-for="trade in filteredTrades"
-      :key="trade.ID"
-      :trade="trade"
-      :active="activeId === trade.ID"
-      @click="emit('select', trade.ID)"
-    />
-    
-    <div v-if="filteredTrades.length === 0" class="py-16 text-center text-terminal-text/40 text-sm">
-      No trades found.
+  <div class="flex flex-col bg-terminal-black h-full overflow-hidden">
+    <!-- Header Row -->
+    <div 
+      class="grid gap-2 px-3 py-2 border-b border-terminal-gray text-[10px] uppercase tracking-widest font-bold text-terminal-text/40 bg-terminal-black sticky top-0 z-10"
+      :class="collapsed ? 'grid-cols-1' : 'grid-cols-[1.2fr_0.8fr_1fr_0.8fr_1.2fr]'"
+    >
+      <div>Pair</div>
+      <div v-show="!collapsed">Action</div>
+      <div v-show="!collapsed">Market</div>
+      <div v-show="!collapsed" class="text-center">Status</div>
+      <div v-show="!collapsed" class="text-right">Date</div>
+    </div>
+
+    <div class="flex-1 overflow-y-auto min-h-0">
+      <TradeSummaryCard
+        v-for="trade in filteredTrades"
+        :key="getTradeId(trade) || Math.random()"
+        :trade="trade"
+        :active="isTradeActive(trade)"
+        :collapsed="collapsed"
+        @click="emit('select', getTradeId(trade))"
+      />
+      
+      <div v-if="filteredTrades.length === 0" class="py-16 text-center text-terminal-text/40 text-sm">
+        <span v-if="!collapsed">No trades found.</span>
+        <span v-else class="text-xs">...</span>
+      </div>
     </div>
   </div>
 </template>
