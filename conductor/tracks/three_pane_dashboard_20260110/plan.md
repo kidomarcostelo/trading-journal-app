@@ -12,7 +12,7 @@
 - [x] Task: Implement filtering and sorting logic in a new `useTrades` composable or store. [commit: 5f38e07]
 - [x] Task: Create the `TradeSummaryCard` component for the list. [commit: 157d112]
 - [x] Task: Implement the scrollable `TradeList` component in Pane 2 with active state handling. [commit: ab5ccf4]
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Trade List (Pane 2)' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Trade List (Pane 2)' (Protocol in workflow.md) [checkpoint: bede9ac]
 
 ## Phase 3: Trade Detail - Data Table & Stats
 - [ ] Task: Write tests for the editable Data Table (input validation and state updates).
