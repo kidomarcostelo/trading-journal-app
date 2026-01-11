@@ -47,7 +47,7 @@ watch(() => props.sortDir, (newVal) => {
   <div class="flex flex-col bg-terminal-black h-full overflow-hidden">
     <!-- Header Row -->
     <div 
-      class="grid gap-2 px-3 py-2 border-b border-terminal-gray text-[10px] uppercase tracking-widest font-bold text-terminal-text/40 bg-terminal-black sticky top-0 z-10"
+      class="grid gap-2 p-3 border-b border-terminal-gray text-[10px] uppercase tracking-widest font-bold text-terminal-text/40 bg-terminal-black sticky top-0 z-10"
       :class="collapsed ? 'grid-cols-1' : 'grid-cols-[1.2fr_0.8fr_1fr_0.8fr_1.2fr]'"
     >
       <div>Pair</div>
