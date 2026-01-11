@@ -12,6 +12,7 @@ import {
 } from 'lucide-vue-next'
 import TradeForm from './components/TradeForm.vue'
 import TradeList from './components/TradeList.vue'
+import PaneNav from './components/PaneNav.vue'
 
 const showForm = ref(false)
 const isDark = ref(true)
@@ -50,47 +51,11 @@ onMounted(() => {
 <template>
   <div class="h-screen flex overflow-hidden bg-terminal-black text-terminal-text font-sans transition-colors duration-300">
     <!-- Pane 1: Navigation Sidebar -->
-    <aside data-testid="pane-nav" class="w-16 md:w-64 border-r border-terminal-gray flex flex-col bg-terminal-dark">
-      <div class="p-4 flex items-center gap-3 border-b border-terminal-gray mb-4">
-        <LayoutDashboard class="w-6 h-6 text-terminal-accent" />
-        <span class="hidden md:block font-semibold text-terminal-highlight tracking-tight">Journal</span>
-      </div>
-
-      <nav class="flex-1 px-2 space-y-1">
-        <button 
-          @click="activeTab = 'daily-report'"
-          :class="['w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all', activeTab === 'daily-report' ? 'bg-terminal-gray text-terminal-highlight' : 'text-terminal-text/60 hover:bg-terminal-gray/30 hover:text-terminal-text']"
-        >
-          <FileText class="w-5 h-5" />
-          <span class="hidden md:block text-sm font-medium">Daily Report</span>
-        </button>
-        <button 
-          @click="activeTab = 'daily-trades'"
-          :class="['w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all', activeTab === 'daily-trades' ? 'bg-terminal-gray text-terminal-highlight' : 'text-terminal-text/60 hover:bg-terminal-gray/30 hover:text-terminal-text']"
-        >
-          <ListIcon class="w-5 h-5" />
-          <span class="hidden md:block text-sm font-medium">Daily Trades</span>
-        </button>
-        <button 
-          @click="activeTab = 'settings'"
-          :class="['w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all', activeTab === 'settings' ? 'bg-terminal-gray text-terminal-highlight' : 'text-terminal-text/60 hover:bg-terminal-gray/30 hover:text-terminal-text']"
-        >
-          <Settings class="w-5 h-5" />
-          <span class="hidden md:block text-sm font-medium">Settings</span>
-        </button>
-      </nav>
-
-      <div class="p-4 border-t border-terminal-gray">
-        <button
-          @click="toggleTheme"
-          class="w-full flex items-center gap-3 px-3 py-2 text-terminal-text/60 hover:text-terminal-highlight transition-all"
-        >
-          <Moon v-if="isDark" class="w-5 h-5" />
-          <Sun v-else class="w-5 h-5" />
-          <span class="hidden md:block text-sm font-medium">{{ isDark ? 'Dark Mode' : 'Light Mode' }}</span>
-        </button>
-      </div>
-    </aside>
+    <PaneNav 
+      v-model:active-tab="activeTab" 
+      :is-dark="isDark" 
+      @toggle-theme="toggleTheme" 
+    />
 
     <!-- Pane 2: Trade List -->
     <section data-testid="pane-list" class="w-80 border-r border-terminal-gray flex flex-col bg-terminal-black overflow-hidden">
