@@ -10,16 +10,21 @@ import {
   Moon, 
   Sun,
   ChevronsLeft,
-  ChevronsRight
+  ChevronsRight,
+  Filter,
+  ArrowUpDown
 } from 'lucide-vue-next'
 import TradeForm from './components/TradeForm.vue'
 import TradeList from './components/TradeList.vue'
 import PaneNav from './components/PaneNav.vue'
+import type { FilterPeriod, SortField } from './composables/useTrades'
 
 const showForm = ref(false)
 const isDark = ref(true)
 const activeTab = ref('daily-trades')
 const selectedTradeId = ref<string | null>(null)
+const filterPeriod = ref<FilterPeriod>('all')
+const sortBy = ref<SortField>('Date')
 
 const activeTrade = computed(() => {
   return trades.value?.find(t => t.ID === selectedTradeId.value)
@@ -152,32 +157,60 @@ onUnmounted(() => {
       :style="{ width: `${listWidth}px` }"
       class="flex-shrink-0 border-r border-terminal-gray flex flex-col bg-terminal-black overflow-hidden relative transition-[width] duration-100 ease-in-out"
     >
-      <div class="p-4 border-b border-terminal-gray flex items-center justify-between">
-        <h2 class="font-medium text-terminal-highlight truncate">Trades</h2>
-        <div class="flex items-center gap-1">
-          <button 
-            @click="toggleListCollapse"
-            class="p-1.5 text-terminal-text/60 hover:text-terminal-highlight transition-all"
-            :title="isListCollapsed ? 'Expand List' : 'Collapse to Pair only'"
-          >
-            <ChevronsRight v-if="isListCollapsed" class="w-4 h-4" />
-            <ChevronsLeft v-else class="w-4 h-4" />
-          </button>
-          <button 
-            v-if="!isListCollapsed"
-            @click="() => refresh()"
-            class="p-1.5 text-terminal-text/60 hover:text-terminal-highlight transition-all"
-            :disabled="pending"
-          >
-            <RefreshCw :class="['w-4 h-4', pending ? 'animate-spin' : '']" />
-          </button>
-          <button 
-             v-if="!isListCollapsed"
-            @click="showForm = true"
-            class="p-1.5 text-terminal-accent hover:bg-terminal-accent/10 rounded-md transition-all"
-          >
-            <PlusCircle class="w-4 h-4" />
-          </button>
+      <div class="p-4 border-b border-terminal-gray flex flex-col gap-3">
+        <div class="flex items-center justify-between">
+          <h2 class="font-medium text-terminal-highlight truncate">Trades</h2>
+          <div class="flex items-center gap-1">
+            <button 
+              @click="toggleListCollapse"
+              class="p-1.5 text-terminal-text/60 hover:text-terminal-highlight transition-all"
+              :title="isListCollapsed ? 'Expand List' : 'Collapse to Pair only'"
+            >
+              <ChevronsRight v-if="isListCollapsed" class="w-4 h-4" />
+              <ChevronsLeft v-else class="w-4 h-4" />
+            </button>
+            <button 
+              v-if="!isListCollapsed"
+              @click="() => refresh()"
+              class="p-1.5 text-terminal-text/60 hover:text-terminal-highlight transition-all"
+              :disabled="pending"
+            >
+              <RefreshCw :class="['w-4 h-4', pending ? 'animate-spin' : '']" />
+            </button>
+            <button 
+              v-if="!isListCollapsed"
+              @click="showForm = true"
+              class="p-1.5 text-terminal-accent hover:bg-terminal-accent/10 rounded-md transition-all"
+            >
+              <PlusCircle class="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Toolbar -->
+        <div v-if="!isListCollapsed" class="flex items-center gap-2">
+           <div class="relative flex-1">
+             <Filter class="absolute left-2 top-1.5 w-3 h-3 text-terminal-text/40" />
+             <select 
+               v-model="filterPeriod"
+               class="w-full bg-terminal-dark border border-terminal-gray rounded px-2 pl-7 py-1 text-xs text-terminal-text focus:border-terminal-accent focus:outline-none appearance-none"
+             >
+               <option value="all">All Time</option>
+               <option value="week">This Week</option>
+               <option value="month">This Month</option>
+             </select>
+           </div>
+           <div class="relative flex-1">
+             <ArrowUpDown class="absolute left-2 top-1.5 w-3 h-3 text-terminal-text/40" />
+             <select 
+               v-model="sortBy"
+               class="w-full bg-terminal-dark border border-terminal-gray rounded px-2 pl-7 py-1 text-xs text-terminal-text focus:border-terminal-accent focus:outline-none appearance-none"
+             >
+               <option value="Date">Date</option>
+               <option value="Status">Status</option>
+               <option value="Pair">Pair</option>
+             </select>
+           </div>
         </div>
       </div>
       
@@ -189,6 +222,8 @@ onUnmounted(() => {
           v-else 
           :trades="trades || []" 
           :active-id="selectedTradeId"
+          :filter-period="filterPeriod"
+          :sort-by="sortBy"
           @select="selectedTradeId = $event"
         />
       </div>
