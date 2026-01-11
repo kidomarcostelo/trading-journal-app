@@ -24,7 +24,10 @@ describe('TradeList', () => {
     })
     
     const headers = wrapper.findAll('th')
-    expect(headers.map(h => h.text())).toContain('Pair')
-    expect(headers.map(h => h.text())).toContain('PnL')
+    const headerTexts = headers.map(h => h.text())
+    expect(headerTexts).toContain('Pair')
+    expect(headerTexts).toContain('Action')
+    expect(headerTexts).toContain('Status')
+    expect(headerTexts).not.toContain('PnL')
   })
 })

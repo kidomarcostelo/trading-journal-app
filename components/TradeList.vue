@@ -6,10 +6,13 @@ const props = defineProps<{
   trades: any[]
 }>()
 
-const headers = computed(() => {
-  if (props.trades.length === 0) return []
-  return Object.keys(props.trades[0])
-})
+const COLUMNS = [
+  { key: 'Date', label: 'Date', class: 'w-24' },
+  { key: 'Pair', label: 'Pair', class: 'w-24' },
+  { key: 'Action', label: 'Action', class: 'w-20' },
+  { key: 'Market', label: 'Market', class: 'w-20' },
+  { key: 'Status', label: 'Status', class: 'w-24' },
+]
 
 const getCellClass = (header: string, value: any) => {
   const h = header.toLowerCase()
@@ -48,11 +51,12 @@ const formatValue = (header: string, value: any) => {
       <thead>
         <tr class="border-b border-terminal-gray bg-terminal-black/20">
           <th 
-            v-for="header in headers" 
-            :key="header" 
+            v-for="col in COLUMNS" 
+            :key="col.key" 
             class="px-4 py-3 font-medium text-terminal-text/60 whitespace-nowrap"
+            :class="col.class"
           >
-            {{ header }}
+            {{ col.label }}
           </th>
         </tr>
       </thead>
@@ -60,20 +64,20 @@ const formatValue = (header: string, value: any) => {
         <tr 
           v-for="(trade, idx) in trades" 
           :key="trade.ID || idx" 
-          class="border-b border-terminal-gray/30 hover:bg-terminal-gray/20 transition-colors group"
+          class="border-b border-terminal-gray/30 hover:bg-terminal-gray/20 transition-colors group cursor-pointer"
         >
           <td 
-            v-for="header in headers" 
-            :key="header" 
+            v-for="col in COLUMNS" 
+            :key="col.key" 
             class="px-4 py-2.5 whitespace-nowrap"
           >
-            <div :class="getCellClass(header, trade[header])" class="flex items-center gap-2">
-              <template v-if="isImageColumn(header) && Array.isArray(trade[header]) && trade[header].length > 0">
+            <div :class="getCellClass(col.key, trade[col.key])" class="flex items-center gap-2">
+              <template v-if="isImageColumn(col.key) && Array.isArray(trade[col.key]) && trade[col.key].length > 0">
                 <ImageIcon class="w-3.5 h-3.5 text-terminal-text/50" />
-                <span>{{ trade[header].length }}</span>
+                <span>{{ trade[col.key].length }}</span>
               </template>
               <template v-else>
-                {{ formatValue(header, trade[header]) }}
+                {{ formatValue(col.key, trade[col.key]) }}
               </template>
             </div>
           </td>
