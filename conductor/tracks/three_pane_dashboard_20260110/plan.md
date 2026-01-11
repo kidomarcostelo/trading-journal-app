@@ -18,8 +18,8 @@
 - [x] Task: Write tests for the editable Data Table (input validation and state updates). [commit: afd08f7]
 - [x] Task: Implement the `TradeDataTable` component with editable inputs for core metrics. [commit: afd08f7]
 - [x] Task: Create the `TradeStats` component to display Win%, Cum PnL, etc. [commit: 979c192]
-- [ ] Task: Implement the auto-save (or explicit save) logic for Data Table changes via `POST /api/trades` or a new update endpoint.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Trade Detail - Data Table & Stats' (Protocol in workflow.md)
+- [x] Task: Implement the auto-save (or explicit save) logic for Data Table changes via `POST /api/trades` or a new update endpoint. [commit: 0c831fb]
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Trade Detail - Data Table & Stats' (Protocol in workflow.md) [checkpoint: 0c831fb]
 
 ## Phase 4: Strategy Grid & Interactive Tags
 - [ ] Task: Write tests for the categorized Chip Grid (grouping and toggling).
