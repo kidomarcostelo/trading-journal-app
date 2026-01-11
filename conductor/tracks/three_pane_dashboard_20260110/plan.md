@@ -15,8 +15,8 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Trade List (Pane 2)' (Protocol in workflow.md) [checkpoint: bede9ac]
 
 ## Phase 3: Trade Detail - Data Table & Stats
-- [x] Task: Write tests for the editable Data Table (input validation and state updates). [commit: 4f7d0da]
-- [x] Task: Implement the `TradeDataTable` component with editable inputs for core metrics. [commit: 4f7d0da]
+- [x] Task: Write tests for the editable Data Table (input validation and state updates). [commit: afd08f7]
+- [x] Task: Implement the `TradeDataTable` component with editable inputs for core metrics. [commit: afd08f7]
 - [ ] Task: Create the `TradeStats` component to display Win%, Cum PnL, etc.
 - [ ] Task: Implement the auto-save (or explicit save) logic for Data Table changes via `POST /api/trades` or a new update endpoint.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Trade Detail - Data Table & Stats' (Protocol in workflow.md)
