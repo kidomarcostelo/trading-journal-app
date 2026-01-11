@@ -19,6 +19,21 @@ describe('TradeList', () => {
     expect(wrapper.findAllComponents({ name: 'TradeSummaryCard' }).length).toBe(2)
   })
 
+  it('passes collapsed prop to trade cards', () => {
+    const wrapper = mount(TradeList, {
+      props: { 
+        trades: mockTrades,
+        collapsed: true
+      },
+      global: {
+          stubs: { TradeSummaryCard: true }
+      }
+    })
+    
+    const cards = wrapper.findAllComponents({ name: 'TradeSummaryCard' })
+    expect(cards[0].props('collapsed')).toBe(true)
+  })
+
   it('emits select event when a card is clicked', async () => {
     const wrapper = mount(TradeList, {
       props: { trades: mockTrades }
