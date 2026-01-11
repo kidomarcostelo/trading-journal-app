@@ -1,13 +1,21 @@
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue'
-import { LayoutDashboard, PlusCircle, LayoutGrid, List as ListIcon, RefreshCw, Moon, Sun } from 'lucide-vue-next'
+import { ref, onMounted } from 'vue'
+import { 
+  LayoutDashboard, 
+  PlusCircle, 
+  Settings, 
+  FileText, 
+  List as ListIcon, 
+  RefreshCw, 
+  Moon, 
+  Sun 
+} from 'lucide-vue-next'
 import TradeForm from './components/TradeForm.vue'
 import TradeList from './components/TradeList.vue'
-import TradeGallery from './components/TradeGallery.vue'
 
 const showForm = ref(false)
-const viewMode = ref<'gallery' | 'list'>('gallery')
 const isDark = ref(true)
+const activeTab = ref('daily-trades')
 
 // Fetch Trades
 const { data: trades, refresh, pending } = await useFetch<any[]>('/api/trades')
@@ -40,101 +48,99 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-terminal-black text-terminal-text font-sans p-6 md:p-10 transition-colors duration-300">
-    <!-- Header -->
-    <header class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
-      <div class="flex items-center gap-3">
-        <div class="p-2 bg-terminal-dark border border-terminal-gray rounded-lg shadow-sm transition-colors">
-          <LayoutDashboard class="w-6 h-6 text-terminal-accent" />
-        </div>
-        <div>
-          <h1 class="text-xl font-semibold text-terminal-highlight tracking-tight transition-colors">
-            Trading Journal
-          </h1>
-          <p class="text-xs text-terminal-text/60">Overview</p>
-        </div>
+  <div class="h-screen flex overflow-hidden bg-terminal-black text-terminal-text font-sans transition-colors duration-300">
+    <!-- Pane 1: Navigation Sidebar -->
+    <aside data-testid="pane-nav" class="w-16 md:w-64 border-r border-terminal-gray flex flex-col bg-terminal-dark">
+      <div class="p-4 flex items-center gap-3 border-b border-terminal-gray mb-4">
+        <LayoutDashboard class="w-6 h-6 text-terminal-accent" />
+        <span class="hidden md:block font-semibold text-terminal-highlight tracking-tight">Journal</span>
       </div>
 
-      <div class="flex items-center gap-3">
-        <!-- Theme Toggle -->
+      <nav class="flex-1 px-2 space-y-1">
+        <button 
+          @click="activeTab = 'daily-report'"
+          :class="['w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all', activeTab === 'daily-report' ? 'bg-terminal-gray text-terminal-highlight' : 'text-terminal-text/60 hover:bg-terminal-gray/30 hover:text-terminal-text']"
+        >
+          <FileText class="w-5 h-5" />
+          <span class="hidden md:block text-sm font-medium">Daily Report</span>
+        </button>
+        <button 
+          @click="activeTab = 'daily-trades'"
+          :class="['w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all', activeTab === 'daily-trades' ? 'bg-terminal-gray text-terminal-highlight' : 'text-terminal-text/60 hover:bg-terminal-gray/30 hover:text-terminal-text']"
+        >
+          <ListIcon class="w-5 h-5" />
+          <span class="hidden md:block text-sm font-medium">Daily Trades</span>
+        </button>
+        <button 
+          @click="activeTab = 'settings'"
+          :class="['w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all', activeTab === 'settings' ? 'bg-terminal-gray text-terminal-highlight' : 'text-terminal-text/60 hover:bg-terminal-gray/30 hover:text-terminal-text']"
+        >
+          <Settings class="w-5 h-5" />
+          <span class="hidden md:block text-sm font-medium">Settings</span>
+        </button>
+      </nav>
+
+      <div class="p-4 border-t border-terminal-gray">
         <button
           @click="toggleTheme"
-          class="p-2.5 text-terminal-text/60 hover:text-terminal-highlight hover:bg-terminal-dark border border-transparent hover:border-terminal-gray rounded-lg transition-all"
-          :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+          class="w-full flex items-center gap-3 px-3 py-2 text-terminal-text/60 hover:text-terminal-highlight transition-all"
         >
-          <Moon v-if="isDark" class="w-4 h-4" />
-          <Sun v-else class="w-4 h-4" />
-        </button>
-
-        <!-- View Toggle -->
-        <div v-if="!showForm" class="flex bg-terminal-dark border border-terminal-gray p-1 rounded-lg shadow-sm transition-colors">
-          <button 
-            @click="viewMode = 'gallery'"
-            :class="['p-2 rounded-md transition-all', viewMode === 'gallery' ? 'bg-terminal-gray text-terminal-highlight shadow-sm' : 'text-terminal-text/60 hover:text-terminal-text']"
-            title="Gallery View"
-          >
-            <LayoutGrid class="w-4 h-4" />
-          </button>
-          <button 
-            @click="viewMode = 'list'"
-            :class="['p-2 rounded-md transition-all', viewMode === 'list' ? 'bg-terminal-gray text-terminal-highlight shadow-sm' : 'text-terminal-text/60 hover:text-terminal-text']"
-            title="List View"
-          >
-            <ListIcon class="w-4 h-4" />
-          </button>
-        </div>
-
-        <button 
-          @click="refresh"
-          class="p-2.5 text-terminal-text/60 hover:text-terminal-highlight bg-terminal-dark border border-terminal-gray rounded-lg hover:border-terminal-text/30 transition-all shadow-sm"
-          :disabled="pending"
-          title="Refresh Data"
-        >
-          <RefreshCw :class="['w-4 h-4', pending ? 'animate-spin' : '']" />
-        </button>
-
-        <button 
-          @click="showForm = !showForm"
-          class="flex items-center gap-2 bg-terminal-accent hover:bg-terminal-accent/90 text-white px-5 py-2.5 rounded-lg shadow-lg shadow-terminal-accent/20 transition-all text-sm font-medium"
-        >
-          <PlusCircle class="w-4 h-4" />
-          {{ showForm ? 'Cancel Entry' : 'New Trade' }}
+          <Moon v-if="isDark" class="w-5 h-5" />
+          <Sun v-else class="w-5 h-5" />
+          <span class="hidden md:block text-sm font-medium">{{ isDark ? 'Dark Mode' : 'Light Mode' }}</span>
         </button>
       </div>
-    </header>
+    </aside>
 
-    <main class="max-w-7xl mx-auto">
-      <!-- Form View -->
-      <div v-if="showForm" class="mb-12 max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-300">
-        <TradeForm @success="onTradeSuccess" />
+    <!-- Pane 2: Trade List -->
+    <section data-testid="pane-list" class="w-80 border-r border-terminal-gray flex flex-col bg-terminal-black overflow-hidden">
+      <div class="p-4 border-b border-terminal-gray flex items-center justify-between">
+        <h2 class="font-medium text-terminal-highlight">Trades</h2>
+        <div class="flex items-center gap-2">
+          <button 
+            @click="refresh"
+            class="p-1.5 text-terminal-text/60 hover:text-terminal-highlight transition-all"
+            :disabled="pending"
+          >
+            <RefreshCw :class="['w-4 h-4', pending ? 'animate-spin' : '']" />
+          </button>
+          <button 
+            @click="showForm = true"
+            class="p-1.5 text-terminal-accent hover:bg-terminal-accent/10 rounded-md transition-all"
+          >
+            <PlusCircle class="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+      
+      <div class="flex-1 overflow-y-auto">
+        <div v-if="pending" class="p-8 text-center">
+          <div class="inline-block w-6 h-6 border-2 border-terminal-gray border-t-terminal-accent rounded-full animate-spin"></div>
+        </div>
+        <TradeList v-else :trades="trades || []" />
+      </div>
+    </section>
+
+    <!-- Pane 3: Main Detail View -->
+    <main data-testid="pane-detail" class="flex-1 bg-terminal-dark overflow-y-auto relative">
+      <!-- Form Modal/Overlay -->
+      <div v-if="showForm" class="absolute inset-0 z-10 bg-terminal-black/80 backdrop-blur-sm flex items-center justify-center p-6">
+        <div class="bg-terminal-dark border border-terminal-gray rounded-xl shadow-2xl w-full max-w-2xl p-6 relative">
+          <button @click="showForm = false" class="absolute top-4 right-4 text-terminal-text/40 hover:text-terminal-text">
+            <PlusCircle class="w-6 h-6 rotate-45" />
+          </button>
+          <h2 class="text-xl font-semibold mb-6 text-terminal-highlight">New Trade Entry</h2>
+          <TradeForm @success="onTradeSuccess" />
+        </div>
       </div>
 
-      <!-- Dashboard View -->
-      <div v-else>
-        <div v-if="pending" class="py-32 text-center">
-          <div class="inline-block w-8 h-8 border-2 border-terminal-gray border-t-terminal-accent rounded-full animate-spin"></div>
-          <p class="mt-4 text-terminal-text/40 text-sm">Loading data...</p>
-        </div>
-        
-        <div v-else class="animate-in fade-in duration-500">
-          <!-- Summary Bar -->
-          <div class="flex items-center justify-between mb-6 px-1">
-             <span class="text-sm text-terminal-text/60 font-medium">Total Records: <span class="text-terminal-highlight font-mono">{{ trades?.length || 0 }}</span></span>
-          </div>
-
-          <!-- Gallery -->
-          <TradeGallery v-if="viewMode === 'gallery'" :trades="trades || []" />
-          
-          <!-- List -->
-          <TradeList v-else :trades="trades || []" />
+      <div class="p-8 max-w-4xl mx-auto">
+        <div class="text-center py-20 text-terminal-text/40">
+          <LayoutDashboard class="w-12 h-12 mx-auto mb-4 opacity-20" />
+          <h3 class="text-lg font-medium text-terminal-highlight/60">Select a trade to view details</h3>
+          <p class="text-sm">Detailed analysis and editing will appear here.</p>
         </div>
       </div>
     </main>
-    
-    <!-- Footer -->
-    <footer class="max-w-7xl mx-auto mt-24 pt-8 border-t border-terminal-gray/50 text-xs text-terminal-text/30 flex justify-between transition-colors">
-      <span>&copy; 2026 Trading Journal</span>
-      <span>Connected to Google Sheets</span>
-    </footer>
   </div>
 </template>
