@@ -1,11 +1,11 @@
 # Plan: Three-Pane Dashboard & Trade Detail
 
-## Phase 1: Layout & Core Navigation
+## Phase 1: Layout & Core Navigation [checkpoint: 2c142f6]
 - [x] Task: Update `types/index.ts` to include new fields (Market, Status, MAE) and update existing interfaces. [commit: 7459851]
 - [x] Task: Write tests for the 3-Pane Layout component structure. [commit: 28591e1]
 - [x] Task: Implement the high-level layout (`Pane 1: Nav`, `Pane 2: List`, `Pane 3: Detail`) in `app.vue`. [commit: 28591e1]
 - [x] Task: Create the Navigation Sidebar component (Pane 1) with basic routing placeholders. [commit: 555fdce]
-- [~] Task: Conductor - User Manual Verification 'Phase 1: Layout & Core Navigation' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Layout & Core Navigation' (Protocol in workflow.md) [commit: 2c142f6]
 
 ## Phase 2: Trade List (Pane 2)
 - [ ] Task: Write tests for Trade List filtering (Week/Month) and sorting (Status).
