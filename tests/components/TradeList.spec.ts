@@ -39,7 +39,7 @@ describe('TradeList', () => {
       props: { trades: mockTrades }
     })
     
-    const cards = wrapper.findAll('.cursor-pointer')
+    const cards = wrapper.findAllComponents({ name: 'TradeSummaryCard' })
     await cards[0].trigger('click')
     
     expect(wrapper.emitted('select')?.[0]).toEqual(['1'])

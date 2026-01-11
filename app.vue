@@ -10,7 +10,10 @@ import {
   Moon, 
   Sun,
   ChevronsLeft,
-  ChevronsRight
+  ChevronsRight,
+  Filter,
+  ArrowUp,
+  ArrowDown
 } from 'lucide-vue-next'
 import TradeForm from './components/TradeForm.vue'
 import TradeList from './components/TradeList.vue'
@@ -21,9 +24,18 @@ const isDark = ref(true)
 const activeTab = ref('daily-trades')
 const selectedTradeId = ref<string | null>(null)
 
+// Filter & Sort State
+const filterPeriod = ref('all')
+const sortBy = ref('Date')
+const sortDir = ref<'asc' | 'desc'>('desc')
+
 const activeTrade = computed(() => {
-  return trades.value?.find(t => t.ID === selectedTradeId.value)
+  return trades.value?.find(t => (t.ID || t.id) === selectedTradeId.value)
 })
+
+const toggleSortDir = () => {
+  sortDir.value = sortDir.value === 'desc' ? 'asc' : 'desc'
+}
 
 // Pane Resizing Logic
 const sidebarWidth = ref(256) // default w-64
@@ -152,32 +164,70 @@ onUnmounted(() => {
       :style="{ width: `${listWidth}px` }"
       class="flex-shrink-0 border-r border-terminal-gray flex flex-col bg-terminal-black overflow-hidden relative transition-[width] duration-100 ease-in-out"
     >
-      <div class="p-4 border-b border-terminal-gray flex items-center justify-between">
-        <h2 class="font-medium text-terminal-highlight truncate">Trades</h2>
-        <div class="flex items-center gap-1">
-          <button 
-            @click="toggleListCollapse"
-            class="p-1.5 text-terminal-text/60 hover:text-terminal-highlight transition-all"
-            :title="isListCollapsed ? 'Expand List' : 'Collapse to Pair only'"
-          >
-            <ChevronsRight v-if="isListCollapsed" class="w-4 h-4" />
-            <ChevronsLeft v-else class="w-4 h-4" />
-          </button>
-          <button 
-            v-if="!isListCollapsed"
-            @click="() => refresh()"
-            class="p-1.5 text-terminal-text/60 hover:text-terminal-highlight transition-all"
-            :disabled="pending"
-          >
-            <RefreshCw :class="['w-4 h-4', pending ? 'animate-spin' : '']" />
-          </button>
-          <button 
-             v-if="!isListCollapsed"
-            @click="showForm = true"
-            class="p-1.5 text-terminal-accent hover:bg-terminal-accent/10 rounded-md transition-all"
-          >
-            <PlusCircle class="w-4 h-4" />
-          </button>
+      <div class="p-4 border-b border-terminal-gray flex flex-col gap-3 bg-terminal-black">
+        <div class="flex items-center justify-between">
+          <h2 class="font-medium text-terminal-highlight truncate">Trades</h2>
+          <div class="flex items-center gap-1">
+            <button 
+              @click="toggleListCollapse"
+              class="p-1.5 text-terminal-text/60 hover:text-terminal-highlight transition-all"
+              :title="isListCollapsed ? 'Expand List' : 'Collapse to Pair only'"
+            >
+              <ChevronsRight v-if="isListCollapsed" class="w-4 h-4" />
+              <ChevronsLeft v-else class="w-4 h-4" />
+            </button>
+            <button 
+              v-if="!isListCollapsed"
+              @click="() => refresh()"
+              class="p-1.5 text-terminal-text/60 hover:text-terminal-highlight transition-all"
+              :disabled="pending"
+            >
+              <RefreshCw :class="['w-4 h-4', pending ? 'animate-spin' : '']" />
+            </button>
+            <button 
+               v-if="!isListCollapsed"
+              @click="showForm = true"
+              class="p-1.5 text-terminal-accent hover:bg-terminal-accent/10 rounded-md transition-all"
+            >
+              <PlusCircle class="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter & Sort Controls (Hidden if collapsed) -->
+        <div v-if="!isListCollapsed" class="flex items-center gap-2">
+           <div class="relative flex-1">
+             <select 
+               v-model="filterPeriod"
+               class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent focus:outline-none transition-colors cursor-pointer"
+             >
+               <option value="all">All Time</option>
+               <option value="week">This Week</option>
+               <option value="last-week">Last Week</option>
+               <option value="month">This Month</option>
+               <option value="last-month">Last Month</option>
+             </select>
+             <Filter class="w-3 h-3 absolute right-2 top-1.5 text-terminal-text/40 pointer-events-none" />
+           </div>
+
+           <div class="relative flex-1 group">
+             <select 
+               v-model="sortBy"
+               class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent focus:outline-none transition-colors cursor-pointer"
+             >
+               <option value="Date">Date</option>
+               <option value="Status">Status</option>
+               <option value="Pair">Pair</option>
+             </select>
+             <button 
+               @click="toggleSortDir"
+               class="absolute right-1 top-1 p-0.5 hover:bg-terminal-gray/20 rounded cursor-pointer z-10 group/sort"
+               title="Toggle Sort Order"
+             >
+               <ArrowUp v-if="sortDir === 'asc'" class="w-3 h-3 text-terminal-text/60 group-hover/sort:text-terminal-highlight transition-colors" />
+               <ArrowDown v-else class="w-3 h-3 text-terminal-text/60 group-hover/sort:text-terminal-highlight transition-colors" />
+             </button>
+           </div>
         </div>
       </div>
       
@@ -190,6 +240,9 @@ onUnmounted(() => {
           :trades="trades || []" 
           :active-id="selectedTradeId"
           :collapsed="isListCollapsed"
+          :filter-period="filterPeriod"
+          :sort-by="sortBy"
+          :sort-dir="sortDir"
           @select="selectedTradeId = $event"
         />
       </div>

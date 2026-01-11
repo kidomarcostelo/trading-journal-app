@@ -1,8 +1,0 @@
-{
-  "track_id": "trading_journal_mvp_20260108",
-  "type": "feature",
-  "status": "new",
-  "created_at": "2026-01-08T14:48:00Z",
-  "updated_at": "2026-01-08T14:48:00Z",
-  "description": "Build the core Trading Journal functionality, including Nuxt 3 project setup, Google Sheets integration, dynamic ChipSelect component, and basic trade entry form and dashboard views."
-}
