@@ -22,6 +22,7 @@ const activeTab = ref('daily-trades')
 
 // Pane Resizing Logic
 const sidebarWidth = ref(256) // default w-64
+const lastSidebarWidth = ref(256)
 const listWidth = ref(320)    // default w-80
 const lastListWidth = ref(320)
 const isResizing = ref<'sidebar' | 'list' | null>(null)
@@ -43,6 +44,8 @@ const doResize = (e: MouseEvent) => {
     let newWidth = Math.min(e.clientX, 400)
     if (newWidth < 150) {
       newWidth = 64
+    } else {
+      lastSidebarWidth.value = newWidth
     }
     sidebarWidth.value = newWidth
   } else if (isResizing.value === 'list') {
@@ -67,6 +70,15 @@ const toggleListCollapse = () => {
   } else {
     lastListWidth.value = listWidth.value
     listWidth.value = 100
+  }
+}
+
+const toggleSidebar = () => {
+  if (isSidebarCollapsed.value) {
+    sidebarWidth.value = Math.max(256, lastSidebarWidth.value)
+  } else {
+    lastSidebarWidth.value = sidebarWidth.value
+    sidebarWidth.value = 64
   }
 }
 
@@ -119,6 +131,7 @@ onUnmounted(() => {
         :is-dark="isDark" 
         :collapsed="isSidebarCollapsed"
         @toggle-theme="toggleTheme" 
+        @toggle-collapse="toggleSidebar"
       />
     </div>
 
