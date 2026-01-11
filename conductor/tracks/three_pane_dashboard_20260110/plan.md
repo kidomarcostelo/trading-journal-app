@@ -10,8 +10,8 @@
 ## Phase 2: Trade List (Pane 2)
 - [x] Task: Write tests for Trade List filtering (Week/Month) and sorting (Status). [commit: bc0e1b9]
 - [x] Task: Implement filtering and sorting logic in a new `useTrades` composable or store. [commit: 5f38e07]
-- [~] Task: Create the `TradeSummaryCard` component for the list.
-- [ ] Task: Implement the scrollable `TradeList` component in Pane 2 with active state handling.
+- [x] Task: Create the `TradeSummaryCard` component for the list. [commit: 157d112]
+- [~] Task: Implement the scrollable `TradeList` component in Pane 2 with active state handling.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Trade List (Pane 2)' (Protocol in workflow.md)
 
 ## Phase 3: Trade Detail - Data Table & Stats
