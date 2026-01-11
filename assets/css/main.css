@@ -29,4 +29,24 @@
   body {
     @apply bg-terminal-black text-terminal-text font-sans transition-colors duration-300;
   }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-terminal-gray/40 rounded-full hover:bg-terminal-gray/60 transition-colors;
+  }
+  
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(39, 39, 42, 0.4) transparent;
+  }
 }
