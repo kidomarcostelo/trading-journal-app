@@ -17,6 +17,7 @@ import {
 } from 'lucide-vue-next'
 import TradeForm from './components/TradeForm.vue'
 import TradeList from './components/TradeList.vue'
+import TradeDataTable from './components/TradeDataTable.vue'
 import PaneNav from './components/PaneNav.vue'
 
 const showForm = ref(false)
@@ -32,6 +33,16 @@ const sortDir = ref<'asc' | 'desc'>('desc')
 const activeTrade = computed(() => {
   return trades.value?.find(t => (t.ID || t.id) === selectedTradeId.value)
 })
+
+const handleTradeUpdate = (updatedFields: any) => {
+  if (!activeTrade.value || !trades.value) return
+  
+  // Update local state immediately for responsiveness
+  const index = trades.value.findIndex(t => (t.ID || t.id) === selectedTradeId.value)
+  if (index !== -1) {
+    trades.value[index] = { ...trades.value[index], ...updatedFields }
+  }
+}
 
 const toggleSortDir = () => {
   sortDir.value = sortDir.value === 'desc' ? 'asc' : 'desc'
@@ -277,11 +288,11 @@ onUnmounted(() => {
            </div>
         </div>
         
-        <!-- Placeholder for Phase 3 components -->
+        <!-- Phase 3 components -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
            <div class="bg-terminal-black/30 border border-terminal-gray p-6 rounded-lg">
              <h3 class="font-medium text-terminal-highlight mb-4">Trade Data</h3>
-             <pre class="text-xs text-terminal-text/40 overflow-auto max-h-60">{{ activeTrade }}</pre>
+             <TradeDataTable :trade="activeTrade" @update="handleTradeUpdate" />
            </div>
            
            <div class="bg-terminal-black/30 border border-terminal-gray p-6 rounded-lg">
