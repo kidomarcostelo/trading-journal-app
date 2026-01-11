@@ -43,13 +43,16 @@ describe('TradeList Filtering and Sorting', () => {
     const wrapper = mount(TradeList, {
       props: { 
         trades: mockTrades,
-        sortBy: 'Status' // Proposed prop
+        sortBy: 'Status'
       }
     })
     
-    const rows = wrapper.findAll('tbody tr')
-    // Expected order depends on implementation (e.g. Open first)
-    // For now, let's just assert that they are all present but we'll check order in Green phase
-    expect(rows.length).toBe(3)
+    const cards = wrapper.findAllComponents({ name: 'TradeSummaryCard' })
+    expect(cards.length).toBe(3)
+    
+    // Check order: Open (ID 1), Closed (ID 2), Cancelled (ID 3)
+    expect(cards[0].props('trade').ID).toBe('1')
+    expect(cards[1].props('trade').ID).toBe('2')
+    expect(cards[2].props('trade').ID).toBe('3')
   })
 })
