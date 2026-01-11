@@ -10,7 +10,9 @@ vi.mock('lucide-vue-next', () => ({
   List: { render: () => h('div') },
   Settings: { render: () => h('div') },
   Moon: { render: () => h('div') },
-  Sun: { render: () => h('div') }
+  Sun: { render: () => h('div') },
+  PanelLeftClose: { render: () => h('div') },
+  PanelLeftOpen: { render: () => h('div') }
 }))
 
 describe('PaneNav', () => {

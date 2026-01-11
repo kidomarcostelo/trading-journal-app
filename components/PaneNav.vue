@@ -5,7 +5,9 @@ import {
   List as ListIcon, 
   Settings, 
   Moon, 
-  Sun 
+  Sun,
+  PanelLeftClose,
+  PanelLeftOpen
 } from 'lucide-vue-next'
 
 defineProps<{
@@ -17,17 +19,29 @@ defineProps<{
 defineEmits<{
   (e: 'update:activeTab', tab: string): void
   (e: 'toggle-theme'): void
+  (e: 'toggle-collapse'): void
 }>()
 </script>
 
 <template>
   <aside data-testid="pane-nav" class="w-full border-r border-terminal-gray flex flex-col bg-terminal-dark h-full transition-all duration-300">
     <div 
-      class="p-4 flex items-center gap-3 border-b border-terminal-gray mb-4 overflow-hidden whitespace-nowrap"
-      :class="collapsed ? 'justify-center px-2' : ''"
+      class="p-4 flex items-center border-b border-terminal-gray mb-4 overflow-hidden whitespace-nowrap"
+      :class="collapsed ? 'justify-center px-2' : 'justify-between'"
     >
-      <LayoutDashboard class="w-6 h-6 text-terminal-accent flex-shrink-0" />
-      <span v-if="!collapsed" class="font-semibold text-terminal-highlight tracking-tight">Trading Journal</span>
+      <div class="flex items-center gap-3">
+        <LayoutDashboard class="w-6 h-6 text-terminal-accent flex-shrink-0" />
+        <span v-if="!collapsed" class="font-semibold text-terminal-highlight tracking-tight">Trading Journal</span>
+      </div>
+      
+      <button 
+        @click="$emit('toggle-collapse')"
+        class="text-terminal-text/40 hover:text-terminal-highlight transition-colors p-1"
+        :title="collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'"
+      >
+        <PanelLeftOpen v-if="collapsed" class="w-4 h-4" />
+        <PanelLeftClose v-else class="w-4 h-4" />
+      </button>
     </div>
 
     <nav class="flex-1 px-2 space-y-1">
