@@ -20,19 +20,29 @@ import TradeList from './components/TradeList.vue'
 import TradeDataTable from './components/TradeDataTable.vue'
 import TradeStats from './components/TradeStats.vue'
 import PaneNav from './components/PaneNav.vue'
+import StrategyAccordion from './components/StrategyAccordion.vue'
+import type { ChipCategory } from './types'
 
 const showForm = ref(false)
 const isDark = ref(true)
 const activeTab = ref('daily-trades')
 const selectedTradeId = ref<string | null>(null)
 
-// Filter & Sort State
-const filterPeriod = ref('all')
-const sortBy = ref('Date')
-const sortDir = ref<'asc' | 'desc'>('desc')
+// Fetch Trades & Config
+const { data: trades, refresh, pending } = await useFetch<any[]>('/api/trades')
+const { data: config } = await useFetch<ChipCategory[]>('/api/config')
+
+// Unified Trade Logic
+import { useTrades } from './composables/useTrades'
+const { 
+  filterPeriod, 
+  sortBy, 
+  sortDir, 
+  filteredTrades 
+} = useTrades(computed(() => trades.value || []))
 
 const activeTrade = computed(() => {
-  return trades.value?.find(t => (t.ID || t.id) === selectedTradeId.value)
+  return filteredTrades.value.find(t => (t.ID || t.id) === selectedTradeId.value)
 })
 
 const handleTradeUpdate = async (updatedFields: any) => {
@@ -48,17 +58,24 @@ const handleTradeUpdate = async (updatedFields: any) => {
     try {
       await $fetch('/api/trades', {
         method: 'PUT',
-        body: updatedFields // Send only the fields that changed + the ID
+        body: { 
+          ID: selectedTradeId.value, // Ensure ID is sent
+          ...updatedFields 
+        }
       })
     } catch (err) {
       console.error('Failed to auto-save trade:', err)
-      // Optional: Rollback or show error notification
     }
   }
 }
 
 const toggleSortDir = () => {
   sortDir.value = sortDir.value === 'desc' ? 'asc' : 'desc'
+}
+
+const onTradeSuccess = () => {
+  showForm.value = false
+  refresh()
 }
 
 // Pane Resizing Logic
@@ -81,7 +98,6 @@ const doResize = (e: MouseEvent) => {
   if (!isResizing.value) return
 
   if (isResizing.value === 'sidebar') {
-    // Snap to 64px (icon mode) if less than 150px, otherwise min 150px, max 400px
     let newWidth = Math.min(e.clientX, 400)
     if (newWidth < 150) {
       newWidth = 64
@@ -90,7 +106,6 @@ const doResize = (e: MouseEvent) => {
     }
     sidebarWidth.value = newWidth
   } else if (isResizing.value === 'list') {
-    // Min width 100px, Max width 600px
     const newWidth = Math.max(100, Math.min(e.clientX - sidebarWidth.value, 600))
     listWidth.value = newWidth
     if (newWidth > 100) {
@@ -121,14 +136,6 @@ const toggleSidebar = () => {
     lastSidebarWidth.value = sidebarWidth.value
     sidebarWidth.value = 64
   }
-}
-
-// Fetch Trades
-const { data: trades, refresh, pending } = await useFetch<any[]>('/api/trades')
-
-const onTradeSuccess = () => {
-  showForm.value = false
-  refresh()
 }
 
 // Theme Logic
@@ -293,7 +300,14 @@ onUnmounted(() => {
 
       <div v-if="activeTrade" class="p-8 max-w-4xl mx-auto">
         <div class="mb-8">
-           <h1 class="text-2xl font-bold text-terminal-highlight mb-2">{{ activeTrade.Pair }}</h1>
+           <div class="flex items-center justify-between mb-2">
+             <h1 class="text-2xl font-bold text-terminal-highlight">{{ activeTrade.Pair }}</h1>
+             <!-- Badges -->
+             <div class="flex gap-2">
+               <span v-if="activeTrade.Flags?.includes('HTF FAV')" class="px-2 py-0.5 rounded bg-terminal-accent/20 text-terminal-accent text-[10px] font-bold uppercase border border-terminal-accent/30">HTF FAV</span>
+               <span v-for="badge in (activeTrade.Badges || '').split(',').filter(Boolean)" :key="badge" class="px-2 py-0.5 rounded bg-terminal-gray/20 text-terminal-text text-[10px] font-bold uppercase border border-terminal-gray/30">{{ badge }}</span>
+             </div>
+           </div>
            <div class="flex items-center gap-3 text-sm text-terminal-text/60">
              <span class="bg-terminal-gray/20 px-2 py-0.5 rounded">{{ activeTrade.Market }}</span>
              <span>{{ activeTrade.Date }}</span>
@@ -301,9 +315,9 @@ onUnmounted(() => {
            </div>
         </div>
 
-        <!-- Global Stats -->
+        <!-- Filtered Stats -->
         <div class="mb-8">
-          <TradeStats :trades="trades || []" />
+          <TradeStats :trades="filteredTrades" />
         </div>
         
         <!-- Phase 3 components -->
@@ -315,7 +329,13 @@ onUnmounted(() => {
            
            <div class="bg-terminal-black/30 border border-terminal-gray p-6 rounded-lg">
              <h3 class="font-medium text-terminal-highlight mb-4">Strategy</h3>
-             <p class="text-sm text-terminal-text/60">Strategy chips will go here.</p>
+             <StrategyAccordion 
+               v-if="config" 
+               :config="config" 
+               :modelValue="activeTrade" 
+               @update:modelValue="handleTradeUpdate" 
+             />
+             <div v-else class="text-sm text-terminal-text/60 animate-pulse">Loading strategies...</div>
            </div>
         </div>
       </div>
