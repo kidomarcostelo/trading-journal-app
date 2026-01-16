@@ -144,7 +144,7 @@ if (!props.multiple && typeof props.modelValue === 'string') {
 
     <!-- Dropdown -->
     <div
-      v-if="isOpen && filteredOptions.length > 0"
+      v-if="isOpen && (filteredOptions.length > 0 || query.trim())"
       class="absolute z-50 w-full max-w-[calc(100%-3rem)] md:max-w-md mt-1 bg-terminal-dark border border-terminal-gray rounded-lg shadow-xl ring-1 ring-black/5 max-h-60 overflow-auto py-1"
       :style="{ width: containerRef ? `${containerRef.offsetWidth}px` : '100%' }"
     >
@@ -157,6 +157,17 @@ if (!props.multiple && typeof props.modelValue === 'string') {
       >
         <span>{{ option }}</span>
         <Check v-if="selectedValues.includes(option)" class="w-3 h-3 text-terminal-accent" />
+      </button>
+
+      <!-- Create Option -->
+      <button
+        v-if="query.trim() && !filteredOptions.some(o => o.toLowerCase() === query.trim().toLowerCase())"
+        type="button"
+        @click="selectOption(query.trim())"
+        class="w-full text-left px-3 py-2 text-sm text-terminal-accent hover:bg-terminal-accent/10 flex items-center gap-2 border-t border-terminal-gray/30"
+      >
+        <span>Create "{{ query }}"</span>
+        <span class="text-[10px] bg-terminal-accent/20 px-1.5 py-0.5 rounded ml-auto">Enter</span>
       </button>
     </div>
   </div>
