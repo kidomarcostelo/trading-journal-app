@@ -21,6 +21,10 @@ import TradeDataTable from './components/TradeDataTable.vue'
 import TradeStats from './components/TradeStats.vue'
 import PaneNav from './components/PaneNav.vue'
 import StrategyAccordion from './components/StrategyAccordion.vue'
+import PsychologyGrid from './components/PsychologyGrid.vue'
+import TradingViewChart from './components/TradingViewChart.vue'
+import TradeScreenshots from './components/TradeScreenshots.vue'
+import TradeReview from './components/TradeReview.vue'
 import CollapsibleSection from './components/CollapsibleSection.vue'
 import type { ChipCategory } from './types'
 
@@ -42,6 +46,8 @@ const {
   filteredTrades 
 } = useTrades(computed(() => trades.value || []))
 
+const activeDetailTab = ref<'journal' | 'charts' | 'review'>('journal')
+
 const activeTrade = computed(() => {
   return filteredTrades.value.find(t => (t.ID || t.id) === selectedTradeId.value)
 })
@@ -55,19 +61,39 @@ const handleTradeUpdate = async (updatedFields: any) => {
     const updatedTrade = { ...trades.value[index], ...updatedFields }
     trades.value[index] = updatedTrade
 
+    // Prepare payload: Flatten arrays to strings
+    const payload: any = { 
+      ID: selectedTradeId.value,
+      ...updatedFields 
+    }
+    
+    for (const key in payload) {
+      if (Array.isArray(payload[key])) {
+        payload[key] = payload[key].join(', ')
+      }
+    }
+
     // Persist to backend
     try {
       await $fetch('/api/trades', {
         method: 'PUT',
-        body: { 
-          ID: selectedTradeId.value, // Ensure ID is sent
-          ...updatedFields 
-        }
+        body: payload
       })
     } catch (err) {
       console.error('Failed to auto-save trade:', err)
     }
   }
+}
+
+// Helper to format date
+const formatDate = (val: string | number | undefined) => {
+  if (!val) return '--'
+  // Handle Excel Serial Date (e.g. 45985)
+  if (!isNaN(Number(val)) && Number(val) > 20000) {
+    const date = new Date((Number(val) - 25569) * 86400 * 1000)
+    return date.toLocaleDateString()
+  }
+  return String(val)
 }
 
 const toggleSortDir = () => {
@@ -80,7 +106,7 @@ const onTradeSuccess = () => {
 }
 
 // Pane Resizing Logic
-const sidebarWidth = ref(256) // default w-64
+const sidebarWidth = ref(64) // collapsed by default
 const lastSidebarWidth = ref(256)
 const listWidth = ref(320)    // default w-80
 const lastListWidth = ref(320)
@@ -303,10 +329,15 @@ onUnmounted(() => {
         <div class="mb-8">
            <div class="flex items-center justify-between mb-2">
              <h1 class="text-2xl font-bold text-terminal-highlight">{{ activeTrade.Pair }}</h1>
-             <!-- Badges -->
-             <div class="flex gap-2">
-               <span v-if="activeTrade.Flags?.includes('HTF FAV')" class="px-2 py-0.5 rounded bg-terminal-accent/20 text-terminal-accent text-[10px] font-bold uppercase border border-terminal-accent/30">HTF FAV</span>
-               <span v-for="badge in (activeTrade.Badges || '').split(',').filter(Boolean)" :key="badge" class="px-2 py-0.5 rounded bg-terminal-gray/20 text-terminal-text text-[10px] font-bold uppercase border border-terminal-gray/30">{{ badge }}</span>
+             <!-- Badges & Date Created -->
+             <div class="flex flex-col items-end gap-1">
+                <div class="flex gap-2">
+                  <span v-if="activeTrade.Flags?.includes('HTF FAV')" class="px-2 py-0.5 rounded bg-terminal-accent/20 text-terminal-accent text-[10px] font-bold uppercase border border-terminal-accent/30">HTF FAV</span>
+                  <span v-for="badge in (activeTrade.Badges || '').split(',').filter(Boolean)" :key="badge" class="px-2 py-0.5 rounded bg-terminal-gray/20 text-terminal-text text-[10px] font-bold uppercase border border-terminal-gray/30">{{ badge }}</span>
+                </div>
+                <span class="text-sm text-terminal-highlight" title="Date Created">
+                  Date Created: {{ formatDate(activeTrade.createdAt || activeTrade['Date Created'] || activeTrade.Date) }}
+                </span>
              </div>
            </div>
            <div class="flex items-center gap-3 text-sm text-terminal-text/60">
@@ -317,12 +348,40 @@ onUnmounted(() => {
         </div>
 
         <!-- Filtered Stats -->
-        <div class="mb-8">
+        <div class="mb-6">
           <TradeStats :trades="filteredTrades" />
         </div>
+
+        <!-- Detail Tabs -->
+        <div class="flex items-center gap-6 border-b border-terminal-gray mb-6">
+          <button 
+            @click="activeDetailTab = 'journal'"
+            class="pb-2 text-sm font-medium transition-colors relative"
+            :class="activeDetailTab === 'journal' ? 'text-terminal-highlight' : 'text-terminal-text/60 hover:text-terminal-text'"
+          >
+            Journal
+            <span v-if="activeDetailTab === 'journal'" class="absolute bottom-0 left-0 w-full h-0.5 bg-terminal-accent rounded-t-full"></span>
+          </button>
+          <button 
+            @click="activeDetailTab = 'charts'"
+            class="pb-2 text-sm font-medium transition-colors relative"
+            :class="activeDetailTab === 'charts' ? 'text-terminal-highlight' : 'text-terminal-text/60 hover:text-terminal-text'"
+          >
+            Charts
+            <span v-if="activeDetailTab === 'charts'" class="absolute bottom-0 left-0 w-full h-0.5 bg-terminal-accent rounded-t-full"></span>
+          </button>
+          <button 
+            @click="activeDetailTab = 'review'"
+            class="pb-2 text-sm font-medium transition-colors relative"
+            :class="activeDetailTab === 'review' ? 'text-terminal-highlight' : 'text-terminal-text/60 hover:text-terminal-text'"
+          >
+            Review
+            <span v-if="activeDetailTab === 'review'" class="absolute bottom-0 left-0 w-full h-0.5 bg-terminal-accent rounded-t-full"></span>
+          </button>
+        </div>
         
-        <!-- Phase 4 components -->
-        <div class="space-y-4">
+        <!-- Tab Content -->
+        <div v-if="activeDetailTab === 'journal'" class="space-y-4">
            <!-- Trade Data Section -->
            <CollapsibleSection title="Trade Data">
              <TradeDataTable :trade="activeTrade" @update="handleTradeUpdate" />
@@ -338,6 +397,38 @@ onUnmounted(() => {
              />
              <div v-else class="text-sm text-terminal-text/60 animate-pulse">Loading strategies...</div>
            </CollapsibleSection>
+
+           <!-- Psychology Section -->
+           <CollapsibleSection title="Psychology">
+             <PsychologyGrid 
+               v-if="config" 
+               :config="config" 
+               :modelValue="activeTrade" 
+               @update:modelValue="handleTradeUpdate" 
+             />
+             <div v-else class="text-sm text-terminal-text/60 animate-pulse">Loading psychology...</div>
+           </CollapsibleSection>
+        </div>
+
+        <div v-else-if="activeDetailTab === 'charts'" class="space-y-4">
+           <CollapsibleSection title="Live TradingView Chart" :initial-expanded="false">
+             <TradingViewChart 
+               :symbol="activeTrade.Pair || ''" 
+               :market="activeTrade.Market" 
+             />
+           </CollapsibleSection>
+
+           <CollapsibleSection title="Screenshots of the Chart">
+             <TradeScreenshots :trade="activeTrade" @update="handleTradeUpdate" />
+           </CollapsibleSection>
+        </div>
+
+        <div v-else-if="activeDetailTab === 'review'" class="space-y-4">
+           <TradeReview 
+             :trade="activeTrade" 
+             :config="config || []" 
+             @update="handleTradeUpdate" 
+           />
         </div>
       </div>
 

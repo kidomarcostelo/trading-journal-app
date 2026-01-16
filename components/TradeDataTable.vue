@@ -12,121 +12,106 @@ const emit = defineEmits<{
 // Local state for editing
 const form = ref({ ...props.trade })
 
+// Helpers to detect key names in the incoming data
+const findKey = (obj: any, candidates: string[]) => {
+  return candidates.find(k => Object.prototype.hasOwnProperty.call(obj, k)) || candidates[0]
+}
+
+const actionKey = computed(() => findKey(form.value, ['Action', 'Direction', 'Type']))
+const marketKey = computed(() => findKey(form.value, ['Market', 'market']))
+const statusKey = computed(() => findKey(form.value, ['Status', 'status']))
+const riskKey = computed(() => findKey(form.value, ['Risk', 'risk']))
+const pnlKey = computed(() => findKey(form.value, ['PNL', 'PnL', 'Net PnL', 'pnl']))
+
 // Watch for prop changes to reset form (e.g. switching trades)
 watch(() => props.trade, (newTrade) => {
   form.value = { ...newTrade }
 }, { deep: true })
 
-const updateField = (field: string, value: any) => {
+const updateField = (fieldKey: string, value: any) => {
   const numValue = parseFloat(value)
-  form.value[field] = isNaN(numValue) ? value : numValue
-  
-  // Auto-calculate PnL
-  if (['EntryPrice', 'ExitPrice', 'Size'].includes(field)) {
-    calculatePnL()
-  }
-  
+  form.value[fieldKey] = isNaN(numValue) && value !== '' ? value : (value === '' ? '' : numValue)
   emit('update', { ...form.value })
-}
-
-const calculatePnL = () => {
-  const entry = parseFloat(form.value.EntryPrice) || 0
-  const exit = parseFloat(form.value.ExitPrice) || 0
-  const size = parseFloat(form.value.Size) || 0
-  const dir = String(form.value.Direction || '').toLowerCase()
-  
-  if (entry && exit && size) {
-    let pnl = 0
-    if (dir === 'long' || dir === 'buy') {
-      pnl = (exit - entry) * size
-    } else if (dir === 'short' || dir === 'sell') {
-      pnl = (entry - exit) * size
-    }
-    form.value.PnL = Number(pnl.toFixed(2))
-  }
 }
 </script>
 
 <template>
-  <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-    <!-- Entry Price -->
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+    <!-- Action (Direction) -->
     <div class="flex flex-col gap-1">
-      <label class="text-[10px] uppercase font-bold text-terminal-text/60 tracking-wider">Entry Price</label>
-      <input 
-        type="number" 
-        :value="form.EntryPrice"
-        @input="updateField('EntryPrice', ($event.target as HTMLInputElement).value)"
-        class="bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-sm text-terminal-highlight focus:border-terminal-accent focus:outline-none transition-colors"
-        placeholder="0.00"
-      />
-    </div>
-
-    <!-- Direction -->
-    <div class="flex flex-col gap-1">
-      <label class="text-[10px] uppercase font-bold text-terminal-text/60 tracking-wider">Direction</label>
-      <div class="flex bg-terminal-black border border-terminal-gray/30 rounded p-0.5">
+      <label class="text-[10px] uppercase font-bold text-terminal-text/90 tracking-wider">Action</label>
+      <div class="flex bg-terminal-black border border-terminal-gray/30 rounded p-0.5 h-[34px]">
         <button 
-          @click="updateField('Direction', 'Long')"
+          @click="updateField(actionKey, 'Long')"
           class="flex-1 px-2 py-1 text-[10px] font-bold uppercase rounded transition-colors"
-          :class="String(form.Direction).toLowerCase() === 'long' ? 'bg-emerald-500/20 text-emerald-400' : 'text-terminal-text/40 hover:text-terminal-text'"
+          :class="['long', 'buy'].includes(String(form[actionKey]).toLowerCase()) ? 'bg-emerald-500/20 text-emerald-400' : 'text-terminal-text/40 hover:text-terminal-text'"
         >
           Long
         </button>
         <button 
-          @click="updateField('Direction', 'Short')"
+          @click="updateField(actionKey, 'Short')"
           class="flex-1 px-2 py-1 text-[10px] font-bold uppercase rounded transition-colors"
-          :class="String(form.Direction).toLowerCase() === 'short' ? 'bg-rose-500/20 text-rose-400' : 'text-terminal-text/40 hover:text-terminal-text'"
+          :class="['short', 'sell'].includes(String(form[actionKey]).toLowerCase()) ? 'bg-rose-500/20 text-rose-400' : 'text-terminal-text/40 hover:text-terminal-text'"
         >
           Short
         </button>
       </div>
     </div>
 
-    <!-- Exit Price -->
+    <!-- Market -->
     <div class="flex flex-col gap-1">
-      <label class="text-[10px] uppercase font-bold text-terminal-text/60 tracking-wider">Exit Price</label>
+      <label class="text-[10px] uppercase font-bold text-terminal-text/90 tracking-wider">Market</label>
+      <select 
+        :value="form[marketKey]"
+        @change="updateField(marketKey, ($event.target as HTMLSelectElement).value)"
+        class="bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-sm text-terminal-highlight focus:border-terminal-accent focus:outline-none transition-colors appearance-none cursor-pointer"
+      >
+        <option value="" disabled>Select Market</option>
+        <option value="Crypto">Crypto</option>
+        <option value="Forex">Forex</option>
+        <option value="Indices">Indices</option>
+        <option value="Stocks">Stocks</option>
+        <option value="Commodities">Commodities</option>
+      </select>
+    </div>
+
+    <!-- Status -->
+    <div class="flex flex-col gap-1">
+      <label class="text-[10px] uppercase font-bold text-terminal-text/90 tracking-wider">Status</label>
+      <select 
+        :value="form[statusKey]"
+        @change="updateField(statusKey, ($event.target as HTMLSelectElement).value)"
+        class="bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-sm text-terminal-highlight focus:border-terminal-accent focus:outline-none transition-colors appearance-none cursor-pointer"
+      >
+        <option value="" disabled>Select Status</option>
+        <option value="Open">Open</option>
+        <option value="Closed">Closed</option>
+        <option value="Cancelled">Cancelled</option>
+        <option value="Missed">Missed</option>
+      </select>
+    </div>
+
+    <!-- Risk -->
+    <div class="flex flex-col gap-1">
+      <label class="text-[10px] uppercase font-bold text-terminal-text/90 tracking-wider">Risk</label>
       <input 
         type="number" 
-        :value="form.ExitPrice"
-        @input="updateField('ExitPrice', ($event.target as HTMLInputElement).value)"
+        :value="form[riskKey]"
+        @input="updateField(riskKey, ($event.target as HTMLInputElement).value)"
         class="bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-sm text-terminal-highlight focus:border-terminal-accent focus:outline-none transition-colors"
         placeholder="0.00"
       />
     </div>
 
-    <!-- Size -->
+    <!-- PNL -->
     <div class="flex flex-col gap-1">
-      <label class="text-[10px] uppercase font-bold text-terminal-text/60 tracking-wider">Size</label>
+      <label class="text-[10px] uppercase font-bold text-terminal-text/90 tracking-wider">PNL</label>
       <input 
         type="number" 
-        :value="form.Size"
-        @input="updateField('Size', ($event.target as HTMLInputElement).value)"
-        class="bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-sm text-terminal-highlight focus:border-terminal-accent focus:outline-none transition-colors"
-        placeholder="1.0"
-      />
-    </div>
-
-    <!-- PnL -->
-    <div class="flex flex-col gap-1">
-      <label class="text-[10px] uppercase font-bold text-terminal-text/60 tracking-wider">PnL</label>
-      <input 
-        type="number" 
-        :value="form.PnL"
-        @input="updateField('PnL', ($event.target as HTMLInputElement).value)"
+        :value="form[pnlKey]"
+        @input="updateField(pnlKey, ($event.target as HTMLInputElement).value)"
         class="bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-sm font-mono focus:border-terminal-accent focus:outline-none transition-colors"
-        :class="Number(form.PnL) > 0 ? 'text-emerald-400' : Number(form.PnL) < 0 ? 'text-rose-400' : 'text-terminal-text'"
-        placeholder="0.00"
-      />
-    </div>
-
-    <!-- MAE -->
-    <div class="flex flex-col gap-1">
-      <label class="text-[10px] uppercase font-bold text-terminal-text/60 tracking-wider">MAE</label>
-      <input 
-        type="number" 
-        :value="form.MAE"
-        @input="updateField('MAE', ($event.target as HTMLInputElement).value)"
-        class="bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-sm text-rose-400/80 focus:border-terminal-accent focus:outline-none transition-colors"
+        :class="Number(form[pnlKey]) > 0 ? 'text-emerald-400' : Number(form[pnlKey]) < 0 ? 'text-rose-400' : 'text-terminal-text'"
         placeholder="0.00"
       />
     </div>

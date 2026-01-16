@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
 
   const response = await client.spreadsheets.values.get({
     spreadsheetId,
-    range: 'Chips!A:Z', // Fetch all columns
+    range: 'Chips!A:ZZ', // Fetch all columns
     majorDimension: 'COLUMNS' // Fetch by column to make parsing easier
   })
 
