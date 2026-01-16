@@ -22,14 +22,13 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Trade Detail - Data Table & Stats' (Protocol in workflow.md) [checkpoint: 0c831fb]
 
 ## Phase 4: Strategy Grid & Interactive Tags
-- [ ] Task: Write tests for the categorized Chip Grid (grouping and toggling).
-- [ ] Task: Implement the `StrategyAccordion` component to group active chips by category.
-- [ ] Task: Refactor `Combobox` or create a new `TagToggle` for inline editing within the grid.
-- [ ] Task: Integrate the grid into Pane 3 with collapse/expand functionality.
+- [x] Task: Write tests for the categorized Chip Grid (grouping and toggling). [commit: ea82af0]
+- [x] Task: Implement the `StrategyAccordion` component to group active chips by category. [commit: ea82af0]
+- [x] Task: Refactor `Combobox` or create a new `TagToggle` for inline editing within the grid. [commit: ea82af0]
+- [x] Task: Integrate the grid into Pane 3 with collapse/expand functionality. [commit: ea82af0]
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Strategy Grid & Interactive Tags' (Protocol in workflow.md)
 
 ## Phase 5: Image Comparison & Traversal
-- [ ] Task: Write tests for image traversal logic (indexing) and TradingView URL parsing.
 - [ ] Task: Implement the `ImageComparison` component with side-by-side "Before" and "After" panes.
 - [ ] Task: Add navigation buttons (Next/Prev) for traversing multiple images on each side.
 - [ ] Task: Implement automatic rendering for pasted TradingView image links.
