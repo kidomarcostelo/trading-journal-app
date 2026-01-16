@@ -44,16 +44,32 @@ export default defineEventHandler(async (event) => {
     range: `Master!${colLetter}:${colLetter}`,
   })
 
-  const idValues = idResponse.data.values?.flat()
-  // idValues[0] is Header 'ID'. idValues[1] is row 2.
-  // Find index of tradeId
-  const rowIndexInData = idValues?.findIndex((val: string) => String(val) === String(tradeId))
+  const idValues = idResponse.data.values?.flat() || []
   
-  if (rowIndexInData === undefined || rowIndexInData === -1) {
-    throw new Error(`Trade with ID ${tradeId} not found.`)
+  let sheetRowIndex = -1
+
+  // Check if ID is a generated "row-X" ID
+  if (String(tradeId).startsWith('row-')) {
+    const dataIndex = parseInt(String(tradeId).replace('row-', ''), 10)
+    if (!isNaN(dataIndex)) {
+      // dataIndex 0 is the first row AFTER header.
+      // Header is Row 1. Data Row 0 is Row 2.
+      sheetRowIndex = dataIndex + 2
+    }
   }
 
-  const sheetRowIndex = rowIndexInData + 1 // 1-based row index
+  // If not found yet, try standard lookup
+  if (sheetRowIndex === -1) {
+    // idValues[0] is Header 'ID'. idValues[1] is row 2.
+    const rowIndexInData = idValues.findIndex((val: string) => String(val) === String(tradeId))
+    if (rowIndexInData !== -1) {
+      sheetRowIndex = rowIndexInData + 1 // 1-based row index
+    }
+  }
+  
+  if (sheetRowIndex === -1) {
+    throw new Error(`Trade with ID ${tradeId} not found.`)
+  }
 
   // 3. Fetch Existing Row Data to Merge
   const rowRange = `Master!A${sheetRowIndex}:${getColumnLetter(headers.length - 1)}${sheetRowIndex}`

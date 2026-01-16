@@ -12,57 +12,33 @@ interface Props {
 const props = defineProps<Props>()
 const emit = defineEmits(['update:modelValue'])
 
-// The specific strategy headers requested
-const STRATEGY_SCHEMA = [
-  { 
-    id: 'Strategies', 
-    label: 'Strategies', 
-    candidates: ['Strategies', 'Strategy'] 
-  },
-  { 
-    id: 'Price Action', 
-    label: 'Price Action', 
-    candidates: ['Price Action', 'PriceAction', 'PA', 'Setup'] 
-  },
-  { 
-    id: 'HTF: trading with trend? (1d - 1w)', 
-    label: 'HTF: trading with trend? (1d - 1w)', 
-    candidates: ['HTF: trading with trend? (1d - 1w)', 'HTF', 'Higher Timeframe'] 
-  },
-  { 
-    id: 'MTF: Is the medium trend helping or fighting me? (1hr - 4hr)', 
-    label: 'MTF: Is the medium trend helping or fighting me? (1hr - 4hr)', 
-    candidates: ['MTF: Is the medium trend helping or fighting me? (1hr - 4hr)', 'MTF', 'Medium Timeframe'] 
-  },
-  { 
-    id: 'LTF: short-term entry context? (mins)', 
-    label: 'LTF: short-term entry context? (mins)', 
-    candidates: ['LTF: short-term entry context? (mins)', 'LTF', 'Lower Timeframe'] 
-  }
+const PSYCH_SCHEMA = [
+  { id: 'Trade Intention', label: 'Trade Intention', candidates: ['Trade Intention', 'Intention'] },
+  { id: 'felt rushed to open the trade?', label: 'Rushed Entry?', candidates: ['felt rushed to open the trade?', 'Rushed', 'Impulsive'] },
+  { id: 'Anxious during trade', label: 'Anxious?', candidates: ['Anxious during trade', 'Anxiety'] },
+  { id: 'Satisfied with result?', label: 'Satisfied?', candidates: ['Satisfied with result?', 'Satisfaction'] },
+  { id: 'News Impact', label: 'News Impact', candidates: ['News Impact', 'News'] },
+  { id: 'Followed RR?', label: 'Followed RR?', candidates: ['Followed RR?', 'RR'] },
+  { id: 'did i out early?', label: 'Exited Early?', candidates: ['did i out early?', 'Early Exit'] }
 ]
 
-// Map the requested schema to the actual data found in config
 const sourceSections = computed(() => {
-  // We map the incoming config (which represents the Sheet column order)
-  // but only keep the ones that match our strategy schema.
-  return props.config
-    .map(c => {
-      const schema = STRATEGY_SCHEMA.find(s => 
-        s.candidates.some(cand => c.id.toLowerCase() === cand.toLowerCase())
-      )
-      if (!schema) return null
-      return {
-        ...schema,
-        actualId: c.id,
-        values: c.values
-      }
-    })
-    .filter(Boolean) as any[]
+  return PSYCH_SCHEMA.map(schema => {
+    const match = props.config.find(c => 
+      schema.candidates.some(cand => c.id.toLowerCase() === cand.toLowerCase())
+    )
+    return {
+      ...schema,
+      actualId: match?.id || schema.id,
+      values: match?.values || []
+    }
+  })
 })
 
 // Reordering Logic
 const orderedSections = ref<any[]>([])
 const draggedItemIndex = ref<number | null>(null)
+const dropTargetIndex = ref<number | null>(null)
 
 // Sync with source and restore order
 watch(sourceSections, (newSections) => {
@@ -71,11 +47,10 @@ watch(sourceSections, (newSections) => {
     return
   }
 
-  const savedOrder = localStorage.getItem('strategy-order')
+  const savedOrder = localStorage.getItem('psychology-order')
   if (savedOrder) {
     try {
       const orderIds = JSON.parse(savedOrder) as string[]
-      // Sort newSections based on saved IDs
       const sorted = [...newSections].sort((a, b) => {
         const indexA = orderIds.indexOf(a.id)
         const indexB = orderIds.indexOf(b.id)
@@ -95,7 +70,7 @@ watch(sourceSections, (newSections) => {
 
 const saveOrder = () => {
   const ids = orderedSections.value.map(s => s.id)
-  localStorage.setItem('strategy-order', JSON.stringify(ids))
+  localStorage.setItem('psychology-order', JSON.stringify(ids))
 }
 
 const onDragStart = (e: DragEvent, index: number) => {
@@ -103,8 +78,6 @@ const onDragStart = (e: DragEvent, index: number) => {
   if (e.dataTransfer) {
     e.dataTransfer.effectAllowed = 'move'
     e.dataTransfer.dropEffect = 'move'
-    
-    // Slight opacity to indicate dragging, but keep it visible
     const target = e.target as HTMLElement
     setTimeout(() => {
       target.classList.add('opacity-50')
@@ -119,8 +92,6 @@ const onDragEnd = (e: DragEvent) => {
   dropTargetIndex.value = null
 }
 
-const dropTargetIndex = ref<number | null>(null)
-
 const onDragEnter = (index: number) => {
   if (draggedItemIndex.value !== null && draggedItemIndex.value !== index) {
     dropTargetIndex.value = index
@@ -133,9 +104,7 @@ const onDrop = (index: number) => {
   const itemToMove = orderedSections.value[draggedItemIndex.value]
   const newItems = [...orderedSections.value]
   
-  // Remove from old pos
   newItems.splice(draggedItemIndex.value, 1)
-  // Insert at new pos
   newItems.splice(index, 0, itemToMove)
   
   orderedSections.value = newItems
@@ -157,9 +126,9 @@ const getModelValueForCategory = (actualId: string): string[] => {
 
 <template>
   <TransitionGroup 
-    name="strategy-grid" 
+    name="psych-grid" 
     tag="div" 
-    class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4"
+    class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"
   >
     <div 
       v-for="(section, index) in orderedSections" 
@@ -176,7 +145,6 @@ const getModelValueForCategory = (actualId: string): string[] => {
         'opacity-50 border-dashed': draggedItemIndex === index 
       }"
     >
-      <!-- Static Header -->
       <div class="flex items-center justify-between border-b border-terminal-gray/30 pb-2 mb-1 pointer-events-none">
         <span class="text-[10px] font-bold text-terminal-highlight tracking-widest uppercase truncate" :title="section.label">
           {{ section.label }}
@@ -194,15 +162,11 @@ const getModelValueForCategory = (actualId: string): string[] => {
         @update:modelValue="(val) => updateCategory(section.actualId, val)"
       />
     </div>
-
-    <div v-if="orderedSections.length === 0" key="empty" class="col-span-full text-center py-8 text-terminal-text/30 border border-dashed border-terminal-gray rounded-lg">
-      <p class="text-xs italic">No matching strategy categories found in configuration.</p>
-    </div>
   </TransitionGroup>
 </template>
 
 <style scoped>
-.strategy-grid-move {
+.psych-grid-move {
   transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 </style>

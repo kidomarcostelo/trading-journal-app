@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
 
   const response = await client.spreadsheets.values.get({
     spreadsheetId,
-    range: 'Master!A:Z',
+    range: 'Master!A:ZZ',
     valueRenderOption: 'FORMULA', // Request formulas to handle =IMAGE()
   })
 
@@ -29,8 +29,18 @@ export default defineEventHandler(async (event) => {
     })
     
     // Ensure unique ID
-    if (!trade.ID && !trade.id) {
+    // Check for common ID column names
+    const idKey = Object.keys(trade).find(k => ['id', 'trade id', 'tradeid'].includes(k.toLowerCase()))
+    const existingId = idKey ? trade[idKey] : undefined
+
+    if (!existingId) {
         trade.ID = `row-${rowIndex}`
+    } else {
+        // Normalize to ID for frontend consistency if needed, or just rely on existing key
+        // But if we rely on 'row-X' fallback, we should ensure we use the real ID if found.
+        if (!trade.ID && !trade.id) {
+             trade.ID = existingId
+        }
     }
     
     return trade

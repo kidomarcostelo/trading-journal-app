@@ -26,10 +26,11 @@
 - [x] Task: Implement the `StrategyAccordion` component to group active chips by category. [commit: ea82af0]
 - [x] Task: Refactor `Combobox` or create a new `TagToggle` for inline editing within the grid. [commit: ea82af0]
 - [x] Task: Integrate the grid into Pane 3 with collapse/expand functionality. [commit: ea82af0]
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Strategy Grid & Interactive Tags' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Strategy Grid & Interactive Tags' (Protocol in workflow.md) [commit: 2121169]
 
 ## Phase 5: Image Comparison & Traversal
-- [ ] Task: Implement the `ImageComparison` component with side-by-side "Before" and "After" panes.
-- [ ] Task: Add navigation buttons (Next/Prev) for traversing multiple images on each side.
-- [ ] Task: Implement automatic rendering for pasted TradingView image links.
-- [ ] Task: Conductor - User Manual Verification 'Phase 5: Image Comparison & Traversal' (Protocol in workflow.md)
+- [x] Task: Write tests for image traversal logic (indexing) and TradingView URL parsing. [commit: 2121169]
+- [x] Task: Implement the `ImageComparison` component with side-by-side "Before" and "After" panes. [commit: 2121169]
+- [x] Task: Add navigation buttons (Next/Prev) for traversing multiple images on each side. [commit: 2121169]
+- [x] Task: Implement automatic rendering for pasted TradingView image links. [commit: 2121169]
+- [x] Task: Conductor - User Manual Verification 'Phase 5: Image Comparison & Traversal' (Protocol in workflow.md) [commit: 2121169]
