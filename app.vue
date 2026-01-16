@@ -21,6 +21,7 @@ import TradeDataTable from './components/TradeDataTable.vue'
 import TradeStats from './components/TradeStats.vue'
 import PaneNav from './components/PaneNav.vue'
 import StrategyAccordion from './components/StrategyAccordion.vue'
+import CollapsibleSection from './components/CollapsibleSection.vue'
 import type { ChipCategory } from './types'
 
 const showForm = ref(false)
@@ -298,7 +299,7 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <div v-if="activeTrade" class="p-8 max-w-4xl mx-auto">
+      <div v-if="activeTrade" class="p-8 w-full">
         <div class="mb-8">
            <div class="flex items-center justify-between mb-2">
              <h1 class="text-2xl font-bold text-terminal-highlight">{{ activeTrade.Pair }}</h1>
@@ -320,15 +321,15 @@ onUnmounted(() => {
           <TradeStats :trades="filteredTrades" />
         </div>
         
-        <!-- Phase 3 components -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-           <div class="bg-terminal-black/30 border border-terminal-gray p-6 rounded-lg">
-             <h3 class="font-medium text-terminal-highlight mb-4">Trade Data</h3>
+        <!-- Phase 4 components -->
+        <div class="space-y-4">
+           <!-- Trade Data Section -->
+           <CollapsibleSection title="Trade Data">
              <TradeDataTable :trade="activeTrade" @update="handleTradeUpdate" />
-           </div>
-           
-           <div class="bg-terminal-black/30 border border-terminal-gray p-6 rounded-lg">
-             <h3 class="font-medium text-terminal-highlight mb-4">Strategy</h3>
+           </CollapsibleSection>
+
+           <!-- Strategy & Tags Section -->
+           <CollapsibleSection title="Strategy & Tags">
              <StrategyAccordion 
                v-if="config" 
                :config="config" 
@@ -336,7 +337,7 @@ onUnmounted(() => {
                @update:modelValue="handleTradeUpdate" 
              />
              <div v-else class="text-sm text-terminal-text/60 animate-pulse">Loading strategies...</div>
-           </div>
+           </CollapsibleSection>
         </div>
       </div>
 

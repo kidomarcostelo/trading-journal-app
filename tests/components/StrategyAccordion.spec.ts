@@ -32,7 +32,8 @@ describe('StrategyAccordion', () => {
       }
     })
 
-    const headers = wrapper.findAll('.accordion-header')
+    const headers = wrapper.findAll('button')
+    // Each CollapsibleSection has a button as its header
     expect(headers).toHaveLength(2)
     expect(headers[0].text()).toContain('Strategy')
     expect(headers[1].text()).toContain('Psychology')
@@ -46,18 +47,17 @@ describe('StrategyAccordion', () => {
       }
     })
 
-    // Initially assume first is expanded or all are expanded? 
-    // Spec says "Accordion style". Usually one open or independent toggles.
-    // Let's assume independent toggles.
-    
-    // Check initial state (maybe all collapsed or first expanded).
-    // Let's check for content visibility.
-    
-    const header = wrapper.find('.accordion-header')
+    // Find the first CollapsibleSection's button
+    const header = wrapper.find('button')
     await header.trigger('click')
     
-    // Verify state change (class or existence of content)
-    // Depending on implementation, content might be v-if or v-show
+    // CollapsibleSection should now be collapsed (since it starts expanded)
+    // We check if ANY ChipSelect exists.
+    const chipSelect = wrapper.findComponent({ name: 'ChipSelect' })
+    expect(chipSelect.exists()).toBe(true) // The second one should still exist if they are independent
+    
+    // Let's check the number of ChipSelects
+    expect(wrapper.findAllComponents({ name: 'ChipSelect' })).toHaveLength(1)
   })
 
   it('passes correct props to ChipSelect', async () => {
