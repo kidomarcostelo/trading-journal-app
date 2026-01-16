@@ -4,64 +4,49 @@ import TradeDataTable from '../../components/TradeDataTable.vue'
 
 describe('TradeDataTable', () => {
   const mockTrade = {
-    ID: '1',
-    Pair: 'BTC/USD',
-    EntryPrice: 50000,
-    ExitPrice: 52000,
-    Size: 1.5,
-    Direction: 'Long',
-    PnL: 3000,
-    MAE: 500
+    Action: 'Long',
+    Market: 'Crypto',
+    Status: 'Open',
+    Risk: 100,
+    PNL: 250
   }
 
-  it('renders input fields for trade metrics', () => {
+  it('renders labels and data from props', () => {
     const wrapper = mount(TradeDataTable, {
-      props: { trade: mockTrade }
-    })
-    
-    // Check for core inputs
-    expect(wrapper.find('input[type="number"]').exists()).toBe(true)
-    // We expect inputs for Entry, Exit, Size, PnL, MAE
-    const inputs = wrapper.findAll('input')
-    expect(inputs.length).toBeGreaterThanOrEqual(5)
-  })
-
-  it('updates local state on input', async () => {
-    const wrapper = mount(TradeDataTable, {
-      props: { trade: mockTrade }
-    })
-    
-    const entryInput = wrapper.findAll('input').find(i => i.element.value === '50000')
-    expect(entryInput).toBeDefined()
-    
-    await entryInput!.setValue(51000)
-    
-    // Check if the component emits an update or if local model changes
-    // Assuming we use v-model or emit 'update:trade' or 'save'
-    expect(wrapper.emitted('update')).toBeTruthy()
-    expect(wrapper.emitted('update')![0][0]).toMatchObject({ EntryPrice: 51000 })
-  })
-
-  it('calculates PnL automatically if Entry/Exit/Size change', async () => {
-    // This assumes the component has internal logic to recalc PnL
-    const wrapper = mount(TradeDataTable, {
-      props: { 
-        trade: { ...mockTrade, EntryPrice: 100, ExitPrice: 110, Size: 1, Direction: 'Long' } 
+      props: {
+        trade: mockTrade
       }
     })
     
-    // PnL should be (110 - 100) * 1 = 10
-    // If we change Exit to 120, PnL should be 20
-    const exitInput = wrapper.findAll('input').find(i => i.element.value === '110')
-    await exitInput!.setValue(120)
+    // Check for new headers
+    expect(wrapper.text()).toContain('Action')
+    expect(wrapper.text()).toContain('Market')
+    expect(wrapper.text()).toContain('Status')
+    expect(wrapper.text()).toContain('Risk')
+    expect(wrapper.text()).toContain('PNL')
     
-    // Verify emitted update includes calculated PnL
-    // Note: Implementation detail - component might auto-calc or wait for user.
-    // For this test, we expect auto-calc on field blur or input.
-    const updates = wrapper.emitted('update')
-    const lastUpdate = updates![updates!.length - 1][0]
-    expect(lastUpdate).toHaveProperty('PnL')
-    // (120 - 100) * 1 = 20
-    expect(lastUpdate.PnL).toBeCloseTo(20)
+    // Check values
+    const selects = wrapper.findAll('select')
+    expect(selects[0].element.value).toBe('Crypto') // Market
+    expect(selects[1].element.value).toBe('Open') // Status
+    
+    const inputs = wrapper.findAll('input')
+    expect(inputs[0].element.value).toBe('100') // Risk
+    expect(inputs[1].element.value).toBe('250') // PNL
+  })
+
+  it('emits update when an input changes', async () => {
+    const wrapper = mount(TradeDataTable, {
+      props: {
+        trade: mockTrade
+      }
+    })
+
+    const inputs = wrapper.findAll('input')
+    await inputs[0].setValue('150') // Risk input is now first input (after selects)
+
+    expect(wrapper.emitted('update')).toBeTruthy()
+    const emittedValue = wrapper.emitted('update')![0][0] as any
+    expect(emittedValue.Risk).toBe(150)
   })
 })
