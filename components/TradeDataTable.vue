@@ -61,6 +61,27 @@ const calculatePnL = () => {
       />
     </div>
 
+    <!-- Direction -->
+    <div class="flex flex-col gap-1">
+      <label class="text-[10px] uppercase font-bold text-terminal-text/60 tracking-wider">Direction</label>
+      <div class="flex bg-terminal-black border border-terminal-gray/30 rounded p-0.5">
+        <button 
+          @click="updateField('Direction', 'Long')"
+          class="flex-1 px-2 py-1 text-[10px] font-bold uppercase rounded transition-colors"
+          :class="String(form.Direction).toLowerCase() === 'long' ? 'bg-emerald-500/20 text-emerald-400' : 'text-terminal-text/40 hover:text-terminal-text'"
+        >
+          Long
+        </button>
+        <button 
+          @click="updateField('Direction', 'Short')"
+          class="flex-1 px-2 py-1 text-[10px] font-bold uppercase rounded transition-colors"
+          :class="String(form.Direction).toLowerCase() === 'short' ? 'bg-rose-500/20 text-rose-400' : 'text-terminal-text/40 hover:text-terminal-text'"
+        >
+          Short
+        </button>
+      </div>
+    </div>
+
     <!-- Exit Price -->
     <div class="flex flex-col gap-1">
       <label class="text-[10px] uppercase font-bold text-terminal-text/60 tracking-wider">Exit Price</label>
