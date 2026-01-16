@@ -182,15 +182,23 @@ const updateTheme = () => {
   }
 }
 
+const handleKeydown = (e: KeyboardEvent) => {
+  if (e.key === 'Escape' && showForm.value) {
+    showForm.value = false
+  }
+}
+
 onMounted(() => {
   updateTheme()
   window.addEventListener('mousemove', doResize)
   window.addEventListener('mouseup', stopResize)
+  window.addEventListener('keydown', handleKeydown)
 })
 
 onUnmounted(() => {
   window.removeEventListener('mousemove', doResize)
   window.removeEventListener('mouseup', stopResize)
+  window.removeEventListener('keydown', handleKeydown)
 })
 </script>
 
@@ -315,12 +323,11 @@ onUnmounted(() => {
     <!-- Pane 3: Main Detail View -->
     <main data-testid="pane-detail" class="flex-1 bg-terminal-dark overflow-y-auto relative">
       <!-- Form Modal/Overlay -->
-      <div v-if="showForm" class="absolute inset-0 z-10 bg-terminal-black/80 backdrop-blur-sm flex items-center justify-center p-6">
-        <div class="bg-terminal-dark border border-terminal-gray rounded-xl shadow-2xl w-full max-w-2xl p-6 relative">
-          <button @click="showForm = false" class="absolute top-4 right-4 text-terminal-text/40 hover:text-terminal-text">
+      <div v-if="showForm" class="absolute inset-0 z-50 bg-terminal-black/80 backdrop-blur-sm flex items-center justify-center p-6">
+        <div class="bg-terminal-dark border border-terminal-gray rounded-xl shadow-2xl w-full max-w-[90vw] h-[85vh] relative overflow-hidden">
+          <button @click="showForm = false" class="absolute top-4 right-4 text-terminal-text/40 hover:text-terminal-text z-10">
             <PlusCircle class="w-6 h-6 rotate-45" />
           </button>
-          <h2 class="text-xl font-semibold mb-6 text-terminal-highlight">New Trade Entry</h2>
           <TradeForm @success="onTradeSuccess" />
         </div>
       </div>
