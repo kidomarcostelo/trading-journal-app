@@ -35,5 +35,6 @@ Final checks on the production environment.
 
 - [ ] Task: Verify the live URL (`*.a.run.app`) redirects to Google Login.
 - [ ] Task: Confirm that the Google Sheets integration works in the production environment (correct Service Account usage).
+  - *Checkpoint (2026-01-20):* Deployment pipeline is active. Debugging `ERR_OSSL_UNSUPPORTED` with Google Private Key on Cloud Run. Switched to Node 18. Next step: Verify if Node 18 + Clean Key Secret fixes the issue.
 - [ ] Task: Test logout functionality and session expiration.
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Final Verification' (Protocol in workflow.md)
