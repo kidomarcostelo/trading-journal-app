@@ -10,4 +10,3 @@ tests
 vitest.config.ts
 tailwind.config.ts
 tsconfig.json
-package-lock.json
