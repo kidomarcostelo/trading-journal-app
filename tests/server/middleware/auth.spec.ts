@@ -14,11 +14,12 @@ vi.mock('h3', async (importOriginal) => {
   const actual = await importOriginal() as any
   return {
     ...actual,
-    createError: vi.fn((err) => err)
+    createError: vi.fn((err) => err),
+    sendRedirect: vi.fn()
   }
 })
 
-import { createError } from 'h3'
+import { createError, sendRedirect } from 'h3'
 
 describe('Auth Middleware', () => {
   beforeEach(() => {
@@ -50,7 +51,19 @@ describe('Auth Middleware', () => {
     expect(createError).not.toHaveBeenCalled()
   })
 
-  it('throws 401 if no session and accessing protected route', async () => {
+  it('redirects to /login if no session and accessing protected page', async () => {
+    const event = {
+      path: '/'
+    } as any
+    
+    vi.mocked(getUserSession).mockResolvedValue({})
+    
+    await authMiddleware(event)
+    
+    expect(sendRedirect).toHaveBeenCalledWith(event, '/login')
+  })
+
+  it('throws 401 if no session and accessing protected API', async () => {
     const event = {
       path: '/api/trades'
     } as any
