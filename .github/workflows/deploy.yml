@@ -1,0 +1,49 @@
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches: [ main, master ]
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  SERVICE_NAME: trading-journal-app
+  REGION: us-central1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Google Auth
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+
+    - name: Configure Docker
+      run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+
+    - name: Build and Push Container
+      run: |-
+        docker build -t us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/cloud-run-source-repo/${{ env.SERVICE_NAME }}:${{ github.sha }} .
+        docker push us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/cloud-run-source-repo/${{ env.SERVICE_NAME }}:${{ github.sha }}
+
+    - name: Deploy to Cloud Run
+      uses: google-github-actions/deploy-cloudrun@v2
+      with:
+        service: ${{ env.SERVICE_NAME }}
+        region: ${{ env.REGION }}
+        image: us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/cloud-run-source-repo/${{ env.SERVICE_NAME }}:${{ github.sha }}
+        env_vars: |-
+          NUXT_OAUTH_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+          NUXT_OAUTH_GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+          NUXT_SESSION_PASSWORD=${{ secrets.NUXT_SESSION_PASSWORD }}
+          ALLOWED_EMAIL=${{ secrets.ALLOWED_EMAIL }}
+          GOOGLE_SERVICE_ACCOUNT_EMAIL=${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+          GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }}
+          GOOGLE_SPREADSHEET_ID=${{ secrets.GOOGLE_SPREADSHEET_ID }}
