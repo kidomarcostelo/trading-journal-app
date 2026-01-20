@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM node:20 AS builder
+FROM node:18 AS builder
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Runtime
-FROM node:20-slim
+FROM node:18-slim
 
 WORKDIR /app
 
