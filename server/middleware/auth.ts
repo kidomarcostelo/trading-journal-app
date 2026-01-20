@@ -1,5 +1,4 @@
 import { defineEventHandler, createError, sendRedirect } from 'h3'
-import { getUserSession } from '#auth'
 
 export default defineEventHandler(async (event) => {
   const publicRoutes = ['/login', '/api/auth/google']
