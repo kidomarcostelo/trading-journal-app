@@ -35,7 +35,7 @@ if (categories.value) {
 
 // Special handling for "Pair" category
 const pairCategory = computed(() => {
-  return categories.value?.find(c => ['pair', 'pairs'].includes(c.id.toLowerCase()))
+  return categories.value?.find(c => ['Pairs', 'pairs'].includes(c.id.toLowerCase()))
 })
 
 // Filter for requested strategy/psych chips
