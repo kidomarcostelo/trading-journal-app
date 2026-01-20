@@ -1,0 +1,59 @@
+<script setup lang="ts">
+import { computed } from 'vue'
+
+const props = defineProps<{
+  trades: any[]
+}>()
+
+const stats = computed(() => {
+  if (!props.trades || props.trades.length === 0) {
+    return { count: 0, pnl: 0, winRate: 0 }
+  }
+
+  const count = props.trades.length
+  
+  // Calculate Total PnL (sum of all PnL, assuming open trades might have unrealized PnL or 0)
+  const pnl = props.trades.reduce((sum, t) => sum + (parseFloat(t.PnL) || 0), 0)
+
+  // Calculate Win Rate (based on CLOSED trades only)
+  const closedTrades = props.trades.filter(t => (t.Status || '').toLowerCase() === 'closed')
+  const wins = closedTrades.filter(t => (parseFloat(t.PnL) || 0) > 0).length
+  
+  const winRate = closedTrades.length > 0 
+    ? (wins / closedTrades.length) * 100 
+    : 0
+
+  return {
+    count,
+    pnl: pnl.toFixed(2),
+    winRate: winRate.toFixed(1)
+  }
+})
+</script>
+
+<template>
+  <div class="grid grid-cols-3 gap-4">
+    <!-- Trades Count -->
+    <div class="bg-terminal-black border border-terminal-gray/30 rounded p-3 flex flex-col items-center">
+      <span class="text-[10px] uppercase font-bold text-terminal-text/60 tracking-wider">Trades</span>
+      <span class="text-xl font-bold text-terminal-highlight">{{ stats.count }}</span>
+    </div>
+
+    <!-- Win Rate -->
+    <div class="bg-terminal-black border border-terminal-gray/30 rounded p-3 flex flex-col items-center">
+      <span class="text-[10px] uppercase font-bold text-terminal-text/60 tracking-wider">Win Rate</span>
+      <span class="text-xl font-bold text-emerald-400">{{ stats.winRate }}%</span>
+    </div>
+
+    <!-- Total PnL -->
+    <div class="bg-terminal-black border border-terminal-gray/30 rounded p-3 flex flex-col items-center">
+      <span class="text-[10px] uppercase font-bold text-terminal-text/60 tracking-wider">Total PnL</span>
+      <span 
+        class="text-xl font-bold"
+        :class="Number(stats.pnl) > 0 ? 'text-emerald-400' : Number(stats.pnl) < 0 ? 'text-rose-400' : 'text-terminal-highlight'"
+      >
+        {{ stats.pnl }}
+      </span>
+    </div>
+  </div>
+</template>

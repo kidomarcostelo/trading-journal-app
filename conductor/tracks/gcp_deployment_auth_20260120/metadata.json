@@ -1,0 +1,8 @@
+{
+  "track_id": "gcp_deployment_auth_20260120",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-20T21:46:00Z",
+  "updated_at": "2026-01-20T21:46:00Z",
+  "description": "Deploy to GCP Cloud Run and restrict access to a specific email using Google OAuth 2.0."
+}

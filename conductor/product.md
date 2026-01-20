@@ -13,32 +13,35 @@
 **Context:**
 I am building a trading journal where Google Sheets acts as the database.
 * **`Master` Sheet:** Stores trade logs (Date, Pair, PnL, Images, etc.).
-* **`Chips` Sheet:** Stores configuration for dropdowns. Columns = Categories (e.g., "Strategies"), Rows = Options.
+* **`Chips` Sheet:** Stores configuration for dropdowns. Columns = Categories (e.g., "Strategies"), Rows = Options. The application parses this column-wise to allow dynamic category management.
 
 **Key Features:**
 
-1.  **Type-Safe "Chips" System**
-    * **Logic:** Fetch `Chips.csv` on init. Define a TypeScript interface `ChipConfig` mapping categories to string arrays.
-    * **Component:** Create a generic `<ChipSelect />` component.
-        * Props: `category: string`, `modelValue: string | string[]`, `multiple?: boolean`.
-        * UI: Use Tailwind pills. Map "Win"/"Loss" tags to Green/Red colors dynamically.
+1.  **Searchable "Combobox" Tagging System**
+    * **Logic:** Fetch `Chips` sheet data via `/api/config`. Map categories to searchable inputs.
+    * **Component:** A custom `<Combobox />` component that supports both single selection (e.g., for Pairs) and multiple selection (e.g., for Strategies).
+    * **UX:** Users can type to filter existing options or enter custom values. Selected tags appear as chips inside the input field.
+    * **Aesthetic:** Modern minimalist style with subtle emerald (win) and rose (loss) highlighting.
 
 2.  **Trade Entry Form**
-    * **Inputs:** Strongly typed form state (e.g., `interface TradeEntry`).
-    * **Fields:** Pair, Price, PnL, Image URLs (text input), and Chip Selects.
-    * **Action:** POST data to `/api/trades`.
+    *   **Dashboard Integration:** A Master-Detail 3-pane layout for managing trades.
+    *   **Pane 1 (Nav):** Persistent side navigation for major views.
+    *   **Pane 2 (List):** Scrollable, filterable list of trade summaries.
+    *   **Pane 3 (Detail):** Tabbed interface (Journal, Charts, Review) for deep analysis.
+    *   **Editing:** Inline editing for core metrics, strategies, psychology, and journals with auto-save.
 
 3.  **Dashboard Views**
-    * **Gallery:** CSS Grid cards displaying "Before/After" images with PnL badges.
-    * **List:** Dense table view.
-    * **Theme:** Dark mode ("Financial Terminal" aesthetic: `bg-slate-900`, `text-slate-300`).
+    *   **Tabbed Master-Detail:** Replaced previous gallery toggle with a dense, professional Master-Detail view.
+    *   **Live Charts:** Integrated TradingView widget for real-time price reference.
+    *   **Image Carousel:** High-performance Before/After carousel with pagination and looping.
+    *   **Theme:** Modern Dark Dashboard (`bg-slate-950`, `text-slate-200`).
 
 **Backend Architecture (Nuxt Nitro):**
 * Create `server/utils/googleSheets.ts` to handle authentication using Service Account credentials.
 * **Endpoints:**
-    * `GET /api/config`: Returns typed `Chips` data.
-    * `GET /api/trades`: Returns `Trade[]` from Master sheet.
-    * `POST /api/trades`: Validates body against `TradeEntry` interface and appends row to Master.
+    * `GET /api/config`: Returns an array of `ChipCategory` objects parsed from the Chips sheet columns.
+    * `GET /api/trades`: Returns trade logs where keys match the spreadsheet headers. Automatically parses `=IMAGE()` formulas and comma-separated lists for image columns.
+    * `POST /api/trades`: Dynamically maps JSON keys to spreadsheet headers. Auto-generates incremental IDs and formats dates as `mm/dd/yyyy`.
 
 **Step-by-Step Instructions (Execute in Order):**
 
