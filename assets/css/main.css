@@ -26,10 +26,6 @@
     --ui-accent: 99 102 241;       /* #6366f1 (Indigo-500) */
   }
 
-  body {
-    @apply bg-terminal-black text-terminal-text font-sans transition-colors duration-300;
-  }
-
   /* Custom Scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
