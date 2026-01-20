@@ -1,0 +1,46 @@
+export type TradeStatus = 'Open' | 'Closed' | 'Cancelled' | 'Missed'
+export type TradeMarket = 'Crypto' | 'Forex' | 'Indices' | 'Stocks' | 'Commodities'
+export type TradeDirection = 'Long' | 'Short'
+
+export interface ChipOption {
+  label: string
+  color?: string // Optional, as we might just have string values now
+}
+
+export interface ChipCategory {
+  id: string // The header name (e.g., "Strategies")
+  values: string[] // The column values
+}
+
+// Deprecating the old ChipConfig for now, or aliasing it
+export type ChipConfig = ChipCategory
+
+export interface TradeEntry {
+  [key: string]: any // Allow dynamic keys based on headers
+  id?: string
+  createdAt?: string
+}
+
+export interface Trade extends TradeEntry {
+  id: string
+  createdAt: string
+  
+  // Core Fields
+  pair?: string
+  status?: TradeStatus
+  market?: TradeMarket
+  direction?: TradeDirection
+  date?: string
+  
+  // Metrics
+  entryPrice?: number
+  exitPrice?: number
+  size?: number
+  pnl?: number
+  mae?: number
+}
+
+export interface AppConfig {
+  spreadsheetId: string
+  chips: ChipCategory[]
+}

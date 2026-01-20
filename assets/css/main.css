@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Light Mode (Default in CSS variables if not scoped, but we want Dark default) */
+    /* Actually, let's make :root Light and .dark Dark, but apply .dark by default in App */
+    
+    /* Light Mode Palette (Zinc) */
+    --ui-bg: 255 255 255;          /* #ffffff */
+    --ui-surface: 244 244 245;     /* #f4f4f5 (Zinc-100) */
+    --ui-border: 228 228 231;      /* #e4e4e7 (Zinc-200) */
+    --ui-text: 82 82 91;           /* #52525b (Zinc-600) */
+    --ui-highlight: 9 9 11;        /* #09090b (Zinc-950) */
+    --ui-accent: 79 70 229;        /* #4f46e5 (Indigo-600) */
+  }
+
+  .dark {
+    /* Dark Mode Palette (Zinc - Neutral Black) */
+    --ui-bg: 9 9 11;               /* #09090b (Zinc-950) */
+    --ui-surface: 24 24 27;        /* #18181b (Zinc-900) */
+    --ui-border: 39 39 42;         /* #27272a (Zinc-800) */
+    --ui-text: 228 228 231;        /* #e4e4e7 (Zinc-200) */
+    --ui-highlight: 255 255 255;   /* #ffffff (White) */
+    --ui-accent: 99 102 241;       /* #6366f1 (Indigo-500) */
+  }
+
+  body {
+    @apply bg-terminal-black text-terminal-text font-sans transition-colors duration-300;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-terminal-gray/40 rounded-full hover:bg-terminal-gray/60 transition-colors;
+  }
+  
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(39, 39, 42, 0.4) transparent;
+  }
+}
