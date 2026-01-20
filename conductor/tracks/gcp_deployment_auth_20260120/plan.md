@@ -26,8 +26,8 @@ Automate the build and deployment process.
 
 - [x] Task: Define the GitHub Actions workflow in `.github/workflows/deploy.yml`. [d952786]
 - [x] Task: Configure GCP Service Account permissions (Cloud Run Admin, Storage Admin, Artifact Registry Writer). [Done by user]
-- [~] Task: Set up GitHub Secrets (`GCP_SA_KEY`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, etc.).
-- [ ] Task: Perform a test push to trigger the deployment pipeline.
+- [x] Task: Set up GitHub Secrets (`GCP_SA_KEY`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, etc.). [Done by user]
+- [~] Task: Perform a test push to trigger the deployment pipeline.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: CI/CD Setup' (Protocol in workflow.md)
 
 ## Phase 4: Live Verification & Polish
