@@ -1,4 +1,4 @@
-import { defineEventHandler, createError } from 'h3'
+import { defineEventHandler, createError, sendRedirect } from 'h3'
 import { getUserSession } from '#auth'
 
 export default defineEventHandler(async (event) => {
@@ -13,12 +13,16 @@ export default defineEventHandler(async (event) => {
 
   const session = await getUserSession(event)
   const allowedEmail = process.env.ALLOWED_EMAIL
+  const isApiRequest = event.path.startsWith('/api/')
 
   if (!session.user) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: 'Unauthorized - Please Login'
-    })
+    if (isApiRequest) {
+      throw createError({
+        statusCode: 401,
+        statusMessage: 'Unauthorized - Please Login'
+      })
+    }
+    return sendRedirect(event, '/login')
   }
 
   if (allowedEmail && session.user.email !== allowedEmail) {
