@@ -4,8 +4,8 @@ FROM node:18 AS builder
 WORKDIR /app
 
 # Install dependencies first (for better caching)
-COPY package*.json package-lock.json ./
-RUN npm ci
+COPY package*.json ./
+RUN npm install
 
 # Copy source and build
 COPY . .
