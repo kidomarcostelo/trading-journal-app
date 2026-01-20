@@ -5,12 +5,12 @@
 <style>
 /* Global Terminal Styles */
 :root {
-  --color-terminal-black: #050505;
-  --color-terminal-dark: #0a0a0a;
-  --color-terminal-gray: #1a1a1a;
-  --color-terminal-text: #a0a0a0;
-  --color-terminal-highlight: #ffffff;
-  --color-terminal-accent: #10b981; /* Emerald-500 */
+  --ui-bg: 5 5 5;
+  --ui-surface: 10 10 10;
+  --ui-border: 26 26 26;
+  --ui-text: 160 160 160;
+  --ui-highlight: 255 255 255;
+  --ui-accent: 16 185 129;
 }
 
 body {

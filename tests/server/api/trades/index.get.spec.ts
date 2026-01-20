@@ -38,7 +38,7 @@ describe('GET /api/trades', () => {
     expect(googleSheets.getSheetsClient).toHaveBeenCalled()
     expect(mockGet).toHaveBeenCalledWith({
       spreadsheetId: 'test-sheet-id',
-      range: 'Master!A:Z',
+      range: 'Master!A:ZZ',
       valueRenderOption: 'FORMULA' // Ensure we ask for formulas
     })
 

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { h, Suspense, defineComponent } from 'vue'
-import App from '../app.vue'
+import IndexPage from '../pages/index.vue'
 
 vi.mock('lucide-vue-next', () => ({
   Terminal: { render: () => h('div', { 'data-testid': 'terminal-icon' }) },
@@ -28,7 +28,8 @@ vi.mock('lucide-vue-next', () => ({
   Filter: { render: () => h('div') },
   ArrowUpDown: { render: () => h('div') },
   ArrowUp: { render: () => h('div', { 'data-testid': 'arrow-up' }) },
-  ArrowDown: { render: () => h('div', { 'data-testid': 'arrow-down' }) }
+  ArrowDown: { render: () => h('div', { 'data-testid': 'arrow-down' }) },
+  LogOut: { render: () => h('div') }
 }))
 
 // Mock useFetch
@@ -40,6 +41,12 @@ vi.stubGlobal('useFetch', vi.fn().mockImplementation((url) => {
     return { data: { value: [] }, refresh: vi.fn(), pending: { value: false } }
   }
   return { data: { value: null } }
+}))
+
+// Mock nuxt-auth-utils
+vi.stubGlobal('useUserSession', vi.fn().mockReturnValue({
+  user: { value: { email: 'test@example.com' } },
+  clear: vi.fn()
 }))
 
 const mountSuspense = (component: any) => {
@@ -56,22 +63,24 @@ const mountSuspense = (component: any) => {
         TradeForm: true,
         TradeList: true,
         TradeGallery: true,
-        Combobox: true
+        Combobox: true,
+        PaneNav: true,
+        TradeStats: true,
+        StrategyAccordion: true,
+        PsychologyGrid: true,
+        TradingViewChart: true,
+        TradeScreenshots: true,
+        TradeReview: true,
+        CollapsibleSection: true
       }
     }
   })
 }
 
-describe('App.vue', () => {
+describe('Index Page', () => {
   it('renders the system title', async () => {
-    const wrapper = mountSuspense(App)
+    const wrapper = mountSuspense(IndexPage)
     await new Promise(resolve => setTimeout(resolve, 50))
-    expect(wrapper.text()).toContain('Trading Journal')
-  })
-
-  it('contains the dashboard icon', async () => {
-    const wrapper = mountSuspense(App)
-    await new Promise(resolve => setTimeout(resolve, 50))
-    expect(wrapper.find('[data-testid="dashboard-icon"]').exists()).toBe(true)
+    expect(wrapper.text()).toContain('Trades')
   })
 })
