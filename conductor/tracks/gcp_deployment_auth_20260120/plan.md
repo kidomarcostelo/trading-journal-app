@@ -5,7 +5,7 @@ This plan outlines the steps to implement Google OAuth 2.0 authentication (restr
 ## Phase 1: Authentication Logic & Local Verification
 Implement the OAuth 2.0 flow using `nuxt-auth-utils` and restrict access via an email whitelist.
 
-- [ ] Task: Install and configure `nuxt-auth-utils` and dependencies.
+- [x] Task: Install and configure `nuxt-auth-utils` and dependencies. [9c2efeb]
 - [ ] Task: Write tests for email whitelist logic (Auth Middleware).
 - [ ] Task: Implement server-side auth middleware to restrict access to `ALLOWED_EMAIL`.
 - [ ] Task: Create a dedicated Login page with "Sign in with Google" button.
