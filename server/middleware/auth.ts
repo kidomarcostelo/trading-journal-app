@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const session = await getUserSession(event)
-  const allowedEmail = process.env.ALLOWED_EMAIL
+  const allowedEmails = process.env.ALLOWED_EMAIL?.split(',').map(e => e.trim()) || []
   const isApiRequest = event.path.startsWith('/api/')
 
   if (!session.user) {
@@ -24,7 +24,8 @@ export default defineEventHandler(async (event) => {
     return sendRedirect(event, '/login')
   }
 
-  if (allowedEmail && session.user.email !== allowedEmail) {
+  // If ALLOWED_EMAIL is set, check if the user's email is in the list
+  if (allowedEmails.length > 0 && !allowedEmails.includes(session.user.email)) {
     throw createError({
       statusCode: 403,
       statusMessage: 'Forbidden - Access Denied'
