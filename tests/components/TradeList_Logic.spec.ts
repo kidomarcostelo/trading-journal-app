@@ -4,7 +4,7 @@ import TradeList from '../../components/TradeList.vue'
 
 describe('TradeList Filtering and Sorting', () => {
   const mockTrades = [
-    { ID: '1', Pair: 'BTC/USD', Action: 'Long', Market: 'Crypto', Status: 'Open', Date: '01/11/2026' },
+    { ID: '1', Pair: 'BTC/USD', Action: 'Long', Market: 'Crypto', Status: 'Open', Date: '01/20/2026' },
     { ID: '2', Pair: 'ETH/USD', Action: 'Short', Market: 'Crypto', Status: 'Closed', Date: '01/05/2026' },
     { ID: '3', Pair: 'AAPL', Action: 'Long', Market: 'Stocks', Status: 'Cancelled', Date: '12/25/2025' }
   ]
@@ -18,8 +18,8 @@ describe('TradeList Filtering and Sorting', () => {
       }
     })
     
-    // On Jan 11, 2026 (Sunday), 'week' should include Jan 10 (Sat)
-    // But exclude Jan 5 (previous week) and Dec 25
+    // Today is Jan 20, 2026 (Tuesday)
+    // Jan 20 should be in 'week'
     expect(wrapper.text()).toContain('BTC/USD')
     expect(wrapper.text()).not.toContain('ETH/USD')
     expect(wrapper.text()).not.toContain('AAPL')

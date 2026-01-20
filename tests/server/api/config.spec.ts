@@ -39,7 +39,7 @@ describe('GET /api/config', () => {
     expect(googleSheets.getSheetsClient).toHaveBeenCalled()
     expect(mockGet).toHaveBeenCalledWith({
       spreadsheetId: 'test-sheet-id',
-      range: 'Chips!A:Z',
+      range: 'Chips!A:ZZ',
       majorDimension: 'COLUMNS'
     })
 
