@@ -37,7 +37,13 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-terminal-gray/40 rounded-full hover:bg-terminal-gray/60 transition-colors;
+    background-color: rgb(var(--ui-border) / 0.4);
+    border-radius: 9999px;
+    transition: background-color 0.2s;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(var(--ui-border) / 0.6);
   }
   
   /* Firefox */
