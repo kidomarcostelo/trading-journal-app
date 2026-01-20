@@ -1,18 +1,17 @@
+<script setup lang="ts">
+useHead({
+  bodyAttrs: {
+    class: 'bg-terminal-black text-terminal-text font-sans transition-colors duration-300'
+  }
+})
+</script>
+
 <template>
   <NuxtPage />
 </template>
 
 <style>
 /* Global Terminal Styles */
-:root {
-  --ui-bg: 5 5 5;
-  --ui-surface: 10 10 10;
-  --ui-border: 26 26 26;
-  --ui-text: 160 160 160;
-  --ui-highlight: 255 255 255;
-  --ui-accent: 16 185 129;
-}
-
 body {
   margin: 0;
   padding: 0;
