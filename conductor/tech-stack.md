@@ -7,6 +7,9 @@
 *   **Server Engine:** Nitro (Built-in to Nuxt 3)
 *   **Environment:** Node.js
 *   **Authentication:** Google Service Account credentials (stored securely in `.env`).
+*   **Deployment:** Dockerized node-server on Google Cloud Run.
+*   **CI/CD:** GitHub Actions (.github/workflows/deploy.yml).
+*   **Authentication (App Level):** `nuxt-auth-utils` for Google OAuth 2.0.
 
 ## Database & Storage
 *   **Primary Database:** Google Sheets

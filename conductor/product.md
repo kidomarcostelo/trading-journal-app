@@ -60,6 +60,11 @@ I am building a trading journal where Google Sheets acts as the database.
 5.  **Frontend Implementation:**
     * Build the `<ChipSelect>` component and Pages.
 
+## Infrastructure & Security
+*   **Hosting:** Google Cloud Run (Serverless Containers).
+*   **Authentication:** Application-level Google OAuth 2.0 with restricted email whitelist.
+*   **CI/CD:** GitHub Actions automated deployment.
+
 ## Target Audience
 *   **Primary User:** Solo Retail Swing Trader (Self).
 *   **Goal:** To improve trading performance through disciplined tracking, reflection, and analysis of past trades.
