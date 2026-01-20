@@ -1,15 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import authMiddleware from '../../../server/middleware/auth'
 
-// Mock nuxt-auth-utils - we'll mock the import that the middleware uses
-vi.mock('#auth', () => ({
-  getUserSession: vi.fn()
-}))
-
-// We need to be able to access the mock in the tests
-import { getUserSession } from '#auth'
-
-// Mock H3 event and errors
+// Mock sendRedirect and createError from h3
 vi.mock('h3', async (importOriginal) => {
   const actual = await importOriginal() as any
   return {
@@ -20,6 +12,10 @@ vi.mock('h3', async (importOriginal) => {
 })
 
 import { createError, sendRedirect } from 'h3'
+
+// Mock global getUserSession
+const getUserSession = vi.fn()
+vi.stubGlobal('getUserSession', getUserSession)
 
 describe('Auth Middleware', () => {
   beforeEach(() => {
