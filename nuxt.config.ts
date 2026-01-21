@@ -17,5 +17,15 @@ export default defineNuxtConfig({
     devProxy: {
         host: '0.0.0.0'
     }
+  },
+
+  runtimeConfig: {
+    googleServiceAccountEmail: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+    googlePrivateKey: process.env.GOOGLE_PRIVATE_KEY,
+    googleSpreadsheetId: process.env.GOOGLE_SPREADSHEET_ID,
+    // Private keys are only available server-side
+    public: {
+      // Public keys that are exposed to the client
+    }
   }
 })
