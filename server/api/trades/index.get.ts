@@ -1,10 +1,19 @@
-import { defineEventHandler } from 'h3'
+import { defineEventHandler, createError } from 'h3'
 import { getSheetsClient } from '../../utils/googleSheets'
 import type { Trade } from '../../../types'
+import { useRuntimeConfig } from '#imports'
 
 export default defineEventHandler(async (event) => {
   const client = await getSheetsClient()
-  const spreadsheetId = process.env.GOOGLE_SPREADSHEET_ID
+  const config = useRuntimeConfig()
+  const spreadsheetId = config.googleSpreadsheetId
+
+  if (!spreadsheetId) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Google Spreadsheet ID is not configured.'
+    })
+  }
 
   const response = await client.spreadsheets.values.get({
     spreadsheetId,

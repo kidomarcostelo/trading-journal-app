@@ -1,4 +1,5 @@
 import { defineEventHandler, createError, sendRedirect } from 'h3'
+import { useRuntimeConfig } from '#imports'
 
 export default defineEventHandler(async (event) => {
   const publicRoutes = ['/login', '/api/auth/google']
@@ -11,7 +12,8 @@ export default defineEventHandler(async (event) => {
   }
 
   const session = await getUserSession(event)
-  const allowedEmails = process.env.ALLOWED_EMAIL?.split(',').map(e => e.trim()) || []
+  const config = useRuntimeConfig()
+  const allowedEmails = config.allowedEmail?.split(',').map((e: string) => e.trim()) || []
   const isApiRequest = event.path.startsWith('/api/')
 
   if (!session.user) {

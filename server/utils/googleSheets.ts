@@ -1,8 +1,10 @@
 import { google } from 'googleapis'
+import { useRuntimeConfig } from '#imports'
 
 export const getSheetsClient = async () => {
-  const serviceAccountEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL
-  let privateKey = process.env.GOOGLE_PRIVATE_KEY
+  const config = useRuntimeConfig()
+  const serviceAccountEmail = config.googleServiceAccountEmail
+  let privateKey = config.googlePrivateKey
 
   if (!serviceAccountEmail || !privateKey) {
     throw new Error('Google Service Account credentials are missing')
