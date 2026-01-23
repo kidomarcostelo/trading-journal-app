@@ -1,18 +1,10 @@
 import { google } from 'googleapis'
-import { useRuntimeConfig } from '#imports'
 
 export const getSheetsClient = async () => {
-  const config = useRuntimeConfig()
-  
-  // Fallback to process.env for local dev if runtimeConfig isn't fully populated yet (though it should be)
-  const serviceAccountEmail = config.googleServiceAccountEmail || process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL
-  let privateKey = config.googlePrivateKey || process.env.GOOGLE_PRIVATE_KEY
+  const serviceAccountEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL
+  let privateKey = process.env.GOOGLE_PRIVATE_KEY
 
   if (!serviceAccountEmail || !privateKey) {
-    console.error('Missing Credentials:', { 
-      hasEmail: !!serviceAccountEmail, 
-      hasKey: !!privateKey 
-    })
     throw new Error('Google Service Account credentials are missing')
   }
 
@@ -26,11 +18,6 @@ export const getSheetsClient = async () => {
   if (privateKey.startsWith('"') && privateKey.endsWith('"')) {
     privateKey = privateKey.slice(1, -1)
   }
-
-  console.log('Initializing Google Sheets Client...')
-  console.log('Email:', serviceAccountEmail)
-  // Log key length for debugging
-  console.log('Private Key Length:', privateKey.length)
 
   const auth = new google.auth.GoogleAuth({
     credentials: {

@@ -9,8 +9,7 @@ export default defineConfig({
     globals: true,
     alias: {
       '~': path.resolve(__dirname, '.'),
-      '#auth': path.resolve(__dirname, './node_modules/nuxt-auth-utils/dist/runtime/server/utils/session.js'),
-      '#imports': path.resolve(__dirname, './tests/mocks/imports.ts')
+      '#auth': path.resolve(__dirname, './node_modules/nuxt-auth-utils/dist/runtime/server/utils/session.js')
     }
   },
 })

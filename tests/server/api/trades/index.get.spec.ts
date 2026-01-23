@@ -7,18 +7,10 @@ vi.mock('../../../../server/utils/googleSheets', () => ({
   getSheetsClient: vi.fn()
 }))
 
-// Mock Nuxt runtime config
-vi.mock('#imports', () => ({
-  useRuntimeConfig: () => ({
-    googleSpreadsheetId: 'test-sheet-id'
-  })
-}))
-
 describe('GET /api/trades', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    // process.env fallback is still used in code, so we can leave it or clear it to test runtimeConfig priority
-    process.env.GOOGLE_SPREADSHEET_ID = 'fallback-id' 
+    process.env.GOOGLE_SPREADSHEET_ID = 'test-sheet-id'
   })
 
   it('fetches and parses trades using headers as keys', async () => {
@@ -45,7 +37,7 @@ describe('GET /api/trades', () => {
 
     expect(googleSheets.getSheetsClient).toHaveBeenCalled()
     expect(mockGet).toHaveBeenCalledWith({
-      spreadsheetId: 'test-sheet-id', // Should match the mocked runtimeConfig
+      spreadsheetId: 'test-sheet-id',
       range: 'Master!A:ZZ',
       valueRenderOption: 'FORMULA' // Ensure we ask for formulas
     })

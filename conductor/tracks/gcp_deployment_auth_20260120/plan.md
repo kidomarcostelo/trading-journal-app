@@ -34,9 +34,6 @@ Automate the build and deployment process.
 Final checks on the production environment.
 
 - [ ] Task: Verify the live URL (`*.a.run.app`) redirects to Google Login.
-- [x] Task: Fix missing runtimeConfig and add logging for production debugging. [5928a1a]
 - [ ] Task: Confirm that the Google Sheets integration works in the production environment (correct Service Account usage).
-  - *Checkpoint (2026-01-20):* Deployment pipeline is active. Debugging `ERR_OSSL_UNSUPPORTED` with Google Private Key on Cloud Run. Switched to Node 18. Next step: Verify if Node 18 + Clean Key Secret fixes the issue.
-  - *Update (2026-01-21):* Added `runtimeConfig` and logging to fix "no trades" issue. Waiting for deployment verification.
 - [ ] Task: Test logout functionality and session expiration.
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Final Verification' (Protocol in workflow.md)
