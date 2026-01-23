@@ -1,7 +1,6 @@
 import { defineEventHandler, createError } from 'h3'
 import { getSheetsClient } from '../utils/googleSheets'
 import type { ChipCategory } from '../../types'
-import { useRuntimeConfig } from '#imports'
 
 export default defineEventHandler(async (event) => {
   const client = await getSheetsClient()
