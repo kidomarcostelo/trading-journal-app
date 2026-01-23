@@ -20,6 +20,20 @@ export const getSheetsClient = async () => {
     privateKey = privateKey.slice(1, -1)
   }
 
+  // 3. Fix standard key formatting if newlines are missing (spaces instead)
+  // This is safe because standard PEM keys don't have spaces inside the base64 block
+  // but do have spaces in the header/footer.
+  // We want to preserve headers but break the body. 
+  // A safer bet for now is ensuring the headers are on their own lines.
+  if (!privateKey.includes('\n')) {
+      const header = '-----BEGIN PRIVATE KEY-----'
+      const footer = '-----END PRIVATE KEY-----'
+      if (privateKey.includes(header) && privateKey.includes(footer)) {
+          const body = privateKey.replace(header, '').replace(footer, '').trim().replace(/ /g, '\n')
+          privateKey = `${header}\n${body}\n${footer}`
+      }
+  }
+
   const auth = new google.auth.GoogleAuth({
     credentials: {
       client_email: serviceAccountEmail,
