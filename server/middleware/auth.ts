@@ -27,12 +27,6 @@ export default defineEventHandler(async (event) => {
 
   // If ALLOWED_EMAIL is set, check if the user's email is in the list
   if (allowedEmails.length > 0 && !allowedEmails.includes(session.user.email)) {
-    console.log('--- AUTH DEBUG ---')
-    console.log('Session Email:', session.user.email)
-    console.log('Allowed Email Config:', config.allowedEmail)
-    console.log('Parsed Allowed List:', allowedEmails)
-    console.log('------------------')
-    
     throw createError({
       statusCode: 403,
       statusMessage: 'Forbidden - Access Denied'
