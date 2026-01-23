@@ -1,6 +1,7 @@
 import { defineEventHandler, readBody } from 'h3'
 import { getSheetsClient } from '../../utils/googleSheets'
 import type { TradeEntry } from '../../../types'
+import { useRuntimeConfig } from '#imports'
 
 function getColumnLetter(index: number): string {
   let letter = '';
@@ -14,7 +15,8 @@ function getColumnLetter(index: number): string {
 export default defineEventHandler(async (event) => {
   const body = await readBody<TradeEntry>(event)
   const client = await getSheetsClient()
-  const spreadsheetId = process.env.GOOGLE_SPREADSHEET_ID
+  const config = useRuntimeConfig()
+  const spreadsheetId = config.googleSpreadsheetId
 
   const tradeId = body.ID || body.id
   if (!tradeId) {
