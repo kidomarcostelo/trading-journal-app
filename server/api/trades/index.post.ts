@@ -1,7 +1,6 @@
 import { defineEventHandler, readBody } from 'h3'
 import { getSheetsClient } from '../../utils/googleSheets'
 import type { TradeEntry } from '../../../types'
-import { useRuntimeConfig } from '#imports'
 
 function getColumnLetter(index: number): string {
   let letter = '';
