@@ -1,5 +1,4 @@
 import { google } from 'googleapis'
-import { useRuntimeConfig } from '#imports'
 
 export const getSheetsClient = async () => {
   const config = useRuntimeConfig()

@@ -1,5 +1,4 @@
 import { defineEventHandler, createError, sendRedirect } from 'h3'
-import { useRuntimeConfig } from '#imports'
 
 export default defineEventHandler(async (event) => {
   const publicRoutes = ['/login', '/api/auth/google']
