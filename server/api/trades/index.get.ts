@@ -1,67 +1,50 @@
-import { defineEventHandler, createError } from 'h3'
+import { defineEventHandler } from 'h3'
 import { getSheetsClient } from '../../utils/googleSheets'
 import type { Trade } from '../../../types'
-import { useRuntimeConfig } from '#imports'
 
 export default defineEventHandler(async (event) => {
-  try {
-    const client = await getSheetsClient()
-    const config = useRuntimeConfig()
-    const spreadsheetId = config.googleSpreadsheetId || process.env.GOOGLE_SPREADSHEET_ID
-    
-    if (!spreadsheetId) {
-        console.error('Missing Google Spreadsheet ID')
-        throw new Error('GOOGLE_SPREADSHEET_ID is not configured')
-    }
+  const client = await getSheetsClient()
+  const spreadsheetId = process.env.GOOGLE_SPREADSHEET_ID
 
-    const response = await client.spreadsheets.values.get({
-      spreadsheetId,
-      range: 'Master!A:ZZ',
-      valueRenderOption: 'FORMULA', // Request formulas to handle =IMAGE()
-    })
+  const response = await client.spreadsheets.values.get({
+    spreadsheetId,
+    range: 'Master!A:ZZ',
+    valueRenderOption: 'FORMULA', // Request formulas to handle =IMAGE()
+  })
 
-    const rows = response.data.values
-    if (!rows || rows.length === 0) {
-      console.warn('No rows returned from Google Sheets. Check if sheet is empty or permissions are correct.')
-      return []
-    }
-
-    const headers = rows[0]
-    const dataRows = rows.slice(1)
-
-    return dataRows.map((row: string[], rowIndex: number) => {
-      const trade: any = {}
-      headers.forEach((header: string, index: number) => {
-        if (header) {
-            trade[header] = parseCell(header, row[index])
-        }
-      })
-      
-      // Ensure unique ID
-      // Check for common ID column names
-      const idKey = Object.keys(trade).find(k => ['id', 'trade id', 'tradeid'].includes(k.toLowerCase()))
-      const existingId = idKey ? trade[idKey] : undefined
-
-      if (!existingId) {
-          trade.ID = `row-${rowIndex}`
-      } else {
-          // Normalize to ID for frontend consistency if needed, or just rely on existing key
-          // But if we rely on 'row-X' fallback, we should ensure we use the real ID if found.
-          if (!trade.ID && !trade.id) {
-               trade.ID = existingId
-          }
-      }
-      
-      return trade
-    }) as Trade[]
-  } catch (error: any) {
-    console.error('Error fetching trades:', error)
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Failed to fetch trades',
-      data: error.message
-    })
+  const rows = response.data.values
+  if (!rows || rows.length === 0) {
+    return []
   }
+
+  const headers = rows[0]
+  const dataRows = rows.slice(1)
+
+  return dataRows.map((row: string[], rowIndex: number) => {
+    const trade: any = {}
+    headers.forEach((header: string, index: number) => {
+      if (header) {
+          trade[header] = parseCell(header, row[index])
+      }
+    })
+    
+    // Ensure unique ID
+    // Check for common ID column names
+    const idKey = Object.keys(trade).find(k => ['id', 'trade id', 'tradeid'].includes(k.toLowerCase()))
+    const existingId = idKey ? trade[idKey] : undefined
+
+    if (!existingId) {
+        trade.ID = `row-${rowIndex}`
+    } else {
+        // Normalize to ID for frontend consistency if needed, or just rely on existing key
+        // But if we rely on 'row-X' fallback, we should ensure we use the real ID if found.
+        if (!trade.ID && !trade.id) {
+             trade.ID = existingId
+        }
+    }
+    
+    return trade
+  }) as Trade[]
 })
 
 function parseCell(header: string, value: string | undefined): any {

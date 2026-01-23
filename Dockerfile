@@ -1,18 +1,18 @@
 # Stage 1: Build
-FROM node:18 AS builder
+FROM node:20 AS builder
 
 WORKDIR /app
 
 # Install dependencies first (for better caching)
-COPY package*.json ./
-RUN npm install
+COPY package*.json package-lock.json ./
+RUN npm ci
 
 # Copy source and build
 COPY . .
 RUN npm run build
 
 # Stage 2: Runtime
-FROM node:18-slim
+FROM node:20-slim
 
 WORKDIR /app
 
