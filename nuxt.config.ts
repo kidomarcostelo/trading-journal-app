@@ -20,9 +20,9 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    googleSpreadsheetId: process.env.GOOGLE_SPREADSHEET_ID,
-    googleServiceAccountEmail: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-    googlePrivateKey: process.env.GOOGLE_PRIVATE_KEY,
-    allowedEmail: process.env.ALLOWED_EMAIL,
+    googleSpreadsheetId: '',
+    googleServiceAccountEmail: '',
+    googlePrivateKey: '',
+    allowedEmail: '',
   }
 })
