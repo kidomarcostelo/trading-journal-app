@@ -47,12 +47,22 @@ describe('googleSheets utility', () => {
   })
 
   it('initializes GoogleAuth with correct credentials and scopes', async () => {
+    // Test with literal \n and quotes to simulate robust parsing
+    const rawKey = '"-----BEGIN PRIVATE KEY-----\\nLINE1\\n-----END PRIVATE KEY-----"'
+    const expectedKey = '-----BEGIN PRIVATE KEY-----\nLINE1\n-----END PRIVATE KEY-----'
+    
+    vi.mocked(useRuntimeConfig).mockReturnValue({
+      googleServiceAccountEmail: 'test@example.com',
+      googlePrivateKey: rawKey,
+      googleSpreadsheetId: 'sheet-id-123'
+    })
+
     await getSheetsClient()
     
     expect(google.auth.GoogleAuth).toHaveBeenCalledWith({
       credentials: {
-        client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-        private_key: process.env.GOOGLE_PRIVATE_KEY,
+        client_email: 'test@example.com',
+        private_key: expectedKey,
       },
       scopes: ['https://www.googleapis.com/auth/spreadsheets'],
     })
