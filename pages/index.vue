@@ -30,7 +30,6 @@ import CollapsibleSection from '~/components/CollapsibleSection.vue'
 import type { ChipCategory } from '~/types'
 
 const showForm = ref(false)
-const isDark = ref(true)
 const activeTab = ref('daily-trades')
 const selectedTradeId = ref<string | null>(null)
 
@@ -173,23 +172,6 @@ const toggleSidebar = () => {
   }
 }
 
-// Theme Logic
-const toggleTheme = () => {
-  isDark.value = !isDark.value
-  updateTheme()
-}
-
-const updateTheme = () => {
-  if (import.meta.client) {
-    const html = document.documentElement
-    if (isDark.value) {
-      html.classList.add('dark')
-    } else {
-      html.classList.remove('dark')
-    }
-  }
-}
-
 const handleKeydown = (e: KeyboardEvent) => {
   if (e.key === 'Escape' && showForm.value) {
     showForm.value = false
@@ -197,7 +179,6 @@ const handleKeydown = (e: KeyboardEvent) => {
 }
 
 onMounted(() => {
-  updateTheme()
   window.addEventListener('mousemove', doResize)
   window.addEventListener('mouseup', stopResize)
   window.addEventListener('keydown', handleKeydown)
@@ -221,9 +202,7 @@ onUnmounted(() => {
         <PaneNav 
           class="flex-1"
           v-model:active-tab="activeTab" 
-          :is-dark="isDark" 
           :collapsed="isSidebarCollapsed"
-          @toggle-theme="toggleTheme" 
           @toggle-collapse="toggleSidebar"
         />
         

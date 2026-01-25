@@ -10,15 +10,20 @@ import {
   PanelLeftOpen
 } from 'lucide-vue-next'
 
+const colorMode = useColorMode()
+const isDark = computed(() => colorMode.value === 'dark')
+
+const toggleTheme = () => {
+  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+}
+
 defineProps<{
   activeTab: string
-  isDark: boolean
   collapsed?: boolean
 }>()
 
 defineEmits<{
   (e: 'update:activeTab', tab: string): void
-  (e: 'toggle-theme'): void
   (e: 'toggle-collapse'): void
 }>()
 </script>
@@ -73,7 +78,7 @@ defineEmits<{
 
     <div class="p-4 border-t border-terminal-gray">
       <button
-        @click="$emit('toggle-theme')"
+        @click="toggleTheme"
         class="w-full flex items-center gap-3 px-3 py-2 text-terminal-text/60 hover:text-terminal-highlight transition-all overflow-hidden whitespace-nowrap"
         :class="collapsed ? 'justify-center' : ''"
         :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'"

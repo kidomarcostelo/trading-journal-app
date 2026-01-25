@@ -1,0 +1,8 @@
+{
+  "track_id": "fix_edge_theme_and_sidebar_20260125",
+  "type": "bug",
+  "status": "new",
+  "created_at": "2026-01-25T12:00:00Z",
+  "updated_at": "2026-01-25T12:00:00Z",
+  "description": "On the deployed app the changing of theme is not working on Edge. Also in Huawei tab the bottom (logout button) looks cut in landscape mode."
+}
