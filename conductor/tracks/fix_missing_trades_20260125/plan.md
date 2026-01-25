@@ -2,9 +2,9 @@
 
 ## Phase 1: Diagnosis & Error Handling Hardening
 - [x] Task: Analyze `server/utils/googleSheets.ts` and `server/api/trades/index.get.ts` to identify where errors might be silenced. <!-- 1e33a05 -->
-- [~] Task: Reproduction - Temporarily rename `.env` to `.env.bak` locally and restart server to verify "silent failure" behavior.
-- [ ] Task: TDD - Write a test in `tests/server/utils/googleSheets.spec.ts` that asserts proper error throwing/logging when credentials are missing.
-- [ ] Task: Implement explicit error logging in `server/utils/googleSheets.ts` (using `console.error` for server logs) and ensure `server/api/trades/index.get.ts` propagates 500 errors instead of returning empty arrays on failure.
+- [x] Task: Reproduction - Temporarily rename `.env` to `.env.bak` locally and restart server to verify "silent failure" behavior. <!-- 3149f3d -->
+- [x] Task: TDD - Write a test in `tests/server/utils/googleSheets.spec.ts` that asserts proper error throwing/logging when credentials are missing. <!-- 3149f3d -->
+- [x] Task: Implement explicit error logging in `server/utils/googleSheets.ts` (using `console.error` for server logs) and ensure `server/api/trades/index.get.ts` propagates 500 errors instead of returning empty arrays on failure. <!-- 3149f3d -->
 - [ ] Task: Conductor - User Manual Verification 'Diagnosis & Error Handling Hardening' (Protocol in workflow.md)
 
 ## Phase 2: Deployment & Configuration Fix

@@ -2,6 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import handler from '../../../server/api/config'
 import * as googleSheets from '../../../server/utils/googleSheets'
 
+// Mock useRuntimeConfig
+vi.stubGlobal('useRuntimeConfig', vi.fn(() => ({
+  googleSpreadsheetId: process.env.GOOGLE_SPREADSHEET_ID || 'sheet-id-123'
+})))
+
 // Mock the googleSheets utility
 vi.mock('../../../server/utils/googleSheets', () => ({
   getSheetsClient: vi.fn()
