@@ -18,12 +18,12 @@
 
   html.dark {
     /* Dark Mode Palette (Zinc - Neutral Black) */
-    --ui-bg: 9 9 11;               /* #09090b (Zinc-950) */
-    --ui-surface: 24 24 27;        /* #18181b (Zinc-900) */
-    --ui-border: 39 39 42;         /* #27272a (Zinc-800) */
-    --ui-text: 228 228 231;        /* #e4e4e7 (Zinc-200) */
-    --ui-highlight: 255 255 255;   /* #ffffff (White) */
-    --ui-accent: 99 102 241;       /* #6366f1 (Indigo-500) */
+    --ui-bg: 9 9 11 !important;               /* #09090b (Zinc-950) */
+    --ui-surface: 24 24 27 !important;        /* #18181b (Zinc-900) */
+    --ui-border: 39 39 42 !important;         /* #27272a (Zinc-800) */
+    --ui-text: 228 228 231 !important;        /* #e4e4e7 (Zinc-200) */
+    --ui-highlight: 255 255 255 !important;   /* #ffffff (White) */
+    --ui-accent: 99 102 241 !important;       /* #6366f1 (Indigo-500) */
   }
 
   /* Custom Scrollbar */
