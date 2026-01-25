@@ -9,6 +9,6 @@
 
 ## Phase 2: Deployment & Configuration Fix
 - [x] Task: Guide user to deploy the hardened code to Cloud Run. <!-- 3a3f09d -->
-- [~] Task: Analyze Cloud Run Logs to confirm the specific root cause (expecting missing credentials).
-- [ ] Task: Fix Cloud Run Configuration. Guide user to correctly set the `GOOGLE_APPLICATION_CREDENTIALS` (or equivalent) environment variable in the Cloud Run console.
+- [x] Task: Analyze Cloud Run Logs to confirm the specific root cause (expecting missing credentials). <!-- 05bf2a1 -->
+- [x] Task: Fix Cloud Run Configuration. Guide user to correctly set the `GOOGLE_APPLICATION_CREDENTIALS` (or equivalent) environment variable in the Cloud Run console. <!-- 05bf2a1 -->
 - [ ] Task: Conductor - User Manual Verification 'Deployment & Configuration Fix' (Protocol in workflow.md)
