@@ -111,4 +111,25 @@ describe('googleSheets utility', () => {
       scopes: ['https://www.googleapis.com/auth/spreadsheets'],
     })
   })
+
+  it('handles Base64 encoded keys (safe for CI/CD)', async () => {
+    const rawKey = '-----BEGIN PRIVATE KEY-----\nLINE1\n-----END PRIVATE KEY-----'
+    const base64Key = Buffer.from(rawKey).toString('base64')
+    
+    vi.mocked(useRuntimeConfig).mockReturnValue({
+      googleServiceAccountEmail: 'test@example.com',
+      googlePrivateKey: base64Key,
+      googleSpreadsheetId: 'sheet-id-123'
+    })
+
+    await getSheetsClient()
+    
+    expect(google.auth.GoogleAuth).toHaveBeenCalledWith({
+      credentials: {
+        client_email: 'test@example.com',
+        private_key: rawKey, // Should be decoded back to original
+      },
+      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+    })
+  })
 })
