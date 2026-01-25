@@ -211,6 +211,7 @@ onUnmounted(() => {
           <button 
             @click="logout"
             class="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-rose-500/10 text-terminal-text/60 hover:text-rose-400 transition-all group"
+            :class="isSidebarCollapsed ? 'justify-center' : ''"
             :title="isSidebarCollapsed ? 'Logout' : ''"
           >
             <LogOut class="w-5 h-5 group-hover:rotate-12 transition-transform" />

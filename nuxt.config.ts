@@ -4,7 +4,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['@nuxtjs/tailwindcss', 'nuxt-auth-utils', '@nuxtjs/color-mode'],
   colorMode: {
-    classSuffix: ''
+    classSuffix: '',
+    fallback: 'dark',
+    preference: 'dark'
   },
   css: ['~/assets/css/main.css'],
   typescript: {
