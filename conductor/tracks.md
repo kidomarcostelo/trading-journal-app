@@ -16,7 +16,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [~] **Track: Fix Edge Theme Toggle and Huawei Tablet Sidebar Layout**
+- [x] **Track: Fix Edge Theme Toggle and Huawei Tablet Sidebar Layout**
 *Link: [./tracks/fix_edge_theme_and_sidebar_20260125/](./tracks/fix_edge_theme_and_sidebar_20260125/)*
 
 
