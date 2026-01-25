@@ -11,16 +11,16 @@ export const getSheetsClient = async () => {
     throw new Error(errorMsg)
   }
 
-  // Handle various newline scenarios:
-  // 1. Literal "\n" characters (common in .env or some secret managers)
-  if (privateKey.includes('\\n')) {
-    privateKey = privateKey.replace(/\\n/g, '\n')
-  }
-  
-  // 2. Ensure it's not wrapped in extra quotes if passed via environment
+  // Robust Private Key Parsing:
+  // 1. Trim whitespace and remove surrounding quotes if present
+  privateKey = privateKey.trim()
   if (privateKey.startsWith('"') && privateKey.endsWith('"')) {
     privateKey = privateKey.slice(1, -1)
   }
+
+  // 2. Replace literal "\n" strings with actual newline characters
+  // This is common when copying from JSON files or environment variable lists
+  privateKey = privateKey.replace(/\\n/g, '\n')
 
   const auth = new google.auth.GoogleAuth({
     credentials: {
