@@ -1,4 +1,20 @@
 <script setup lang="ts">
+import { watch } from 'vue'
+
+const colorMode = useColorMode()
+
+// Force class application as a backup for production environments
+watch(() => colorMode.value, (newMode) => {
+  if (import.meta.client) {
+    const html = document.documentElement
+    if (newMode === 'dark') {
+      html.classList.add('dark')
+    } else {
+      html.classList.remove('dark')
+    }
+  }
+}, { immediate: true })
+
 useHead({
   bodyAttrs: {
     class: 'bg-terminal-black text-terminal-text font-sans transition-colors duration-300'
