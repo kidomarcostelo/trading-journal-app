@@ -7,12 +7,12 @@
 - [x] Task: Implement fix for theme application (e.g., forcing document class update or fixing state persistence).
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Theme Fix' (Protocol in workflow.md)
 
-## Phase 2: Sidebar Layout Fix
+## Phase 2: Sidebar Layout Fix [checkpoint: 2ba2559]
 - [x] Task: Analyze `PaneNav.vue` and global CSS for fixed heights or lack of responsive scaling in the sidebar.
 - [x] Task: Write unit tests for `PaneNav.vue` to ensure layout classes are applied correctly based on screen height.
 - [x] Task: Implement responsive compacting for sidebar elements (e.g., using `min-h-0`, `flex-shrink`, or conditional padding/spacing for short viewports).
-- [ ] Task: Verify sidebar visibility using browser dev tools emulating Huawei tablet dimensions (approx. 1280x800 or similar landscape resolution).
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Sidebar Fix' (Protocol in workflow.md)
+- [x] Task: Verify sidebar visibility using browser dev tools emulating Huawei tablet dimensions (approx. 1280x800 or similar landscape resolution).
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Sidebar Fix' (Protocol in workflow.md)
 
 ## Phase 3: Final Verification
 - [ ] Task: Execute full test suite to ensure no regressions in theme or layout.
