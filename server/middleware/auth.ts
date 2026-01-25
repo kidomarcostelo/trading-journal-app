@@ -15,21 +15,21 @@ export default defineEventHandler(async (event) => {
   const allowedEmails = config.allowedEmail?.split(',').map((e: string) => e.trim()) || []
   const isApiRequest = event.path.startsWith('/api/')
 
-  if (!session.user) {
-    if (isApiRequest) {
-      throw createError({
-        statusCode: 401,
-        statusMessage: 'Unauthorized - Please Login'
-      })
-    }
-    return sendRedirect(event, '/login')
-  }
+  // if (!session.user) {
+  //   if (isApiRequest) {
+  //     throw createError({
+  //       statusCode: 401,
+  //       statusMessage: 'Unauthorized - Please Login'
+  //     })
+  //   }
+  //   return sendRedirect(event, '/login')
+  // }
 
   // If ALLOWED_EMAIL is set, check if the user's email is in the list
-  if (allowedEmails.length > 0 && !allowedEmails.includes(session.user.email)) {
-    throw createError({
-      statusCode: 403,
-      statusMessage: 'Forbidden - Access Denied'
-    })
-  }
+  // if (allowedEmails.length > 0 && !allowedEmails.includes(session.user.email)) {
+  //   throw createError({
+  //     statusCode: 403,
+  //     statusMessage: 'Forbidden - Access Denied'
+  //   })
+  // }
 })

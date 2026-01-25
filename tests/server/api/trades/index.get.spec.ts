@@ -2,7 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import handler from '../../../../server/api/trades/index.get'
 import * as googleSheets from '../../../../server/utils/googleSheets'
 
-// Mock the googleSheets utility
+// Mock useRuntimeConfig
+vi.stubGlobal('useRuntimeConfig', vi.fn(() => ({
+  googleSpreadsheetId: 'sheet-id-123'
+})))
+
 vi.mock('../../../../server/utils/googleSheets', () => ({
   getSheetsClient: vi.fn()
 }))
@@ -10,7 +14,10 @@ vi.mock('../../../../server/utils/googleSheets', () => ({
 describe('GET /api/trades', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    process.env.GOOGLE_SPREADSHEET_ID = 'test-sheet-id'
+    // Reset useRuntimeConfig mock return value
+    vi.mocked(useRuntimeConfig).mockReturnValue({
+      googleSpreadsheetId: 'test-sheet-id'
+    })
   })
 
   it('fetches and parses trades using headers as keys', async () => {
