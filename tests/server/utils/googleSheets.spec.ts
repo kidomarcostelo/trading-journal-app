@@ -88,4 +88,26 @@ describe('googleSheets utility', () => {
     
     consoleSpy.mockRestore()
   })
+
+  it('fixes keys where \n became just n', async () => {
+    // This simulates the issue seen in Cloud Run logs
+    const rawKey = '-----BEGIN PRIVATE KEY-----nBODYOFKEYn-----END PRIVATE KEY-----'
+    const expectedKey = '-----BEGIN PRIVATE KEY-----\nBODYOFKEY\n-----END PRIVATE KEY-----'
+    
+    vi.mocked(useRuntimeConfig).mockReturnValue({
+      googleServiceAccountEmail: 'test@example.com',
+      googlePrivateKey: rawKey,
+      googleSpreadsheetId: 'sheet-id-123'
+    })
+
+    await getSheetsClient()
+    
+    expect(google.auth.GoogleAuth).toHaveBeenCalledWith({
+      credentials: {
+        client_email: 'test@example.com',
+        private_key: expectedKey,
+      },
+      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+    })
+  })
 })

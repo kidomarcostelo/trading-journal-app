@@ -22,9 +22,31 @@ export const getSheetsClient = async () => {
   // This is common when copying from JSON files or environment variable lists
   privateKey = privateKey.replace(/\\n/g, '\n')
 
-  console.log('[Debug] Key Length:', privateKey.length)
-  console.log('[Debug] Key Start:', JSON.stringify(privateKey.substring(0, 40)))
-  console.log('[Debug] Key End:', JSON.stringify(privateKey.substring(privateKey.length - 40)))
+  // 3. Fix potential "missing backslash" issue where \n became just n
+  // This happens in some CI/CD pipelines or copy-paste errors
+  const header = '-----BEGIN PRIVATE KEY-----'
+  const footer = '-----END PRIVATE KEY-----'
+  
+  if (privateKey.includes(header) && privateKey.includes(footer)) {
+    // If header is followed immediately by 'n' or ' ', fix it
+    // Use a regex that looks for the header followed by 'n' or space, but ensure we don't break valid keys
+    // We'll just force the header/footer to have newlines around them.
+    
+    // First, strip the header and footer to get the body
+    let body = privateKey.replace(header, '').replace(footer, '').trim()
+    
+    // If the body starts with 'n', remove it (it was likely the \n separator)
+    if (body.startsWith('n')) {
+        body = body.substring(1)
+    }
+    // If the body ends with 'n', remove it
+    if (body.endsWith('n')) {
+        body = body.substring(0, body.length - 1)
+    }
+
+    // Reconstruct the key with proper newlines
+    privateKey = `${header}\n${body}\n${footer}`
+  }
 
   const auth = new google.auth.GoogleAuth({
     credentials: {
