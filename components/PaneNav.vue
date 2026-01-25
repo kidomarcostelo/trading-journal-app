@@ -29,9 +29,9 @@ defineEmits<{
 </script>
 
 <template>
-  <aside data-testid="pane-nav" class="w-full border-r border-terminal-gray flex flex-col bg-terminal-dark h-full transition-all duration-300">
+  <aside data-testid="pane-nav" class="w-full border-r border-terminal-gray flex flex-col bg-terminal-dark transition-all duration-300 min-h-0">
     <div 
-      class="p-4 flex items-center border-b border-terminal-gray mb-4 overflow-hidden whitespace-nowrap"
+      class="p-3 flex items-center border-b border-terminal-gray mb-1 overflow-hidden whitespace-nowrap flex-shrink-0"
       :class="collapsed ? 'justify-center px-2' : 'justify-between'"
     >
       <div class="flex items-center gap-3">
@@ -76,7 +76,7 @@ defineEmits<{
       </button>
     </nav>
 
-    <div class="p-4 border-t border-terminal-gray">
+    <div class="p-2 border-t border-terminal-gray flex-shrink-0">
       <button
         @click="toggleTheme"
         class="w-full flex items-center gap-3 px-3 py-2 text-terminal-text/60 hover:text-terminal-highlight transition-all overflow-hidden whitespace-nowrap"
