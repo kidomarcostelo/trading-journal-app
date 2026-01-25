@@ -5,7 +5,7 @@
 - [x] Task: Reproduction - Temporarily rename `.env` to `.env.bak` locally and restart server to verify "silent failure" behavior. <!-- 3149f3d -->
 - [x] Task: TDD - Write a test in `tests/server/utils/googleSheets.spec.ts` that asserts proper error throwing/logging when credentials are missing. <!-- 3149f3d -->
 - [x] Task: Implement explicit error logging in `server/utils/googleSheets.ts` (using `console.error` for server logs) and ensure `server/api/trades/index.get.ts` propagates 500 errors instead of returning empty arrays on failure. <!-- 3149f3d -->
-- [ ] Task: Conductor - User Manual Verification 'Diagnosis & Error Handling Hardening' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Diagnosis & Error Handling Hardening' (Protocol in workflow.md) <!-- 46b5473 -->
 
 ## Phase 2: Deployment & Configuration Fix
 - [ ] Task: Guide user to deploy the hardened code to Cloud Run.
