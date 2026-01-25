@@ -12,39 +12,28 @@ export const getSheetsClient = async () => {
   }
 
   // Robust Private Key Parsing:
-  // 1. Trim whitespace and remove surrounding quotes if present
   privateKey = privateKey.trim()
+  
+  // Clean up quotes if wrapped
   if (privateKey.startsWith('"') && privateKey.endsWith('"')) {
     privateKey = privateKey.slice(1, -1)
   }
 
-  // 2. Replace literal "\n" strings with actual newline characters
-  // This is common when copying from JSON files or environment variable lists
-  privateKey = privateKey.replace(/\\n/g, '\n')
-
-  // 3. Fix potential "missing backslash" issue where \n became just n
-  // This happens in some CI/CD pipelines or copy-paste errors
   const header = '-----BEGIN PRIVATE KEY-----'
   const footer = '-----END PRIVATE KEY-----'
   
   if (privateKey.includes(header) && privateKey.includes(footer)) {
-    // If header is followed immediately by 'n' or ' ', fix it
-    // Use a regex that looks for the header followed by 'n' or space, but ensure we don't break valid keys
-    // We'll just force the header/footer to have newlines around them.
+    // 1. Extract the content between header and footer
+    const startIdx = privateKey.indexOf(header) + header.length
+    const endIdx = privateKey.indexOf(footer)
+    let body = privateKey.substring(startIdx, endIdx)
     
-    // First, strip the header and footer to get the body
-    let body = privateKey.replace(header, '').replace(footer, '').trim()
+    // 2. Nuclear Clean: Remove all literal "\n" strings, actual newlines, and all whitespace
+    // This makes the parser immune to how the secret is pasted (single line, multi-line, escaped, etc.)
+    body = body.replace(/\\n/g, '') // Remove backslash-n
+    body = body.replace(/\s/g, '')   // Remove all whitespace/newlines
     
-    // If the body starts with 'n', remove it (it was likely the \n separator)
-    if (body.startsWith('n')) {
-        body = body.substring(1)
-    }
-    // If the body ends with 'n', remove it
-    if (body.endsWith('n')) {
-        body = body.substring(0, body.length - 1)
-    }
-
-    // Reconstruct the key with proper newlines
+    // 3. Reconstruct perfectly with real newlines
     privateKey = `${header}\n${body}\n${footer}`
   }
 
