@@ -207,7 +207,7 @@ onUnmounted(() => {
         />
         
         <!-- User Section / Logout -->
-        <div class="p-4 border-t border-terminal-gray bg-terminal-black/50">
+        <div class="p-2 border-t border-terminal-gray bg-terminal-black/50 flex-shrink-0">
           <button 
             @click="logout"
             class="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-rose-500/10 text-terminal-text/60 hover:text-rose-400 transition-all group"
