@@ -22,6 +22,10 @@ export const getSheetsClient = async () => {
   // This is common when copying from JSON files or environment variable lists
   privateKey = privateKey.replace(/\\n/g, '\n')
 
+  console.log('[Debug] Key Length:', privateKey.length)
+  console.log('[Debug] Key Start:', JSON.stringify(privateKey.substring(0, 40)))
+  console.log('[Debug] Key End:', JSON.stringify(privateKey.substring(privateKey.length - 40)))
+
   const auth = new google.auth.GoogleAuth({
     credentials: {
       client_email: serviceAccountEmail,
