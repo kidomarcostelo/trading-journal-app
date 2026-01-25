@@ -3,13 +3,19 @@ import handler from '../../../../server/api/trades/index.post'
 import * as googleSheets from '../../../../server/utils/googleSheets'
 import { readBody } from 'h3'
 
+// Mock useRuntimeConfig
+vi.stubGlobal('useRuntimeConfig', vi.fn(() => ({
+  googleSpreadsheetId: process.env.GOOGLE_SPREADSHEET_ID || 'sheet-id-123'
+})))
+
 vi.mock('../../../../server/utils/googleSheets', () => ({
   getSheetsClient: vi.fn()
 }))
 
 vi.mock('h3', () => ({
   defineEventHandler: (fn: any) => fn,
-  readBody: vi.fn()
+  readBody: vi.fn(),
+  createError: vi.fn((err) => err)
 }))
 
 describe('POST /api/trades', () => {

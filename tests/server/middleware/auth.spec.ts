@@ -1,6 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import authMiddleware from '../../../server/middleware/auth'
 
+// Mock useRuntimeConfig
+vi.stubGlobal('useRuntimeConfig', vi.fn(() => ({
+  allowedEmail: process.env.ALLOWED_EMAIL
+})))
+
 // Mock sendRedirect and createError from h3
 vi.mock('h3', async (importOriginal) => {
   const actual = await importOriginal() as any
