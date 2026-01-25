@@ -19,6 +19,19 @@ export const getSheetsClient = async () => {
     privateKey = privateKey.slice(1, -1)
   }
 
+  // Check if the key is Base64 encoded (doesn't start with hyphen)
+  // If so, decode it first
+  if (!privateKey.startsWith('-----')) {
+    try {
+      const decoded = Buffer.from(privateKey, 'base64').toString('utf-8')
+      if (decoded.includes('-----BEGIN PRIVATE KEY-----')) {
+        privateKey = decoded
+      }
+    } catch (e) {
+      // Ignore error, assume it's just a malformed plain key if decode fails
+    }
+  }
+
   const header = '-----BEGIN PRIVATE KEY-----'
   const footer = '-----END PRIVATE KEY-----'
   
