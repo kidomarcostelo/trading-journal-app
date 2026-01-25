@@ -14,7 +14,8 @@ const colorMode = useColorMode()
 const isDark = computed(() => colorMode.value === 'dark')
 
 const toggleTheme = () => {
-  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+  const current = colorMode.value
+  colorMode.preference = current === 'dark' ? 'light' : 'dark'
 }
 
 defineProps<{
