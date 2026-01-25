@@ -15,7 +15,9 @@ const isDark = computed(() => colorMode.value === 'dark')
 
 const toggleTheme = () => {
   const current = colorMode.value
-  colorMode.preference = current === 'dark' ? 'light' : 'dark'
+  const next = current === 'dark' ? 'light' : 'dark'
+  console.log(`[Theme] Toggling from ${current} to ${next}`)
+  colorMode.preference = next
 }
 
 defineProps<{
