@@ -6,7 +6,9 @@ export const getSheetsClient = async () => {
   let privateKey = config.googlePrivateKey
 
   if (!serviceAccountEmail || !privateKey) {
-    throw new Error('Google Service Account credentials are missing')
+    const errorMsg = 'Google Service Account credentials are missing. Check GOOGLE_SERVICE_ACCOUNT_EMAIL and GOOGLE_PRIVATE_KEY environment variables.'
+    console.error(`[GoogleSheets] ${errorMsg}`)
+    throw new Error(errorMsg)
   }
 
   // Handle various newline scenarios:
