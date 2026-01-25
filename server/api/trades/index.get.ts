@@ -3,18 +3,18 @@ import { getSheetsClient } from '../../utils/googleSheets'
 import type { Trade } from '../../../types'
 
 export default defineEventHandler(async (event) => {
-  const client = await getSheetsClient()
-  const config = useRuntimeConfig()
-  const spreadsheetId = config.googleSpreadsheetId
-
-  if (!spreadsheetId) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Google Spreadsheet ID is not configured.'
-    })
-  }
-
   try {
+    const client = await getSheetsClient()
+    const config = useRuntimeConfig()
+    const spreadsheetId = config.googleSpreadsheetId
+
+    if (!spreadsheetId) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'Google Spreadsheet ID is not configured.'
+      })
+    }
+
     const response = await client.spreadsheets.values.get({
       spreadsheetId,
       range: 'Master!A:ZZ',

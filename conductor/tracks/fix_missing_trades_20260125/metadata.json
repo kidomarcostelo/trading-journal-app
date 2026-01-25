@@ -1,0 +1,8 @@
+{
+  "track_id": "fix_missing_trades_20260125",
+  "type": "bug",
+  "status": "new",
+  "created_at": "2026-01-25T00:00:00Z",
+  "updated_at": "2026-01-25T00:00:00Z",
+  "description": "on the depolyed web app i cannot see the trades"
+}
