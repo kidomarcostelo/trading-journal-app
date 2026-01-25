@@ -2,6 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { H3Event } from 'h3'
 import handler from '../../../../server/api/trades/index.put'
 
+// Mock useRuntimeConfig
+vi.stubGlobal('useRuntimeConfig', vi.fn(() => ({
+  googleSpreadsheetId: process.env.GOOGLE_SPREADSHEET_ID || 'sheet-id-123'
+})))
+
 // Mock h3
 const { mockReadBody } = vi.hoisted(() => ({
   mockReadBody: vi.fn()
