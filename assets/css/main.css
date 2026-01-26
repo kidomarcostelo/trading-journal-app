@@ -8,7 +8,7 @@
   --ui-accent: 79 70 229;        /* #4f46e5 (Indigo-600) */
 }
 
-.dark {
+:root.dark {
   /* Dark Mode Palette (Zinc - Neutral Black) */
   --ui-bg: 9 9 11;               /* #09090b (Zinc-950) */
   --ui-surface: 24 24 27;        /* #18181b (Zinc-900) */
