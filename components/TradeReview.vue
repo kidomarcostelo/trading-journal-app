@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import TradeScreenshots from './TradeScreenshots.vue'
+import CollapsibleSection from './CollapsibleSection.vue'
 import Combobox from './Combobox.vue'
+import { FileText } from 'lucide-vue-next'
 import type { ChipCategory, Trade } from '~/types'
 
 const props = defineProps<{
@@ -86,81 +88,75 @@ const reviewJournalKey = 'Review Journal'
 </script>
 
 <template>
-  <div class="space-y-8 pb-12">
+  <div class="space-y-6 pb-12">
     <!-- Grading Section -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-terminal-black/30 border border-terminal-gray rounded-lg">
-      
-      <!-- Mental Game -->
-      <div class="space-y-4">
-        <h3 class="text-sm font-bold text-terminal-highlight uppercase tracking-wider border-b border-terminal-gray/50 pb-2">Mental Game</h3>
-        
-        <div v-if="mentalCategoryConfig">
-          <label class="block text-xs font-medium text-terminal-text/60 mb-1.5">Category (A/B/C)</label>
-          <!-- Using standard select for single choice category -->
-          <div class="flex flex-wrap gap-2">
-            <button 
-              v-for="opt in mentalCategoryConfig.values" 
-              :key="opt"
-              @click="updateField(mentalCategoryKey, opt)"
-              class="px-3 py-1.5 rounded-md text-xs font-medium border transition-all"
-              :class="form[mentalCategoryKey] === opt 
-                ? 'bg-violet-500/20 border-violet-500 text-violet-300' 
-                : 'bg-terminal-black border-terminal-gray text-terminal-text hover:border-terminal-text/40'"
-            >
-              {{ opt }}
-            </button>
+    <CollapsibleSection title="Review Grading">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Mental Game -->
+        <div class="space-y-4">
+          <h3 class="text-[10px] font-bold text-terminal-highlight uppercase tracking-widest border-b border-terminal-gray/30 pb-2 mb-4">Mental Game</h3>
+          
+          <div v-if="mentalCategoryConfig">
+            <label class="block text-[10px] font-bold text-terminal-text/50 uppercase mb-2">Category (A/B/C)</label>
+            <div class="flex flex-wrap gap-2">
+              <button 
+                v-for="opt in mentalCategoryConfig.values" 
+                :key="opt"
+                @click="updateField(mentalCategoryKey, opt)"
+                class="px-3 py-1.5 rounded-md text-xs font-medium border transition-all"
+                :class="form[mentalCategoryKey] === opt 
+                  ? 'bg-violet-500/20 border-violet-500 text-violet-300' 
+                  : 'bg-terminal-black border-terminal-gray text-terminal-text hover:border-terminal-text/40'"
+              >
+                {{ opt }}
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <Combobox
+              label="Specific Mental Leak/Strength"
+              :options="mentalGameOptions"
+              :modelValue="form[mentalGameKey]"
+              @update:modelValue="(val) => updateField(mentalGameKey, val)"
+              :multiple="true"
+            />
           </div>
         </div>
 
-        <div>
-          <Combobox
-            label="Specific Mental Leak/Strength"
-            :options="mentalGameOptions"
-            :modelValue="form[mentalGameKey]"
-            @update:modelValue="(val) => updateField(mentalGameKey, val)"
-            :multiple="true"
-          />
-          <p v-if="mentalGameOptions.length === 0 && form[mentalCategoryKey]" class="text-[10px] text-rose-400 mt-1 italic">
-            No tags found for "{{ form[mentalCategoryKey] }}". Check config headers.
-          </p>
-        </div>
-      </div>
+        <!-- Tactical Skill -->
+        <div class="space-y-4">
+          <h3 class="text-[10px] font-bold text-terminal-highlight uppercase tracking-widest border-b border-terminal-gray/30 pb-2 mb-4">Tactical Skill</h3>
+          
+          <div v-if="tacticalCategoryConfig">
+            <label class="block text-[10px] font-bold text-terminal-text/50 uppercase mb-2">Category (A/B/C)</label>
+            <div class="flex flex-wrap gap-2">
+              <button 
+                v-for="opt in tacticalCategoryConfig.values" 
+                :key="opt"
+                @click="updateField(tacticalCategoryKey, opt)"
+                class="px-3 py-1.5 rounded-md text-xs font-medium border transition-all"
+                :class="form[tacticalCategoryKey] === opt 
+                  ? 'bg-blue-500/20 border-blue-500 text-blue-300' 
+                  : 'bg-terminal-black border-terminal-gray text-terminal-text hover:border-terminal-text/40'"
+              >
+                {{ opt }}
+              </button>
+            </div>
+          </div>
 
-      <!-- Tactical Skill -->
-      <div class="space-y-4">
-        <h3 class="text-sm font-bold text-terminal-highlight uppercase tracking-wider border-b border-terminal-gray/50 pb-2">Tactical Skill</h3>
-        
-        <div v-if="tacticalCategoryConfig">
-          <label class="block text-xs font-medium text-terminal-text/60 mb-1.5">Category (A/B/C)</label>
-          <div class="flex flex-wrap gap-2">
-            <button 
-              v-for="opt in tacticalCategoryConfig.values" 
-              :key="opt"
-              @click="updateField(tacticalCategoryKey, opt)"
-              class="px-3 py-1.5 rounded-md text-xs font-medium border transition-all"
-              :class="form[tacticalCategoryKey] === opt 
-                ? 'bg-blue-500/20 border-blue-500 text-blue-300' 
-                : 'bg-terminal-black border-terminal-gray text-terminal-text hover:border-terminal-text/40'"
-            >
-              {{ opt }}
-            </button>
+          <div>
+            <Combobox
+              label="Specific Tactical Leak/Strength"
+              :options="tacticalSkillOptions"
+              :modelValue="form[tacticalSkillKey]"
+              @update:modelValue="(val) => updateField(tacticalSkillKey, val)"
+              :multiple="true"
+            />
           </div>
         </div>
-
-        <div>
-          <Combobox
-            label="Specific Tactical Leak/Strength"
-            :options="tacticalSkillOptions"
-            :modelValue="form[tacticalSkillKey]"
-            @update:modelValue="(val) => updateField(tacticalSkillKey, val)"
-            :multiple="true"
-          />
-          <p v-if="tacticalSkillOptions.length === 0 && form[tacticalCategoryKey]" class="text-[10px] text-rose-400 mt-1 italic">
-            No tags found for "{{ form[tacticalCategoryKey] }}". Check config headers.
-          </p>
-        </div>
       </div>
-    </div>
+    </CollapsibleSection>
 
     <!-- Reused Screenshot/Journal Component -->
     <TradeScreenshots 

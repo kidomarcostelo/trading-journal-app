@@ -336,30 +336,36 @@ onUnmounted(() => {
       </div>
 
       <div v-if="activeTrade" class="p-8 w-full">
-        <div class="mb-8">
-           <div class="flex items-center justify-between mb-2">
-             <h1 class="text-2xl font-bold text-terminal-highlight">{{ activeTrade.Pair }}</h1>
-             <!-- Badges & Date Created -->
-             <div class="flex flex-col items-end gap-1">
-                <div class="flex gap-2">
-                  <span v-if="activeTrade.Flags?.includes('HTF FAV')" class="px-2 py-0.5 rounded bg-terminal-accent/20 text-terminal-accent text-[10px] font-bold uppercase border border-terminal-accent/30">HTF FAV</span>
-                  <span v-for="badge in (activeTrade.Badges || '').split(',').filter(Boolean)" :key="badge" class="px-2 py-0.5 rounded bg-terminal-gray/20 text-terminal-text text-[10px] font-bold uppercase border border-terminal-gray/30">{{ badge }}</span>
-                </div>
-                <span class="text-sm text-terminal-highlight" title="Date Created">
-                  Date Created: {{ formatDate(activeTrade.createdAt || activeTrade['Date Created'] || activeTrade.Date) }}
-                </span>
+        <div class="mb-8 flex flex-col gap-6">
+           <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+             <div class="flex flex-col gap-2">
+               <div class="flex items-center gap-3">
+                 <h1 class="text-3xl font-bold text-terminal-highlight tracking-tight">{{ activeTrade.Pair }}</h1>
+                 <div class="flex gap-2">
+                   <span v-if="activeTrade.Flags?.includes('HTF FAV')" class="px-2 py-0.5 rounded bg-terminal-accent/20 text-terminal-accent text-[10px] font-bold uppercase border border-terminal-accent/30">HTF FAV</span>
+                   <span v-for="badge in (activeTrade.Badges || '').split(',').filter(Boolean)" :key="badge" class="px-2 py-0.5 rounded bg-terminal-gray/20 text-terminal-text text-[10px] font-bold uppercase border border-terminal-gray/30">{{ badge }}</span>
+                 </div>
+               </div>
+               
+               <div class="flex items-center gap-4 text-sm text-terminal-text/60">
+                 <div class="flex items-center gap-1.5">
+                   <span class="w-2 h-2 rounded-full" :class="activeTrade.Status === 'Open' ? 'bg-emerald-400 animate-pulse' : 'bg-terminal-gray'"></span>
+                   <span :class="activeTrade.Status === 'Open' ? 'text-emerald-400 font-medium' : ''">{{ activeTrade.Status }}</span>
+                 </div>
+                 <span class="w-1 h-1 rounded-full bg-terminal-gray/40"></span>
+                 <span>{{ activeTrade.Market }}</span>
+                 <span class="w-1 h-1 rounded-full bg-terminal-gray/40"></span>
+                 <span title="Date Created">
+                   Created {{ formatDate(activeTrade.createdAt || activeTrade['Date Created'] || activeTrade.Date) }}
+                 </span>
+               </div>
+             </div>
+
+             <!-- Inline Stats -->
+             <div class="flex-shrink-0">
+               <TradeStats :trades="filteredTrades" />
              </div>
            </div>
-           <div class="flex items-center gap-3 text-sm text-terminal-text/60">
-             <span class="bg-terminal-gray/20 px-2 py-0.5 rounded">{{ activeTrade.Market }}</span>
-             <span>{{ activeTrade.Date }}</span>
-             <span :class="activeTrade.Status === 'Open' ? 'text-emerald-400' : ''">{{ activeTrade.Status }}</span>
-           </div>
-        </div>
-
-        <!-- Filtered Stats -->
-        <div class="mb-6">
-          <TradeStats :trades="filteredTrades" />
         </div>
 
         <!-- Detail Tabs -->

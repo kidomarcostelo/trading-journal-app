@@ -133,12 +133,12 @@ const openOriginal = (url: string) => {
           </span>
         </div>
         
-        <div v-if="beforeImages.length > 0" class="relative group border border-terminal-gray rounded-lg overflow-hidden bg-terminal-black aspect-video flex items-center justify-center">
+        <div v-if="beforeImages.length > 0" class="relative group border border-terminal-gray rounded-lg overflow-hidden bg-terminal-black flex items-center justify-center min-h-[200px]">
           <transition name="fade" mode="out-in">
             <img 
               :key="beforeImages[currentBeforeIndex]"
               :src="beforeImages[currentBeforeIndex]" 
-              class="w-full h-full object-contain" 
+              class="w-full h-auto block" 
               alt="Before Setup" 
             />
           </transition>
@@ -239,12 +239,12 @@ const openOriginal = (url: string) => {
           </span>
         </div>
         
-        <div v-if="afterImages.length > 0" class="relative group border border-terminal-gray rounded-lg overflow-hidden bg-terminal-black aspect-video flex items-center justify-center">
+        <div v-if="afterImages.length > 0" class="relative group border border-terminal-gray rounded-lg overflow-hidden bg-terminal-black flex items-center justify-center min-h-[200px]">
           <transition name="fade" mode="out-in">
             <img 
               :key="afterImages[currentAfterIndex]"
               :src="afterImages[currentAfterIndex]" 
-              class="w-full h-full object-contain" 
+              class="w-full h-auto block" 
               alt="After Result" 
             />
           </transition>

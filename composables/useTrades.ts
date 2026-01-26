@@ -10,13 +10,18 @@ export const useTrades = (trades: Ref<Trade[]>) => {
   const sortBy = ref<SortField>('Date')
   const sortDir = ref<SortDir>('desc')
 
+  const getVal = (obj: any, key: string) => {
+    const foundKey = Object.keys(obj).find(k => k.toLowerCase() === key.toLowerCase())
+    return foundKey ? obj[foundKey] : undefined
+  }
+
   const filteredTrades = computed(() => {
     let result = [...trades.value]
 
     // Helper to parse date from trade
     const getTradeDate = (t: any): Date | null => {
       // check multiple keys
-      const val = t.Date || t['Date Created'] || t['Created At'] || t.date
+      const val = getVal(t, 'date') || getVal(t, 'date created') || getVal(t, 'created at')
       if (!val) return null
 
       // Check for Excel Serial (number or string-number > 20000)
@@ -72,16 +77,16 @@ export const useTrades = (trades: Ref<Trade[]>) => {
       let diff = 0
       
       if (sortBy.value === 'Status') {
-        const order = { 'Open': 0, 'Closed': 1, 'Cancelled': 2, 'Missed': 3 }
-        const aVal = order[a.Status as keyof typeof order] ?? 99
-        const bVal = order[b.Status as keyof typeof order] ?? 99
+        const order = { 'open': 0, 'closed': 1, 'cancelled': 2, 'missed': 3 }
+        const aVal = order[String(getVal(a, 'status')).toLowerCase() as keyof typeof order] ?? 99
+        const bVal = order[String(getVal(b, 'status')).toLowerCase() as keyof typeof order] ?? 99
         diff = aVal - bVal
       } else if (sortBy.value === 'Date') {
         const aDate = getTradeDate(a)?.getTime() || 0
         const bDate = getTradeDate(b)?.getTime() || 0
         diff = aDate - bDate 
       } else if (sortBy.value === 'Pair') {
-        diff = (a.Pair || '').localeCompare(b.Pair || '')
+        diff = (String(getVal(a, 'pair') || '')).localeCompare(String(getVal(b, 'pair') || ''))
       }
 
       // Apply Direction
