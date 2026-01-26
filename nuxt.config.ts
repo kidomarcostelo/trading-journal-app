@@ -6,8 +6,7 @@ export default defineNuxtConfig({
   colorMode: {
     classSuffix: '',
     fallback: 'dark',
-    preference: 'dark',
-    storageKey: 'theme-preference'
+    preference: 'dark'
   },
   css: ['~/assets/css/main.css'],
   typescript: {
