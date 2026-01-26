@@ -24,7 +24,13 @@ export default <Partial<Config>>{
           text: 'rgb(var(--ui-text) / <alpha-value>)',
           highlight: 'rgb(var(--ui-highlight) / <alpha-value>)',
           accent: 'rgb(var(--ui-accent) / <alpha-value>)'
-        }
+        },
+        primary: 'rgb(var(--ui-primary) / <alpha-value>)',
+        success: 'rgb(var(--ui-success) / <alpha-value>)',
+        info: 'rgb(var(--ui-info) / <alpha-value>)',
+        warning: 'rgb(var(--ui-warning) / <alpha-value>)',
+        error: 'rgb(var(--ui-error) / <alpha-value>)',
+        neutral: 'rgb(var(--ui-neutral) / <alpha-value>)'
       }
     }
   }

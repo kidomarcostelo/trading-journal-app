@@ -45,6 +45,14 @@ const filteredCategories = computed(() => {
   ) || []
 })
 
+const getCategoryColor = (catId: string) => {
+  const id = catId.toLowerCase()
+  if (id.includes('strategies')) return 'primary'
+  if (id.includes('price action')) return 'info'
+  if (id.includes('intention')) return 'success'
+  return 'neutral'
+}
+
 const isSubmitting = ref(false)
 const message = ref({ text: '', type: '' })
 
@@ -194,6 +202,7 @@ const submitTrade = async () => {
               :options="cat.values"
               v-model="tags[cat.id]"
               :multiple="true"
+              :color="getCategoryColor(cat.id)"
             />
           </div>
         </div>
