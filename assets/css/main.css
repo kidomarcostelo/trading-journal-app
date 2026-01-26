@@ -5,7 +5,7 @@
   --ui-border: 228 228 231;      /* #e4e4e7 (Zinc-200) */
   --ui-text: 82 82 91;           /* #52525b (Zinc-600) */
   --ui-highlight: 9 9 11;        /* #09090b (Zinc-950) */
-  --ui-accent: 79 70 229;        /* #4f46e5 (Indigo-600) */
+  --ui-accent: 124 58 237;       /* #7c3aed (Violet-600) */
 }
 
 html.dark {
@@ -15,7 +15,7 @@ html.dark {
   --ui-border: 39 39 42;         /* #27272a (Zinc-800) */
   --ui-text: 228 228 231;        /* #e4e4e7 (Zinc-200) */
   --ui-highlight: 255 255 255;   /* #ffffff (White) */
-  --ui-accent: 99 102 241;       /* #6366f1 (Indigo-500) */
+  --ui-accent: 139 92 246;       /* #8b5cf6 (Violet-500) */
 }
 
 @tailwind base;

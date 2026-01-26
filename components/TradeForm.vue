@@ -111,14 +111,14 @@ const submitTrade = async () => {
           <div class="grid grid-cols-3 gap-4">
             <div>
               <label class="block text-[10px] font-bold text-terminal-text/70 mb-1.5 ml-1 uppercase tracking-wider">Action</label>
-              <select v-model="form.Action" class="w-full bg-terminal-black/50 border border-terminal-gray rounded-lg text-terminal-highlight px-2 py-2 outline-none text-xs appearance-none cursor-pointer focus:border-terminal-accent">
+              <select v-model="form.Action" class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent focus:outline-none transition-colors cursor-pointer">
                 <option value="Long">Long</option>
                 <option value="Short">Short</option>
               </select>
             </div>
             <div>
               <label class="block text-[10px] font-bold text-terminal-text/70 mb-1.5 ml-1 uppercase tracking-wider">Market</label>
-              <select v-model="form.Market" class="w-full bg-terminal-black/50 border border-terminal-gray rounded-lg text-terminal-highlight px-2 py-2 outline-none text-xs appearance-none cursor-pointer focus:border-terminal-accent">
+              <select v-model="form.Market" class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent focus:outline-none transition-colors cursor-pointer">
                 <option value="" disabled>Select...</option>
                 <option value="Crypto">Crypto</option>
                 <option value="Forex">Forex</option>
@@ -129,7 +129,7 @@ const submitTrade = async () => {
             </div>
             <div>
               <label class="block text-[10px] font-bold text-terminal-text/70 mb-1.5 ml-1 uppercase tracking-wider">Status</label>
-              <select v-model="form.Status" class="w-full bg-terminal-black/50 border border-terminal-gray rounded-lg text-terminal-highlight px-2 py-2 outline-none text-xs appearance-none cursor-pointer focus:border-terminal-accent">
+              <select v-model="form.Status" class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent focus:outline-none transition-colors cursor-pointer">
                 <option value="Open">Open</option>
                 <option value="Closed">Closed</option>
                 <option value="Cancelled">Cancelled</option>
@@ -147,7 +147,7 @@ const submitTrade = async () => {
                 type="number"
                 step="any"
                 placeholder="0.00"
-                class="w-full bg-terminal-black/50 border border-terminal-gray rounded-lg focus:border-terminal-accent focus:ring-1 focus:ring-terminal-accent/20 text-terminal-highlight px-3 py-2 outline-none font-mono text-sm"
+                class="w-full bg-terminal-black border border-terminal-gray rounded-lg hover:border-terminal-gray/50 focus:border-terminal-accent focus:ring-1 focus:ring-terminal-accent/20 text-terminal-highlight px-3 py-2 outline-none font-mono text-sm transition-all"
               />
             </div>
             <div>
@@ -157,7 +157,7 @@ const submitTrade = async () => {
                 type="number"
                 step="any"
                 placeholder="0.00"
-                class="w-full bg-terminal-black/50 border border-terminal-gray rounded-lg focus:border-terminal-accent focus:ring-1 focus:ring-terminal-accent/20 text-terminal-highlight px-3 py-2 outline-none font-mono text-sm"
+                class="w-full bg-terminal-black border border-terminal-gray rounded-lg hover:border-terminal-gray/50 focus:border-terminal-accent focus:ring-1 focus:ring-terminal-accent/20 text-terminal-highlight px-3 py-2 outline-none font-mono text-sm transition-all"
               />
             </div>
           </div>
@@ -169,7 +169,7 @@ const submitTrade = async () => {
             </label>
             <input
               v-model="form['Before Picture']"
-              class="w-full bg-terminal-black/50 border border-terminal-gray rounded-lg focus:border-terminal-accent focus:ring-1 focus:ring-terminal-accent/20 text-terminal-highlight px-3 py-2 outline-none font-mono text-xs placeholder-terminal-text/30"
+              class="w-full bg-terminal-black border border-terminal-gray rounded-lg hover:border-terminal-gray/50 focus:border-terminal-accent focus:ring-1 focus:ring-terminal-accent/20 text-terminal-highlight px-3 py-2 outline-none font-mono text-xs placeholder-terminal-text/30 transition-all"
               placeholder="Paste snapshot link..."
             />
           </div>
@@ -180,7 +180,7 @@ const submitTrade = async () => {
             <textarea
               v-model="form['Before Journal']"
               rows="6"
-              class="w-full bg-terminal-black/50 border border-terminal-gray rounded-lg focus:border-terminal-accent focus:ring-1 focus:ring-terminal-accent/20 text-terminal-highlight px-3 py-3 outline-none text-sm resize-none placeholder-terminal-text/30 leading-relaxed"
+              class="w-full bg-terminal-black border border-terminal-gray rounded-lg hover:border-terminal-gray/50 focus:border-terminal-accent focus:ring-1 focus:ring-terminal-accent/20 text-terminal-highlight px-3 py-3 outline-none text-sm resize-none placeholder-terminal-text/30 leading-relaxed transition-all"
               placeholder="Analysis, setup details, and plan..."
             ></textarea>
           </div>

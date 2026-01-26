@@ -64,7 +64,7 @@ const updateField = (fieldKey: string, value: any) => {
       <select 
         :value="form[marketKey]"
         @change="updateField(marketKey, ($event.target as HTMLSelectElement).value)"
-        class="bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-sm text-terminal-highlight focus:border-terminal-accent focus:outline-none transition-colors appearance-none cursor-pointer"
+        class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent focus:outline-none transition-colors cursor-pointer"
       >
         <option value="" disabled>Select Market</option>
         <option value="Crypto">Crypto</option>
@@ -81,7 +81,7 @@ const updateField = (fieldKey: string, value: any) => {
       <select 
         :value="form[statusKey]"
         @change="updateField(statusKey, ($event.target as HTMLSelectElement).value)"
-        class="bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-sm text-terminal-highlight focus:border-terminal-accent focus:outline-none transition-colors appearance-none cursor-pointer"
+        class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent focus:outline-none transition-colors cursor-pointer"
       >
         <option value="" disabled>Select Status</option>
         <option value="Open">Open</option>
