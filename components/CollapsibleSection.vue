@@ -18,8 +18,9 @@ const isExpanded = ref(props.initialExpanded)
   <div class="border border-terminal-gray rounded-lg overflow-hidden bg-terminal-dark/30">
     <!-- Header -->
     <button 
+      type="button"
       @click="isExpanded = !isExpanded"
-      class="w-full flex items-center justify-between p-3 bg-terminal-dark hover:bg-terminal-gray/50 transition-colors group"
+      class="w-full flex items-center justify-between p-3 bg-terminal-dark hover:bg-terminal-gray/50 transition-colors group cursor-pointer"
     >
       <div class="flex items-center gap-2">
         <component 
