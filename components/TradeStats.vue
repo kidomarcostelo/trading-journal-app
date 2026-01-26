@@ -12,12 +12,26 @@ const stats = computed(() => {
 
   const count = props.trades.length
   
-  // Calculate Total PnL (sum of all PnL, assuming open trades might have unrealized PnL or 0)
-  const pnl = props.trades.reduce((sum, t) => sum + (parseFloat(t.PnL) || 0), 0)
+  const getVal = (obj: any, key: string) => {
+    const foundKey = Object.keys(obj).find(k => k.toLowerCase() === key.toLowerCase())
+    return foundKey ? obj[foundKey] : undefined
+  }
+
+  const parsePnL = (val: any): number => {
+    if (typeof val === 'number') return val
+    if (!val) return 0
+    // Remove currency symbols, commas, and spaces
+    const clean = String(val).replace(/[^0-9.-]/g, '')
+    const num = parseFloat(clean)
+    return isNaN(num) ? 0 : num
+  }
+
+  // Calculate Total PnL
+  const pnl = props.trades.reduce((sum, t) => sum + parsePnL(getVal(t, 'pnl')), 0)
 
   // Calculate Win Rate (based on CLOSED trades only)
-  const closedTrades = props.trades.filter(t => (t.Status || '').toLowerCase() === 'closed')
-  const wins = closedTrades.filter(t => (parseFloat(t.PnL) || 0) > 0).length
+  const closedTrades = props.trades.filter(t => (getVal(t, 'status') || '').toLowerCase() === 'closed')
+  const wins = closedTrades.filter(t => parsePnL(getVal(t, 'pnl')) > 0).length
   
   const winRate = closedTrades.length > 0 
     ? (wins / closedTrades.length) * 100 
