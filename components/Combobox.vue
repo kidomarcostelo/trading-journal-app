@@ -7,6 +7,7 @@ interface Props {
   options: string[]
   modelValue: string | string[]
   multiple?: boolean
+  color?: 'primary' | 'success' | 'info' | 'warning' | 'error' | 'neutral'
 }
 
 const props = defineProps<Props>()
@@ -110,10 +111,13 @@ if (!props.multiple && typeof props.modelValue === 'string') {
         v-if="multiple"
         v-for="val in selectedValues"
         :key="val"
-        class="bg-terminal-dark border border-terminal-gray/50 text-terminal-highlight px-1.5 py-0.5 rounded-md text-[10px] flex items-center gap-1 font-medium shadow-sm"
+        :class="[
+          'px-1.5 py-0.5 rounded-md text-[10px] flex items-center gap-1 font-medium shadow-sm border transition-colors',
+          color ? `bg-${color}/10 border-${color}/30 text-${color}` : 'bg-terminal-dark border-terminal-gray/50 text-terminal-highlight'
+        ]"
       >
         {{ val }}
-        <button @click="removeOption(val)" type="button" class="hover:text-terminal-accent transition-colors">
+        <button @click="removeOption(val)" type="button" :class="['transition-colors', color ? `hover:text-${color}/70` : 'hover:text-terminal-accent']">
           <X class="w-3 h-3" />
         </button>
       </span>
