@@ -14,8 +14,10 @@ const colorMode = useColorMode()
 const isDark = computed(() => colorMode.value === 'dark')
 
 const toggleTheme = () => {
-  const next = colorMode.value === 'dark' ? 'light' : 'dark'
-  console.log(`[Theme] Switching to ${next}`)
+  // Force update by checking current value
+  const current = colorMode.value
+  const next = current === 'dark' ? 'light' : 'dark'
+  console.log(`[Theme] Toggling from ${current} to ${next}`)
   colorMode.preference = next
 }
 
