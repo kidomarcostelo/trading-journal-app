@@ -192,7 +192,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="h-dvh flex overflow-hidden bg-terminal-black text-terminal-text font-sans transition-colors duration-300">
+  <div class="h-screen flex overflow-hidden bg-terminal-black text-terminal-text font-sans transition-colors duration-300">
     <!-- Pane 1: Navigation Sidebar -->
     <div 
       :style="{ width: `${sidebarWidth}px` }" 
