@@ -14,7 +14,14 @@
 - [x] Task: Verify sidebar visibility using browser dev tools emulating Huawei tablet dimensions (approx. 1280x800 or similar landscape resolution).
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Sidebar Fix' (Protocol in workflow.md)
 
-## Phase 3: Final Verification
+## Phase 3: Persistent Issues Fix
+- [x] Task: Update layout to use dynamic viewport height (`h-dvh`) for better tablet compatibility.
+- [x] Task: Ensure sidebar navigation is scrollable and compact on short viewports.
+- [x] Task: Refactor theme toggle logic in `PaneNav.vue` for better reliability.
+- [x] Task: Update global CSS to use more robust dark mode selectors (e.g., `.dark` instead of `:root.dark`).
+- [ ] Task: Conductor - User Manual Verification 'Phase 3: Persistent Issues' (Protocol in workflow.md)
+
+## Phase 4: Final Verification
 - [ ] Task: Execute full test suite to ensure no regressions in theme or layout.
 - [ ] Task: Perform manual check on Edge and emulated Tablet Landscape mode.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Final Verification' (Protocol in workflow.md)
+- [ ] Task: Conductor - User Manual Verification 'Phase 4: Final Verification' (Protocol in workflow.md)

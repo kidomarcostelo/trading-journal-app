@@ -14,9 +14,8 @@ const colorMode = useColorMode()
 const isDark = computed(() => colorMode.value === 'dark')
 
 const toggleTheme = () => {
-  const current = colorMode.value
-  const next = current === 'dark' ? 'light' : 'dark'
-  console.log(`[Theme] Toggling from ${current} to ${next}`)
+  const next = colorMode.value === 'dark' ? 'light' : 'dark'
+  console.log(`[Theme] Switching to ${next}`)
   colorMode.preference = next
 }
 
@@ -32,7 +31,7 @@ defineEmits<{
 </script>
 
 <template>
-  <aside data-testid="pane-nav" class="w-full border-r border-terminal-gray flex flex-col bg-terminal-dark transition-all duration-300 min-h-0">
+  <aside data-testid="pane-nav" class="w-full border-r border-terminal-gray flex flex-col bg-terminal-dark transition-all duration-300 min-h-0 overflow-hidden">
     <div 
       class="p-3 flex items-center border-b border-terminal-gray mb-1 overflow-hidden whitespace-nowrap flex-shrink-0"
       :class="collapsed ? 'justify-center px-2' : 'justify-between'"
@@ -52,7 +51,7 @@ defineEmits<{
       </button>
     </div>
 
-    <nav class="flex-1 px-2 space-y-1">
+    <nav class="flex-1 px-2 space-y-1 overflow-y-auto min-h-0 custom-scrollbar">
       <button 
         @click="$emit('update:activeTab', 'daily-report')"
         :class="['w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all overflow-hidden whitespace-nowrap', activeTab === 'daily-report' ? 'bg-terminal-gray text-terminal-highlight' : 'text-terminal-text/60 hover:bg-terminal-gray/30 hover:text-terminal-text', collapsed ? 'justify-center' : '']"
