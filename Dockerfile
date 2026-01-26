@@ -12,8 +12,7 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Runtime
-FROM node:22
-
+FROM node:22-slim
 WORKDIR /app
 
 # Copy the built output from builder
