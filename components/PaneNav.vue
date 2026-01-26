@@ -87,8 +87,10 @@ defineEmits<{
         :class="collapsed ? 'justify-center' : ''"
         :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
       >
-        <Moon v-if="isDark" class="w-5 h-5 flex-shrink-0" />
-        <Sun v-else class="w-5 h-5 flex-shrink-0" />
+        <div class="w-5 h-5 flex items-center justify-center flex-shrink-0">
+          <Moon v-if="isDark" class="w-5 h-5" />
+          <Sun v-else class="w-5 h-5" />
+        </div>
         <span v-if="!collapsed" class="text-sm font-medium">{{ isDark ? 'Dark Mode' : 'Light Mode' }}</span>
       </button>
     </div>

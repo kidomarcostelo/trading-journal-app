@@ -165,7 +165,7 @@ const reviewJournalKey = 'Review Journal'
     />
 
     <!-- Review Journal (Full Width) -->
-    <div class="bg-terminal-black/40 border border-terminal-gray/50 rounded-lg p-6 focus-within:border-terminal-accent/50 transition-colors">
+    <div class="bg-terminal-black border border-terminal-gray rounded-lg p-6 hover:border-terminal-gray/50 focus-within:border-terminal-accent/50 transition-all">
       <div class="flex items-center gap-2 mb-3 text-terminal-highlight/60">
         <FileText class="w-4 h-4" />
         <span class="text-[10px] uppercase font-bold tracking-widest">Review Journal</span>
@@ -174,7 +174,7 @@ const reviewJournalKey = 'Review Journal'
         :value="form[reviewJournalKey]"
         @input="updateField(reviewJournalKey, ($event.target as HTMLTextAreaElement).value)"
         rows="8"
-        class="w-full bg-transparent border-none outline-none text-sm text-terminal-text placeholder-terminal-text/20 resize-y font-sans leading-relaxed"
+        class="w-full bg-transparent border-none outline-none text-sm text-terminal-text placeholder-terminal-text/20 resize-y font-sans leading-relaxed transition-all"
         placeholder="Final reflections, takeaways, or post-mortem analysis..."
       ></textarea>
     </div>
