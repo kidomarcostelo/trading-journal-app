@@ -8,5 +8,3 @@ nohup.out
 README.md
 tests
 vitest.config.ts
-tailwind.config.ts
-tsconfig.json
