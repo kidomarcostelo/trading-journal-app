@@ -1,6 +1,6 @@
 # Plan: Display "Days Opened" Duration
 
-## Phase 1: Logic & Utility
+## Phase 1: Logic & Utility [checkpoint: 9640cb4]
 - [x] Task: Create `composables/useDuration.ts` to encapsulate the date parsing and diffing logic.
 - [x] Task: Implement `formatDuration` helper to output `Xd Xh`.
 - [x] Task: Write unit tests for `useDuration` covering various date formats (ISO string, Excel serial) and status scenarios (Open vs Closed).
