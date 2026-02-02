@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import TradeList from '../../components/TradeList.vue'
 
@@ -8,6 +8,16 @@ describe('TradeList Filtering and Sorting', () => {
     { ID: '2', Pair: 'ETH/USD', Action: 'Short', Market: 'Crypto', Status: 'Closed', Date: '01/05/2026' },
     { ID: '3', Pair: 'AAPL', Action: 'Long', Market: 'Stocks', Status: 'Cancelled', Date: '12/25/2025' }
   ]
+
+  beforeEach(() => {
+    // Set system time to Jan 20, 2026 (Tuesday)
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-01-20'))
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
 
   it('filters trades by time period (Week)', async () => {
     // Note: Assuming we will add props or internal state for filtering
