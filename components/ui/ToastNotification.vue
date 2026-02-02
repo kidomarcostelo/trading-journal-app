@@ -27,12 +27,12 @@ const getStyles = (type?: string) => {
   <TransitionGroup
     tag="div"
     enter-active-class="transition duration-300 ease-out"
-    enter-from-class="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
-    enter-to-class="translate-y-0 opacity-100 sm:translate-x-0"
+    enter-from-class="-translate-y-4 opacity-0"
+    enter-to-class="translate-y-0 opacity-100"
     leave-active-class="transition duration-100 ease-in"
     leave-from-class="opacity-100"
     leave-to-class="opacity-0"
-    class="fixed bottom-0 right-0 z-50 p-4 space-y-4 w-full max-w-sm pointer-events-none flex flex-col items-end"
+    class="fixed top-0 left-1/2 -translate-x-1/2 z-50 p-4 space-y-4 w-full max-w-sm pointer-events-none flex flex-col items-center"
   >
     <div
       v-for="toast in toasts"

@@ -27,6 +27,8 @@ import TradingViewChart from '~/components/TradingViewChart.vue'
 import TradeScreenshots from '~/components/TradeScreenshots.vue'
 import TradeReview from '~/components/TradeReview.vue'
 import CollapsibleSection from '~/components/CollapsibleSection.vue'
+import ToastNotification from '~/components/ui/ToastNotification.vue'
+import SaveControls from '~/components/ui/SaveControls.vue'
 import type { ChipCategory } from '~/types'
 
 const showForm = ref(false)
@@ -472,5 +474,15 @@ onUnmounted(() => {
         </div>
       </div>
     </main>
+
+    <!-- Global UI Components -->
+    <SaveControls
+      v-if="selectedTradeId"
+      v-model="saveMode"
+      :is-dirty="isDirty"
+      :is-loading="isLoading"
+      @save="triggerSave"
+    />
+    <ToastNotification />
   </div>
 </template>
