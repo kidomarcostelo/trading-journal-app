@@ -50,8 +50,10 @@ const { data: config } = await useFetch<ChipCategory[]>('/api/config')
 import { useTrades } from '~/composables/useTrades'
 import { useAutoSave } from '~/composables/useAutoSave'
 import { useToast } from '~/composables/useToast'
+import { useDuration } from '~/composables/useDuration'
 
 const { addToast } = useToast()
+const { getDuration } = useDuration()
 
 const { 
   filterPeriod, 
@@ -64,6 +66,31 @@ const activeDetailTab = ref<'journal' | 'charts' | 'review'>('journal')
 
 const activeTrade = computed(() => {
   return filteredTrades.value.find(t => (t.ID || t.id) === selectedTradeId.value)
+})
+
+// Force re-render for live duration every minute if trade is open
+const now = ref(Date.now())
+let durationInterval: NodeJS.Timer | null = null
+
+onMounted(() => {
+  durationInterval = setInterval(() => {
+    now.value = Date.now()
+  }, 60000)
+})
+
+onUnmounted(() => {
+  if (durationInterval) clearInterval(durationInterval)
+})
+
+const tradeDuration = computed(() => {
+  if (!activeTrade.value) return '--'
+  // Trigger dependency on 'now' for live updates
+  const _ = now.value
+  return getDuration(
+    activeTrade.value.Date || activeTrade.value['Date Created'] || activeTrade.value.createdAt, 
+    activeTrade.value['Exit Date'], 
+    activeTrade.value.Status
+  )
 })
 
 const saveActiveTrade = async () => {
@@ -200,12 +227,18 @@ onMounted(() => {
   window.addEventListener('mousemove', doResize)
   window.addEventListener('mouseup', stopResize)
   window.addEventListener('keydown', handleKeydown)
+  
+  durationInterval = setInterval(() => {
+    now.value = Date.now()
+  }, 60000)
 })
 
 onUnmounted(() => {
   window.removeEventListener('mousemove', doResize)
   window.removeEventListener('mouseup', stopResize)
   window.removeEventListener('keydown', handleKeydown)
+  
+  if (durationInterval) clearInterval(durationInterval)
 })
 </script>
 
@@ -375,6 +408,11 @@ onUnmounted(() => {
                  <span class="w-1 h-1 rounded-full bg-terminal-gray/40"></span>
                  <span title="Date Created">
                    Created {{ formatDate(activeTrade.createdAt || activeTrade['Date Created'] || activeTrade.Date) }}
+                 </span>
+                 <span class="w-1 h-1 rounded-full bg-terminal-gray/40"></span>
+                 <span title="Duration" class="flex items-center gap-1.5">
+                    <span v-if="activeTrade.Status === 'Open'" class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    {{ tradeDuration }}
                  </span>
                </div>
              </div>
