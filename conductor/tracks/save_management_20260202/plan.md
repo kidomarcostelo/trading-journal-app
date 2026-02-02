@@ -11,7 +11,7 @@
 - [x] Task: Conductor - User Manual Verification 'Logic & State Management' (Protocol in workflow.md) 1758b9b
 
 ## Phase 3: Integration & Navigation
-- [~] Task: Connect `SaveControls.vue` to the `useAutoSave` logic (toggling modes, triggering manual saves).
-- [ ] Task: Implement "Save on Navigation" logic to trigger a save when switching between trades in the list.
-- [ ] Task: Ensure Toast notifications are triggered correctly for all save events (Auto, Manual, Navigation).
-- [ ] Task: Conductor - User Manual Verification 'Integration & Navigation' (Protocol in workflow.md)
+- [x] Task: Connect `SaveControls.vue` to the `useAutoSave` logic (toggling modes, triggering manual saves).
+- [x] Task: Implement "Save on Navigation" logic to trigger a save when switching between trades in the list.
+- [x] Task: Ensure Toast notifications are triggered correctly for all save events (Auto, Manual, Navigation).
+- [~] Task: Conductor - User Manual Verification 'Integration & Navigation' (Protocol in workflow.md)
