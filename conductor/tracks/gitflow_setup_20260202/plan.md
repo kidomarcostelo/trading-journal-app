@@ -1,8 +1,8 @@
 # Plan: Establish GitFlow with Develop Branch
 
 ## Phase 1: Infrastructure & Documentation
-- [ ] Task: Create local `develop` branch from `master` and push to remote.
-- [ ] Task: Update `conductor/workflow.md` to formally define the new workflow (Feature -> Develop -> Master).
+- [x] Task: Create local `develop` branch from `master` and push to remote. 1b9bad8
+- [x] Task: Update `conductor/workflow.md` to formally define the new workflow (Feature -> Develop -> Master). 1b9bad8
 - [ ] Task: Conductor - User Manual Verification 'Infrastructure & Documentation' (Protocol in workflow.md)
 
 ## Phase 2: CI/CD Configuration
