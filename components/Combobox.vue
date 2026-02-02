@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { Check, ChevronsUpDown, X } from 'lucide-vue-next'
+import { computePosition, flip, shift, offset, autoUpdate } from '@floating-ui/dom'
 
 interface Props {
   label: string
@@ -17,6 +18,50 @@ const query = ref('')
 const isOpen = ref(false)
 const containerRef = ref<HTMLElement | null>(null)
 const inputRef = ref<HTMLInputElement | null>(null)
+const dropdownRef = ref<HTMLElement | null>(null)
+
+let cleanup: (() => void) | null = null
+
+const updatePosition = async () => {
+  if (!containerRef.value || !dropdownRef.value) return
+
+  const { x, y } = await computePosition(containerRef.value, dropdownRef.value, {
+    placement: 'bottom-start',
+    strategy: 'fixed',
+    middleware: [
+      offset(4),
+      flip(),
+      shift({ padding: 8 })
+    ]
+  })
+
+  if (!dropdownRef.value) return
+
+  Object.assign(dropdownRef.value.style, {
+    left: `${x}px`,
+    top: `${y}px`,
+    width: `${containerRef.value.offsetWidth}px`
+  })
+}
+
+watch(isOpen, (val) => {
+  if (val) {
+    nextTick(() => {
+      if (containerRef.value && dropdownRef.value) {
+        cleanup = autoUpdate(containerRef.value, dropdownRef.value, updatePosition)
+      }
+    })
+  } else {
+    if (cleanup) {
+      cleanup()
+      cleanup = null
+    }
+  }
+})
+
+onUnmounted(() => {
+  if (cleanup) cleanup()
+})
 
 // Normalize modelValue to array for consistent handling internally
 const selectedValues = computed(() => {
@@ -83,7 +128,10 @@ const onEnter = () => {
 
 // Close on click outside
 const handleClickOutside = (e: MouseEvent) => {
-  if (containerRef.value && !containerRef.value.contains(e.target as Node)) {
+  const isClickInsideContainer = containerRef.value && containerRef.value.contains(e.target as Node)
+  const isClickInsideDropdown = dropdownRef.value && dropdownRef.value.contains(e.target as Node)
+  
+  if (!isClickInsideContainer && !isClickInsideDropdown) {
     isOpen.value = false
   }
 }
@@ -147,32 +195,34 @@ if (!props.multiple && typeof props.modelValue === 'string') {
     </div>
 
     <!-- Dropdown -->
-    <div
-      v-if="isOpen && (filteredOptions.length > 0 || query.trim())"
-      class="absolute z-50 w-full mt-1 bg-terminal-black border border-terminal-gray rounded-lg shadow-2xl max-h-60 overflow-auto py-1"
-      :style="{ width: containerRef ? `${containerRef.offsetWidth}px` : '100%' }"
-    >
-      <button
-        v-for="option in filteredOptions"
-        :key="option"
-        type="button"
-        @click="selectOption(option)"
-        class="w-full text-left px-3 py-2 text-xs text-terminal-text hover:bg-terminal-gray/30 hover:text-terminal-highlight flex items-center justify-between group transition-colors"
+    <Teleport to="body">
+      <div
+        v-if="isOpen && (filteredOptions.length > 0 || query.trim())"
+        ref="dropdownRef"
+        class="fixed z-[100] bg-terminal-black border border-terminal-gray rounded-lg shadow-2xl max-h-60 overflow-auto py-1"
       >
-        <span>{{ option }}</span>
-        <Check v-if="selectedValues.includes(option)" class="w-3 h-3 text-terminal-accent" />
-      </button>
+        <button
+          v-for="option in filteredOptions"
+          :key="option"
+          type="button"
+          @click="selectOption(option)"
+          class="w-full text-left px-3 py-2 text-xs text-terminal-text hover:bg-terminal-gray/30 hover:text-terminal-highlight flex items-center justify-between group transition-colors"
+        >
+          <span>{{ option }}</span>
+          <Check v-if="selectedValues.includes(option)" class="w-3 h-3 text-terminal-accent" />
+        </button>
 
-      <!-- Create Option -->
-      <button
-        v-if="query.trim() && !filteredOptions.some(o => o.toLowerCase() === query.trim().toLowerCase())"
-        type="button"
-        @click="selectOption(query.trim())"
-        class="w-full text-left px-3 py-2 text-xs text-terminal-accent hover:bg-terminal-accent/10 flex items-center gap-2 border-t border-terminal-gray/20"
-      >
-        <span>Create "{{ query }}"</span>
-        <span class="text-[10px] bg-terminal-accent/20 px-1.5 py-0.5 rounded ml-auto">Enter</span>
-      </button>
-    </div>
+        <!-- Create Option -->
+        <button
+          v-if="query.trim() && !filteredOptions.some(o => o.toLowerCase() === query.trim().toLowerCase())"
+          type="button"
+          @click="selectOption(query.trim())"
+          class="w-full text-left px-3 py-2 text-xs text-terminal-accent hover:bg-terminal-accent/10 flex items-center gap-2 border-t border-terminal-gray/20"
+        >
+          <span>Create "{{ query }}"</span>
+          <span class="text-[10px] bg-terminal-accent/20 px-1.5 py-0.5 rounded ml-auto">Enter</span>
+        </button>
+      </div>
+    </Teleport>
   </div>
 </template>
