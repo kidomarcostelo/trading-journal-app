@@ -25,4 +25,4 @@
 ## User Interface Principles
 *   **Density:** Balanced spacing to provide "room to breathe."
 *   **Typography:** Primary focus on clean sans-serif fonts (e.g., Inter, Geist) for a modern SaaS feel.
-*   **Immediate Feedback:** Ensure clear visual cues for all user actions, especially when saving trades or selecting tags.
+*   **Immediate Feedback:** Ensure clear visual cues for all user actions. Successful saves trigger top-center toast notifications; manual saves are managed via a persistent Floating Action Button (FAB) with dirty-state indicators.
