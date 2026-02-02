@@ -29,3 +29,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] **Track: Establish GitFlow with develop branch for production isolation**
 *Link: [./conductor/tracks/gitflow_setup_20260202/](./conductor/tracks/gitflow_setup_20260202/)*
+
+---
+
+- [~] **Track: Optimized Save & Autosave Management with Toast Notifications**
+*Link: [./conductor/tracks/save_management_20260202/](./conductor/tracks/save_management_20260202/)*
