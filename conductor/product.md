@@ -28,7 +28,8 @@ I am building a trading journal where Google Sheets acts as the database.
     *   **Pane 1 (Nav):** Persistent side navigation for major views.
     *   **Pane 2 (List):** Scrollable, filterable list of trade summaries.
     *   **Pane 3 (Detail):** Tabbed interface (Journal, Charts, Review) for deep analysis.
-    *   **Editing:** Inline editing for core metrics, strategies, psychology, and journals with auto-save.
+    *   **Editing:** Inline editing for core metrics, strategies, psychology, and journals with configurable save modes (Always Autosave, Manual, Save on Navigation).
+    *   **Persistence Feedback:** Toast notifications for success/error states and a Floating Action Button (FAB) for manual persistence.
 
 3.  **Dashboard Views**
     *   **Tabbed Master-Detail:** Replaced previous gallery toggle with a dense, professional Master-Detail view.
@@ -63,7 +64,7 @@ I am building a trading journal where Google Sheets acts as the database.
 ## Infrastructure & Security
 *   **Hosting:** Google Cloud Run (Serverless Containers).
 *   **Authentication:** Application-level Google OAuth 2.0 with restricted email whitelist.
-*   **CI/CD:** GitHub Actions automated deployment.
+*   **CI/CD:** GitHub Actions automated deployment from `master`. Continuous Integration (tests) on `develop`.
 
 ## Target Audience
 *   **Primary User:** Solo Retail Swing Trader (Self).

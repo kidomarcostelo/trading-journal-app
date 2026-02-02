@@ -1,8 +1,8 @@
-name: Deploy to Cloud Run
+name: CI/CD Workflow
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ master, develop ]
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
@@ -10,7 +10,27 @@ env:
   REGION: us-central1
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run tests
+      run: npm test
+
   deploy:
+    needs: test
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
 
     steps:
