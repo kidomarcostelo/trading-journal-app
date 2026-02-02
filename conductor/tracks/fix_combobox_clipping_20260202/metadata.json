@@ -1,0 +1,8 @@
+{
+  "track_id": "fix_combobox_clipping_20260202",
+  "type": "bug",
+  "status": "new",
+  "created_at": "2026-02-02T12:30:00Z",
+  "updated_at": "2026-02-02T12:30:00Z",
+  "description": "bug: on huawei tablet when creating a trade, the dropdowns strategies and tradeintention is not visible."
+}

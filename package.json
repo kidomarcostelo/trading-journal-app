@@ -11,6 +11,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@floating-ui/dom": "^1.7.5",
     "@nuxtjs/color-mode": "^4.0.0",
     "googleapis": "^144.0.0",
     "lucide-vue-next": "^0.471.0",
