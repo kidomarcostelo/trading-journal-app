@@ -1,9 +1,9 @@
 # Plan: Optimized Save & Autosave Management
 
 ## Phase 1: Core UI Components
-- [ ] Task: Create `ToastNotification.vue` component and `useToast` composable for displaying success/error messages.
-- [ ] Task: Create `SaveControls.vue` component containing the Floating Action Button (FAB) and the Save Mode Toggle.
-- [ ] Task: Conductor - User Manual Verification 'Core UI Components' (Protocol in workflow.md)
+- [x] Task: Create `ToastNotification.vue` component and `useToast` composable for displaying success/error messages.
+- [x] Task: Create `SaveControls.vue` component containing the Floating Action Button (FAB) and the Save Mode Toggle.
+- [~] Task: Conductor - User Manual Verification 'Core UI Components' (Protocol in workflow.md)
 
 ## Phase 2: Logic & State Management
 - [ ] Task: Implement `useAutoSave` composable to manage the three save modes, dirty state tracking, and debounced saving.
