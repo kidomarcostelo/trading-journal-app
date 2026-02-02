@@ -23,6 +23,11 @@ describe('Combobox', () => {
         options: ['Trend', 'Breakout'],
         modelValue: '',
         multiple: false
+      },
+      global: {
+        stubs: {
+          teleport: true
+        }
       }
     })
 
@@ -30,7 +35,7 @@ describe('Combobox', () => {
     await input.setValue('Tr')
     
     // Dropdown should appear
-    const dropdown = wrapper.find('.absolute.z-50')
+    const dropdown = wrapper.find('.fixed.z-\\[100\\]')
     expect(dropdown.exists()).toBe(true)
     
     // Should show "Trend" but not "Breakout"
@@ -45,13 +50,18 @@ describe('Combobox', () => {
         options: ['Trend', 'Breakout'],
         modelValue: '',
         multiple: false
+      },
+      global: {
+        stubs: {
+          teleport: true
+        }
       }
     })
 
     const input = wrapper.find('input')
     await input.setValue('Tr')
     
-    const dropdown = wrapper.find('.absolute.z-50')
+    const dropdown = wrapper.find('.fixed.z-\\[100\\]')
     const button = dropdown.find('button') // First option (Trend)
     await button.trigger('click')
 

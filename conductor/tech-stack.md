@@ -25,7 +25,7 @@
 *   **State Persistence:** Browser `localStorage` for UI layout preferences (e.g., card ordering).
 
 ## Styling & UI
-*   **Framework:** Tailwind CSS (Utility-first approach)
+*   **Framework:** Tailwind CSS (Utility-first approach), Floating UI (for dynamic positioning).
 *   **Icons:** Nuxt Icon or Lucide Vue (Recommended for a clean, professional look).
 *   **Animations:** Vue transitions or simple Tailwind transitions for a smooth experience.
 
