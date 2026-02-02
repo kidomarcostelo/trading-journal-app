@@ -37,5 +37,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [~] **Track: bug: on huawei tablet when creating a trade, the dropdowns strategies and tradeintention is not visible.**
+- [x] **Track: bug: on huawei tablet when creating a trade, the dropdowns strategies and tradeintention is not visible.**
 *Link: [./conductor/tracks/fix_combobox_clipping_20260202/](./conductor/tracks/fix_combobox_clipping_20260202/)*
