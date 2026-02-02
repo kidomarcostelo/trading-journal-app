@@ -8,7 +8,7 @@
 *   **Environment:** Node.js
 *   **Authentication:** Google Service Account credentials (stored securely in `.env`).
 *   **Deployment:** Dockerized node-server on Google Cloud Run.
-*   **CI/CD:** GitHub Actions (.github/workflows/deploy.yml).
+*   **CI/CD:** GitHub Actions (.github/workflows/deploy.yml). Two-stage pipeline: Test (all branches) -> Deploy (master only).
 *   **Authentication (App Level):** `nuxt-auth-utils` for Google OAuth 2.0.
 
 ## Database & Storage
