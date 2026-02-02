@@ -46,6 +46,11 @@ const { data: config } = await useFetch<ChipCategory[]>('/api/config')
 
 // Unified Trade Logic
 import { useTrades } from '~/composables/useTrades'
+import { useAutoSave } from '~/composables/useAutoSave'
+import { useToast } from '~/composables/useToast'
+
+const { addToast } = useToast()
+
 const { 
   filterPeriod, 
   sortBy, 
@@ -59,37 +64,48 @@ const activeTrade = computed(() => {
   return filteredTrades.value.find(t => (t.ID || t.id) === selectedTradeId.value)
 })
 
-const handleTradeUpdate = async (updatedFields: any) => {
-  if (!activeTrade.value || !trades.value) return
+const saveActiveTrade = async () => {
+  if (!activeTrade.value) return
   
-  // Update local state immediately for responsiveness
-  const index = trades.value.findIndex(t => (t.ID || t.id) === selectedTradeId.value)
-  if (index !== -1) {
-    const updatedTrade = { ...trades.value[index], ...updatedFields }
-    trades.value[index] = updatedTrade
-
-    // Prepare payload: Flatten arrays to strings
-    const payload: any = { 
-      ID: selectedTradeId.value,
-      ...updatedFields 
-    }
-    
-    for (const key in payload) {
-      if (Array.isArray(payload[key])) {
-        payload[key] = payload[key].join(', ')
-      }
-    }
-
-    // Persist to backend
-    try {
-      await $fetch('/api/trades', {
-        method: 'PUT',
-        body: payload
-      })
-    } catch (err) {
-      console.error('Failed to auto-save trade:', err)
+  const payload: any = { 
+    ID: selectedTradeId.value,
+    ...activeTrade.value 
+  }
+  
+  for (const key in payload) {
+    if (Array.isArray(payload[key])) {
+      payload[key] = payload[key].join(', ')
     }
   }
+
+  try {
+    await $fetch('/api/trades', {
+      method: 'PUT',
+      body: payload
+    })
+    addToast({ title: 'Success', message: 'Trade saved successfully', type: 'success' })
+  } catch (err) {
+    addToast({ title: 'Error', message: 'Failed to save trade', type: 'error' })
+    throw err
+  }
+}
+
+const { saveMode, isDirty, isLoading, trackChange, triggerSave, onNavigate } = useAutoSave(saveActiveTrade)
+
+const handleTradeUpdate = (updatedFields: any) => {
+  if (!activeTrade.value || !trades.value) return
+  
+  const index = trades.value.findIndex(t => (t.ID || t.id) === selectedTradeId.value)
+  if (index !== -1) {
+    trades.value[index] = { ...trades.value[index], ...updatedFields }
+    trackChange()
+  }
+}
+
+const selectTrade = async (id: string) => {
+  if (selectedTradeId.value === id) return
+  await onNavigate()
+  selectedTradeId.value = id
 }
 
 // Helper to format date
@@ -312,7 +328,7 @@ onUnmounted(() => {
           :filter-period="filterPeriod"
           :sort-by="sortBy"
           :sort-dir="sortDir"
-          @select="selectedTradeId = $event"
+          @select="selectTrade"
         />
       </div>
     </section>
