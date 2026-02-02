@@ -8,6 +8,12 @@
 4. **User Experience First:** Every decision should prioritize user experience
 5. **Non-Interactive & CI-Aware:** Prefer non-interactive commands. Use `CI=true` for watch-mode tools (tests, linters) to ensure single execution.
 
+## Branching Strategy
+
+- **master**: Production environment. Contains only stable, deployable code.
+- **develop**: Integration environment. All new features and non-hotfix updates are merged here.
+- **feature/*** (or `feat/`): Feature branches created from `develop`.
+
 ## Task Workflow
 
 All tasks follow a strict lifecycle:
@@ -272,7 +278,7 @@ A task is complete when:
 ## Emergency Procedures
 
 ### Critical Bug in Production
-1. Create hotfix branch from main
+1. Create hotfix branch from master
 2. Write failing test for bug
 3. Implement minimal fix
 4. Test thoroughly including mobile
@@ -304,7 +310,7 @@ A task is complete when:
 - [ ] Backup created
 
 ### Deployment Steps
-1. Merge feature branch to main
+1. Merge develop branch to master
 2. Tag release with version
 3. Push to deployment service
 4. Run database migrations
