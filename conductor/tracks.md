@@ -34,3 +34,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] **Track: Optimized Save & Autosave Management with Toast Notifications**
 *Link: [./conductor/tracks/save_management_20260202/](./conductor/tracks/save_management_20260202/)*
+
+---
+
+- [x] **Track: bug: on huawei tablet when creating a trade, the dropdowns strategies and tradeintention is not visible.**
+*Link: [./conductor/tracks/fix_combobox_clipping_20260202/](./conductor/tracks/fix_combobox_clipping_20260202/)*
