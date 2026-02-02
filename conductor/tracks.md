@@ -24,3 +24,8 @@ This file tracks all major tracks for the project. Each track has its own detail
   
 - [ ] **Track: Enhanced Dashboard & Chip Management (Collapsible Panes, Entry/Open Chips, Chips Manager)**
   *Link: [./conductor/tracks/enhanced_chip_management_20260110/](./conductor/tracks/enhanced_chip_management_20260110/)*
+
+---
+
+- [ ] **Track: Establish GitFlow with develop branch for production isolation**
+*Link: [./conductor/tracks/gitflow_setup_20260202/](./conductor/tracks/gitflow_setup_20260202/)*
