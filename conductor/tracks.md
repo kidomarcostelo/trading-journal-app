@@ -39,3 +39,13 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] **Track: bug: on huawei tablet when creating a trade, the dropdowns strategies and tradeintention is not visible.**
 *Link: [./conductor/tracks/fix_combobox_clipping_20260202/](./conductor/tracks/fix_combobox_clipping_20260202/)*
+
+---
+
+- [ ] **Track: Trade Deletion Logic**
+*Link: [./conductor/tracks/delete_trades_20260202/](./conductor/tracks/delete_trades_20260202/)*
+
+---
+
+- [ ] **Track: Calculate and display trade duration (Days Opened) in the UI**
+*Link: [./conductor/tracks/days_opened_20260202/](./conductor/tracks/days_opened_20260202/)*
