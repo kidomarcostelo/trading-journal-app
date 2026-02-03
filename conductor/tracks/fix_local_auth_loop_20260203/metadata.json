@@ -1,0 +1,8 @@
+{
+  "track_id": "fix_local_auth_loop_20260203",
+  "type": "bug",
+  "status": "new",
+  "created_at": "2026-02-03T10:00:00Z",
+  "updated_at": "2026-02-03T10:00:00Z",
+  "description": "Fix login loop when running on local network HTTP by allowing insecure session cookies via environment variable."
+}
