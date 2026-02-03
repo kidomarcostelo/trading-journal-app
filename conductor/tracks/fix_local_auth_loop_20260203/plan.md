@@ -8,7 +8,7 @@ Update the application configuration to allow toggling cookie security via envir
 - [x] Task: Update `nuxt.config.ts` to support configurable session security [edf4f28]
     - [ ] Read `nuxt.config.ts` to identify existing session configuration
     - [ ] Implement conditional `secure` flag for cookies based on `NUXT_SESSION_SECURE`
-- [ ] Task: Update `.env.example` with the new configuration variable
+- [x] Task: Update `.env.example` with the new configuration variable [2545c1b]
     - [ ] Add `NUXT_SESSION_SECURE` with a description of its purpose for local development/hosting
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Configuration Update' (Protocol in workflow.md)
 
