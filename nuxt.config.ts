@@ -29,5 +29,11 @@ export default defineNuxtConfig({
     googleServiceAccountEmail: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
     googlePrivateKey: process.env.GOOGLE_PRIVATE_KEY,
     allowedEmail: process.env.ALLOWED_EMAIL,
+    session: {
+      cookie: {
+        secure: process.env.NUXT_SESSION_SECURE === undefined ? true : process.env.NUXT_SESSION_SECURE === 'true',
+        sameSite: 'lax'
+      }
+    }
   }
 })
