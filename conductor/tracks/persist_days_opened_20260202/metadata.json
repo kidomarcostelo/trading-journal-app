@@ -1,0 +1,8 @@
+{
+  "track_id": "persist_days_opened_20260202",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-02-02T14:00:00Z",
+  "updated_at": "2026-02-02T14:00:00Z",
+  "description": "Persist calculated trade duration (Days Opened) to Google Sheets when trade is not Open"
+}

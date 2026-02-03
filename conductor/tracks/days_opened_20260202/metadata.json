@@ -1,0 +1,8 @@
+{
+  "track_id": "days_opened_20260202",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-02-02T13:30:00Z",
+  "updated_at": "2026-02-02T13:30:00Z",
+  "description": "Calculate and display trade duration (Days Opened) in the UI"
+}
