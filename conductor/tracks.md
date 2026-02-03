@@ -47,5 +47,15 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [x] **Track: Calculate and display trade duration (Days Opened) in the UI**
+- [ ] **Track: Calculate and display trade duration (Days Opened) in the UI**
 *Link: [./conductor/tracks/days_opened_20260202/](./conductor/tracks/days_opened_20260202/)*
+
+---
+
+- [ ] **Track: Persist calculated trade duration (Days Opened) to Google Sheets when trade is not Open**
+*Link: [./conductor/tracks/persist_days_opened_20260202/](./conductor/tracks/persist_days_opened_20260202/)*
+
+---
+
+- [~] **Track: Fix login loop when running on local network HTTP**
+*Link: [./conductor/tracks/fix_local_auth_loop_20260203/](./conductor/tracks/fix_local_auth_loop_20260203/)*
