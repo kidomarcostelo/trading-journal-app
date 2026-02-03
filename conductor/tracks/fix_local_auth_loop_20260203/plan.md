@@ -9,9 +9,8 @@ Update the application configuration to allow toggling cookie security via envir
 - [x] Task: Update `.env.example` with the new configuration variable [2545c1b]
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Configuration Update' (Protocol in workflow.md) [3ac91e2]
 
-## Phase 2: Verification (TDD)
+## Phase 2: Verification (TDD) [checkpoint: 3ac91e2]
 Ensure the configuration logic works as expected. Note: Full E2E testing of the redirect loop requires a browser environment, but we can unit test the configuration logic.
 
-- [ ] Task: Create a test for configuration logic (if applicable)
-    - [ ] Verify that the session configuration correctly respects the environment variable
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Verification' (Protocol in workflow.md)
+- [x] Task: Create a test for configuration logic (if applicable) [edf4f28]
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Verification' (Protocol in workflow.md) [3ac91e2]
