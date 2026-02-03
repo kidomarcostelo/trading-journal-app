@@ -2,15 +2,12 @@
 
 This plan addresses the login loop caused by cookie security requirements on local HTTP connections.
 
-## Phase 1: Configuration Update
+## Phase 1: Configuration Update [checkpoint: 3ac91e2]
 Update the application configuration to allow toggling cookie security via environment variables.
 
 - [x] Task: Update `nuxt.config.ts` to support configurable session security [edf4f28]
-    - [ ] Read `nuxt.config.ts` to identify existing session configuration
-    - [ ] Implement conditional `secure` flag for cookies based on `NUXT_SESSION_SECURE`
 - [x] Task: Update `.env.example` with the new configuration variable [2545c1b]
-    - [ ] Add `NUXT_SESSION_SECURE` with a description of its purpose for local development/hosting
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Configuration Update' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Configuration Update' (Protocol in workflow.md) [3ac91e2]
 
 ## Phase 2: Verification (TDD)
 Ensure the configuration logic works as expected. Note: Full E2E testing of the redirect loop requires a browser environment, but we can unit test the configuration logic.
