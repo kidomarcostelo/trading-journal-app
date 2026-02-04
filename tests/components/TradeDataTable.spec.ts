@@ -23,7 +23,6 @@ describe('TradeDataTable', () => {
     expect(wrapper.text()).toContain('Market')
     expect(wrapper.text()).toContain('Status')
     expect(wrapper.text()).toContain('Risk')
-    expect(wrapper.text()).toContain('Exit Price')
     expect(wrapper.text()).toContain('PNL')
     expect(wrapper.text()).toContain('Exit Date')
     
@@ -33,9 +32,9 @@ describe('TradeDataTable', () => {
     expect(selects[1].element.value).toBe('Open') // Status
     
     const inputs = wrapper.findAll('input')
-    // Order: Risk, Exit Price, PNL, Exit Date
+    // Order: Risk, PNL, Exit Date
     expect(inputs[0].element.value).toBe('100') // Risk
-    expect(inputs[2].element.value).toBe('250') // PNL
+    expect(inputs[1].element.value).toBe('250') // PNL
   })
 
   it('emits update when an input changes', async () => {
