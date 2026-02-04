@@ -57,5 +57,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [x] **Track: Fix login loop when running on local network HTTP**
-*Link: [./conductor/tracks/fix_local_auth_loop_20260203/](./conductor/tracks/fix_local_auth_loop_20260203/)*
+- [x] **Track: Batch Trade Saving & Dirty State Counter**
+*Link: [./conductor/tracks/batch_trade_saving_20260204/](./conductor/tracks/batch_trade_saving_20260204/)*

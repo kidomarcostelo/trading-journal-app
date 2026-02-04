@@ -83,33 +83,45 @@ const tradeDuration = computed(() => {
   )
 })
 
-const saveActiveTrade = async () => {
-  if (!activeTrade.value) return
+const saveTrades = async (dirtyIds: Set<string>) => {
+  if (dirtyIds.size === 0) return
+
+  // 1. Identify trades to save
+  // If set contains 'active' legacy placeholder, we might need to handle it, but we will update trackChange to pass real IDs.
+  const tradesToSave = trades.value?.filter(t => dirtyIds.has(t.ID || t.id)) || []
   
-  const payload: any = { 
-    ID: selectedTradeId.value,
-    ...activeTrade.value 
-  }
-  
-  for (const key in payload) {
-    if (Array.isArray(payload[key])) {
-      payload[key] = payload[key].join(', ')
+  if (tradesToSave.length === 0) return
+
+  // 2. Prepare Payload
+  const payload = tradesToSave.map(trade => {
+    const tradeData: any = { ...trade }
+    // Ensure arrays are stringified for Sheets
+    for (const key in tradeData) {
+      if (Array.isArray(tradeData[key])) {
+        tradeData[key] = tradeData[key].join(', ')
+      }
     }
-  }
+    return tradeData
+  })
 
   try {
-    await $fetch('/api/trades', {
+    const result = await $fetch<{ success: boolean, count: number }>('/api/trades/batch', {
       method: 'PUT',
       body: payload
     })
-    addToast({ title: 'Success', message: 'Trade saved successfully', type: 'success' })
+    
+    addToast({ 
+      title: 'Success', 
+      message: `${result.count} trade${result.count !== 1 ? 's' : ''} saved successfully`, 
+      type: 'success' 
+    })
   } catch (err) {
-    addToast({ title: 'Error', message: 'Failed to save trade', type: 'error' })
+    addToast({ title: 'Error', message: 'Failed to save trades', type: 'error' })
     throw err
   }
 }
 
-const { saveMode, isDirty, isLoading, trackChange, triggerSave, onNavigate } = useAutoSave(saveActiveTrade)
+const { saveMode, isDirty, dirtyTradeIds, isLoading, trackChange, triggerSave, onNavigate } = useAutoSave(saveTrades)
 
 const handleTradeUpdate = (updatedFields: any) => {
   if (!activeTrade.value || !trades.value) return
@@ -117,7 +129,8 @@ const handleTradeUpdate = (updatedFields: any) => {
   const index = trades.value.findIndex(t => (t.ID || t.id) === selectedTradeId.value)
   if (index !== -1) {
     trades.value[index] = { ...trades.value[index], ...updatedFields }
-    trackChange()
+    // Pass ID to track specific dirty state
+    trackChange(activeTrade.value.ID || activeTrade.value.id)
   }
 }
 
@@ -509,6 +522,7 @@ onUnmounted(() => {
       v-model="saveMode"
       :is-dirty="isDirty"
       :is-loading="isLoading"
+      :dirty-count="dirtyTradeIds.size"
       @save="triggerSave"
     />
     <ToastNotification />

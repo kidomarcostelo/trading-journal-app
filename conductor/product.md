@@ -29,7 +29,7 @@ I am building a trading journal where Google Sheets acts as the database.
     *   **Pane 2 (List):** Scrollable, filterable list of trade summaries.
     *   **Pane 3 (Detail):** Tabbed interface (Journal, Charts, Review) for deep analysis.
     *   **Editing:** Inline editing for core metrics, strategies, psychology, and journals with configurable save modes (Always Autosave, Manual, Save on Navigation).
-    *   **Persistence Feedback:** Toast notifications for success/error states and a Floating Action Button (FAB) for manual persistence.
+    *   **Persistence Feedback:** Toast notifications for success/error states and a Floating Action Button (FAB) for manual persistence with batch saving support and dirty count indicator.
 
 3.  **Dashboard Views**
     *   **Tabbed Master-Detail:** Replaced previous gallery toggle with a dense, professional Master-Detail view.
@@ -43,6 +43,7 @@ I am building a trading journal where Google Sheets acts as the database.
     * `GET /api/config`: Returns an array of `ChipCategory` objects parsed from the Chips sheet columns.
     * `GET /api/trades`: Returns trade logs where keys match the spreadsheet headers. Automatically parses `=IMAGE()` formulas and comma-separated lists for image columns.
     * `POST /api/trades`: Dynamically maps JSON keys to spreadsheet headers. Auto-generates incremental IDs and formats dates as `mm/dd/yyyy`.
+    * `PUT /api/trades/batch`: Accepts an array of trade objects for batch updates to Google Sheets.
 
 **Step-by-Step Instructions (Execute in Order):**
 
