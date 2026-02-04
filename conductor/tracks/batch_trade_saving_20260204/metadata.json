@@ -1,0 +1,8 @@
+{
+  "track_id": "batch_trade_saving_20260204",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-02-04T10:00:00Z",
+  "updated_at": "2026-02-04T10:00:00Z",
+  "description": "Optimize trade saving by allowing manual batch saves of multiple dirty trades with a numeric indicator on the FAB."
+}
