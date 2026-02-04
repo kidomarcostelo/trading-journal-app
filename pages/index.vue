@@ -72,16 +72,6 @@ const activeTrade = computed(() => {
 const now = ref(Date.now())
 let durationInterval: NodeJS.Timer | null = null
 
-onMounted(() => {
-  durationInterval = setInterval(() => {
-    now.value = Date.now()
-  }, 60000)
-})
-
-onUnmounted(() => {
-  if (durationInterval) clearInterval(durationInterval)
-})
-
 const tradeDuration = computed(() => {
   if (!activeTrade.value) return '--'
   // Trigger dependency on 'now' for live updates
