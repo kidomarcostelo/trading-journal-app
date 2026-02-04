@@ -23,7 +23,6 @@ const statusKey = computed(() => findKey(form.value, ['Status', 'status']));
 const riskKey = computed(() => findKey(form.value, ['Risk', 'risk']));
 const pnlKey = computed(() => findKey(form.value, ['PNL', 'PnL', 'Net PnL', 'pnl']));
 const exitDateKey = computed(() => findKey(form.value, ['Exit Date', 'exitDate', 'closedAt']));
-const exitPriceKey = computed(() => findKey(form.value, ['Exit Price', 'exitPrice']));
 
 // Watch for prop changes to reset form (e.g. switching trades)
 watch(() => props.trade, (newTrade) => {
@@ -43,7 +42,7 @@ const updateField = (fieldKey: string, value: any) => {
 </script>
 
 <template>
-  <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+  <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
     <!-- Action (Direction) -->
     <div class="flex flex-col gap-1">
       <label class="text-[10px] uppercase font-bold text-terminal-text/90 tracking-wider">Action</label>
@@ -105,18 +104,6 @@ const updateField = (fieldKey: string, value: any) => {
         type="number" 
         :value="form[riskKey]"
         @input="updateField(riskKey, ($event.target as HTMLInputElement).value)"
-        class="bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-sm text-terminal-highlight focus:border-terminal-accent focus:outline-none transition-colors"
-        placeholder="0.00"
-      />
-    </div>
-
-    <!-- Exit Price -->
-    <div class="flex flex-col gap-1">
-      <label class="text-[10px] uppercase font-bold text-terminal-text/90 tracking-wider">Exit Price</label>
-      <input 
-        type="number" 
-        :value="form[exitPriceKey]"
-        @input="updateField(exitPriceKey, ($event.target as HTMLInputElement).value)"
         class="bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-sm text-terminal-highlight focus:border-terminal-accent focus:outline-none transition-colors"
         placeholder="0.00"
       />
