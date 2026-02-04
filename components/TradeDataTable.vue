@@ -17,26 +17,33 @@ const findKey = (obj: any, candidates: string[]) => {
   return candidates.find(k => Object.prototype.hasOwnProperty.call(obj, k)) || candidates[0]
 }
 
-const actionKey = computed(() => findKey(form.value, ['Action', 'Direction', 'Type']))
-const marketKey = computed(() => findKey(form.value, ['Market', 'market']))
-const statusKey = computed(() => findKey(form.value, ['Status', 'status']))
-const riskKey = computed(() => findKey(form.value, ['Risk', 'risk']))
-const pnlKey = computed(() => findKey(form.value, ['PNL', 'PnL', 'Net PnL', 'pnl']))
+const actionKey = computed(() => findKey(form.value, ['Action', 'Direction', 'Type']));
+const marketKey = computed(() => findKey(form.value, ['Market', 'market']));
+const statusKey = computed(() => findKey(form.value, ['Status', 'status']));
+const riskKey = computed(() => findKey(form.value, ['Risk', 'risk']));
+const pnlKey = computed(() => findKey(form.value, ['PNL', 'PnL', 'Net PnL', 'pnl']));
+const exitDateKey = computed(() => findKey(form.value, ['Exit Date', 'exitDate', 'closedAt']));
+const exitPriceKey = computed(() => findKey(form.value, ['Exit Price', 'exitPrice']));
 
 // Watch for prop changes to reset form (e.g. switching trades)
 watch(() => props.trade, (newTrade) => {
-  form.value = { ...newTrade }
-}, { deep: true })
+  form.value = { ...newTrade };
+}, { deep: true });
 
 const updateField = (fieldKey: string, value: any) => {
-  const numValue = parseFloat(value)
-  form.value[fieldKey] = isNaN(numValue) && value !== '' ? value : (value === '' ? '' : numValue)
-  emit('update', { ...form.value })
-}
+  // Auto-set Exit Date when status becomes Closed
+  if (fieldKey === statusKey.value && value === 'Closed' && !form.value[exitDateKey.value]) {
+    form.value[exitDateKey.value] = new Date().toISOString();
+  }
+
+  const numValue = parseFloat(value);
+  form.value[fieldKey] = isNaN(numValue) && value !== '' ? value : (value === '' ? '' : numValue);
+  emit('update', { ...form.value });
+};
 </script>
 
 <template>
-  <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+  <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
     <!-- Action (Direction) -->
     <div class="flex flex-col gap-1">
       <label class="text-[10px] uppercase font-bold text-terminal-text/90 tracking-wider">Action</label>
@@ -103,6 +110,18 @@ const updateField = (fieldKey: string, value: any) => {
       />
     </div>
 
+    <!-- Exit Price -->
+    <div class="flex flex-col gap-1">
+      <label class="text-[10px] uppercase font-bold text-terminal-text/90 tracking-wider">Exit Price</label>
+      <input 
+        type="number" 
+        :value="form[exitPriceKey]"
+        @input="updateField(exitPriceKey, ($event.target as HTMLInputElement).value)"
+        class="bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-sm text-terminal-highlight focus:border-terminal-accent focus:outline-none transition-colors"
+        placeholder="0.00"
+      />
+    </div>
+
     <!-- PNL -->
     <div class="flex flex-col gap-1">
       <label class="text-[10px] uppercase font-bold text-terminal-text/90 tracking-wider">PNL</label>
@@ -113,6 +132,18 @@ const updateField = (fieldKey: string, value: any) => {
         class="bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-sm font-mono focus:border-terminal-accent focus:outline-none transition-colors"
         :class="Number(form[pnlKey]) > 0 ? 'text-emerald-400' : Number(form[pnlKey]) < 0 ? 'text-rose-400' : 'text-terminal-text'"
         placeholder="0.00"
+      />
+    </div>
+
+    <!-- Exit Date -->
+    <div class="flex flex-col gap-1">
+      <label class="text-[10px] uppercase font-bold text-terminal-text/90 tracking-wider">Exit Date</label>
+      <input 
+        type="text" 
+        :value="form[exitDateKey]"
+        @input="updateField(exitDateKey, ($event.target as HTMLInputElement).value)"
+        class="bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-xs text-terminal-text/70 focus:border-terminal-accent focus:outline-none transition-colors font-mono"
+        placeholder="mm/dd/yyyy"
       />
     </div>
   </div>
