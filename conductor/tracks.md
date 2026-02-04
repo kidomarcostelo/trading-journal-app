@@ -47,7 +47,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Calculate and display trade duration (Days Opened) in the UI**
+- [x] **Track: Calculate and display trade duration (Days Opened) in the UI**
 *Link: [./conductor/tracks/days_opened_20260202/](./conductor/tracks/days_opened_20260202/)*
 
 ---
