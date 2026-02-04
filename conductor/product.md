@@ -84,7 +84,7 @@ I am building a trading journal where Google Sheets acts as the database.
     *   **Psychology:** Tags to track emotional state (e.g., "FOMO", "Confident", "Hesitant").
     *   **Strategy:** Tags to identify the specific setup used (e.g., "Breakout", "Reversal", "Trend Following").
     *   **Performance:** Tags to classify outcome quality beyond just PnL.
-    *   **Time Metrics:** Tags or fields to capture trade duration and timing.
+    *   **Time Metrics:** "Live" duration display (e.g., "2d 4h") for open trades and calculated holding time for closed trades.
 *   **Trade Review & Analysis:**
     *   **Before/After Gallery:** A core feature for reviewing trades.
     *   **Multi-Image Support:** The system supports multiple images for both "Before" (analysis/plan) and "After" (result) states (e.g., 3 before images, 5 after images).
