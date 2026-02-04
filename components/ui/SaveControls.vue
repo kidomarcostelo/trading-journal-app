@@ -8,6 +8,7 @@ interface Props {
   modelValue: SaveMode
   isDirty?: boolean
   isLoading?: boolean
+  dirtyCount?: number
 }
 
 const props = defineProps<Props>()
@@ -92,8 +93,10 @@ const setMode = (mode: SaveMode) => {
         <!-- Dirty Indicator (Manual Mode Only) -->
         <span 
             v-if="modelValue === 'manual' && isDirty && !isLoading" 
-            class="absolute top-0 right-0 -mt-1 -mr-1 w-3 h-3 bg-rose-500 rounded-full border-2 border-terminal-black animate-pulse"
-        ></span>
+            class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-rose-500 rounded-full border-2 border-terminal-black flex items-center justify-center text-[10px] font-bold text-white animate-pulse"
+        >
+          {{ dirtyCount && dirtyCount > 0 ? dirtyCount : '' }}
+        </span>
       </button>
     </div>
   </div>
