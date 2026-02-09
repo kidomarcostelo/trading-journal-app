@@ -1,15 +1,6 @@
 import { defineEventHandler, readBody, createError } from 'h3'
-import { getSheetsClient } from '../../utils/googleSheets'
+import { getSheetsClient, getColumnLetter, findRowIndexById } from '../../utils/googleSheets'
 import type { TradeEntry } from '../../../types'
-
-function getColumnLetter(index: number): string {
-  let letter = '';
-  while (index >= 0) {
-    letter = String.fromCharCode((index % 26) + 65) + letter;
-    index = Math.floor(index / 26) - 1;
-  }
-  return letter;
-}
 
 export default defineEventHandler(async (event) => {
   try {
@@ -44,40 +35,7 @@ export default defineEventHandler(async (event) => {
       throw new Error('Master sheet has no headers.')
     }
 
-    // 2. Find ID Column and Row Index
-    const idIndex = headers.findIndex((h: string) => h.toLowerCase() === 'id')
-    if (idIndex === -1) {
-      throw new Error('ID column not found in sheet.')
-    }
-
-    const colLetter = getColumnLetter(idIndex)
-    const idResponse = await client.spreadsheets.values.get({
-      spreadsheetId,
-      range: `Master!${colLetter}:${colLetter}`,
-    })
-
-    const idValues = idResponse.data.values?.flat() || []
-    
-    let sheetRowIndex = -1
-
-    // Check if ID is a generated "row-X" ID
-    if (String(tradeId).startsWith('row-')) {
-      const dataIndex = parseInt(String(tradeId).replace('row-', ''), 10)
-      if (!isNaN(dataIndex)) {
-        // dataIndex 0 is the first row AFTER header.
-        // Header is Row 1. Data Row 0 is Row 2.
-        sheetRowIndex = dataIndex + 2
-      }
-    }
-
-    // If not found yet, try standard lookup
-    if (sheetRowIndex === -1) {
-      // idValues[0] is Header 'ID'. idValues[1] is row 2.
-      const rowIndexInData = idValues.findIndex((val: string) => String(val) === String(tradeId))
-      if (rowIndexInData !== -1) {
-        sheetRowIndex = rowIndexInData + 1 // 1-based row index
-      }
-    }
+    const sheetRowIndex = await findRowIndexById(client, spreadsheetId, tradeId)
     
     if (sheetRowIndex === -1) {
       throw createError({
