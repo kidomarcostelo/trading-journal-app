@@ -62,3 +62,95 @@ export const getSheetsClient = async () => {
 
   return google.sheets({ version: 'v4', auth: authClient as any })
 }
+
+export function getColumnLetter(index: number): string {
+  let letter = '';
+  while (index >= 0) {
+    letter = String.fromCharCode((index % 26) + 65) + letter;
+    index = Math.floor(index / 26) - 1;
+  }
+  return letter;
+}
+
+export async function findRowIndexById(client: any, spreadsheetId: string, tradeId: string | number): Promise<number> {
+  // 1. Fetch Headers
+  const headerResponse = await client.spreadsheets.values.get({
+    spreadsheetId,
+    range: 'Master!1:1',
+  })
+
+  const headers = headerResponse.data.values?.[0]
+  if (!headers || headers.length === 0) {
+    throw new Error('Master sheet has no headers.')
+  }
+
+  // 2. Find ID Column
+  const idIndex = headers.findIndex((h: string) => h.toLowerCase() === 'id')
+  if (idIndex === -1) {
+    throw new Error('ID column not found in sheet.')
+  }
+
+  const colLetter = getColumnLetter(idIndex)
+  const idResponse = await client.spreadsheets.values.get({
+    spreadsheetId,
+    range: `Master!${colLetter}:${colLetter}`,
+  })
+
+  const idValues = idResponse.data.values?.flat() || []
+  
+  let sheetRowIndex = -1
+
+  // Check if ID is a generated "row-X" ID
+  if (String(tradeId).startsWith('row-')) {
+    const dataIndex = parseInt(String(tradeId).replace('row-', ''), 10)
+    if (!isNaN(dataIndex)) {
+      // dataIndex 0 is the first row AFTER header.
+      // Header is Row 1. Data Row 0 is Row 2.
+      sheetRowIndex = dataIndex + 2
+    }
+  }
+
+  // If not found yet, try standard lookup
+  if (sheetRowIndex === -1) {
+    // idValues[0] is Header 'ID'. idValues[1] is row 2.
+    const rowIndexInData = idValues.findIndex((val: string) => String(val) === String(tradeId))
+    if (rowIndexInData !== -1) {
+      sheetRowIndex = rowIndexInData + 1 // 1-based row index
+    }
+  }
+  
+  return sheetRowIndex
+}
+
+export async function deleteRow(client: any, spreadsheetId: string, rowIndex: number) {
+  // To use deleteDimension, we need the sheetId (the internal numeric ID, not the spreadsheetId)
+  // We can fetch it by name 'Master'
+  const sheetInfo = await client.spreadsheets.get({
+    spreadsheetId,
+  })
+
+  const sheet = sheetInfo.data.sheets?.find((s: any) => s.properties.title === 'Master')
+  if (!sheet) {
+    throw new Error("Sheet 'Master' not found.")
+  }
+
+  const sheetId = sheet.properties.sheetId
+
+  await client.spreadsheets.batchUpdate({
+    spreadsheetId,
+    requestBody: {
+      requests: [
+        {
+          deleteDimension: {
+            range: {
+              sheetId,
+              dimension: 'ROWS',
+              startIndex: rowIndex - 1, // 0-based for API
+              endIndex: rowIndex
+            }
+          }
+        }
+      ]
+    }
+  })
+}
