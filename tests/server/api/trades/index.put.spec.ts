@@ -22,8 +22,10 @@ vi.mock('h3', async (importOriginal) => {
 })
 
 // Mock googleSheets utils
-const mockValuesGet = vi.fn()
-const mockValuesUpdate = vi.fn()
+const { mockValuesGet, mockValuesUpdate } = vi.hoisted(() => ({
+  mockValuesGet: vi.fn(),
+  mockValuesUpdate: vi.fn()
+}))
 
 vi.mock('../../../../server/utils/googleSheets', () => ({
   getSheetsClient: vi.fn(() => ({
@@ -33,7 +35,19 @@ vi.mock('../../../../server/utils/googleSheets', () => ({
         update: mockValuesUpdate
       }
     }
-  }))
+  })),
+  findRowIndexById: vi.fn(async (client, spreadsheetId, id) => {
+      if (id === '2') return 3
+      return -1
+  }),
+  getColumnLetter: (i: number) => {
+      let letter = '';
+      while (i >= 0) {
+        letter = String.fromCharCode((i % 26) + 65) + letter;
+        i = Math.floor(i / 26) - 1;
+      }
+      return letter;
+  }
 }))
 
 describe('PUT /api/trades', () => {

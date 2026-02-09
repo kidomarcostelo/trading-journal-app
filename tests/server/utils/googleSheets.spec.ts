@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { getSheetsClient } from '../../../server/utils/googleSheets'
+import { getSheetsClient, getColumnLetter, findRowIndexById, deleteRow } from '../../../server/utils/googleSheets'
 import { google } from 'googleapis'
 
 // Mock useRuntimeConfig
@@ -9,16 +9,20 @@ vi.stubGlobal('useRuntimeConfig', vi.fn(() => ({
   googleSpreadsheetId: process.env.GOOGLE_SPREADSHEET_ID
 })))
 
-vi.mock('googleapis', () => {
-  const mockSheets = {
+const { mockSheets } = vi.hoisted(() => ({
+  mockSheets: {
     spreadsheets: {
+      get: vi.fn(),
+      batchUpdate: vi.fn(),
       values: {
         get: vi.fn(),
         append: vi.fn()
       }
     }
   }
-  
+}))
+
+vi.mock('googleapis', () => {
   return {
     google: {
       auth: {
@@ -46,25 +50,107 @@ describe('googleSheets utility', () => {
     })
   })
 
-  it('initializes GoogleAuth with correct credentials and scopes', async () => {
-    // Test with standard formatted key
-    const rawKey = '-----BEGIN PRIVATE KEY-----\nLINE1\n-----END PRIVATE KEY-----'
-    const expectedKey = '-----BEGIN PRIVATE KEY-----\nLINE1\n-----END PRIVATE KEY-----'
-    
-    vi.mocked(useRuntimeConfig).mockReturnValue({
-      googleServiceAccountEmail: 'test@example.com',
-      googlePrivateKey: rawKey,
-      googleSpreadsheetId: 'sheet-id-123'
+  describe('getColumnLetter', () => {
+    it('returns correct column letters', () => {
+      expect(getColumnLetter(0)).toBe('A')
+      expect(getColumnLetter(25)).toBe('Z')
+      expect(getColumnLetter(26)).toBe('AA')
+    })
+  })
+
+  describe('findRowIndexById', () => {
+    it('finds row index for a standard ID', async () => {
+      const mockClient = mockSheets
+      mockClient.spreadsheets.values.get.mockResolvedValueOnce({
+        data: { values: [['ID', 'Other']] }
+      })
+      mockClient.spreadsheets.values.get.mockResolvedValueOnce({
+        data: { values: [['ID'], ['id-1'], ['id-2']] }
+      })
+
+      const index = await findRowIndexById(mockClient, 'sid', 'id-2')
+      expect(index).toBe(3) // Header is 1, id-1 is 2, id-2 is 3
     })
 
-    await getSheetsClient()
-    
-    expect(google.auth.GoogleAuth).toHaveBeenCalledWith({
-      credentials: {
-        client_email: 'test@example.com',
-        private_key: expectedKey,
-      },
-      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+    it('finds row index for a row-X ID', async () => {
+      const mockClient = mockSheets
+      mockClient.spreadsheets.values.get.mockResolvedValueOnce({
+        data: { values: [['ID', 'Other']] }
+      })
+      mockClient.spreadsheets.values.get.mockResolvedValueOnce({
+        data: { values: [['ID'], ['id-1'], ['id-2']] }
+      })
+
+      const index = await findRowIndexById(mockClient, 'sid', 'row-0')
+      expect(index).toBe(2) // row-0 corresponds to the first data row (Row 2)
+    })
+
+    it('returns -1 if ID not found', async () => {
+      const mockClient = mockSheets
+      mockClient.spreadsheets.values.get.mockResolvedValueOnce({
+        data: { values: [['ID']] }
+      })
+      mockClient.spreadsheets.values.get.mockResolvedValueOnce({
+        data: { values: [['ID'], ['id-1']] }
+      })
+
+      const index = await findRowIndexById(mockClient, 'sid', 'nonexistent')
+      expect(index).toBe(-1)
+    })
+  })
+
+  describe('deleteRow', () => {
+    it('calls batchUpdate with correct parameters', async () => {
+      const mockClient = mockSheets
+      mockClient.spreadsheets.get.mockResolvedValueOnce({
+        data: {
+          sheets: [{ properties: { title: 'Master', sheetId: 123 } }]
+        }
+      })
+
+      await deleteRow(mockClient, 'sid', 5)
+
+      expect(mockClient.spreadsheets.batchUpdate).toHaveBeenCalledWith({
+        spreadsheetId: 'sid',
+        requestBody: {
+          requests: [
+            {
+              deleteDimension: {
+                range: {
+                  sheetId: 123,
+                  dimension: 'ROWS',
+                  startIndex: 4,
+                  endIndex: 5
+                }
+              }
+            }
+          ]
+        }
+      })
+    })
+  })
+
+  describe('getSheetsClient', () => {
+    it('initializes GoogleAuth with correct credentials and scopes', async () => {
+      // Test with standard formatted key
+      const rawKey = '-----BEGIN PRIVATE KEY-----\nLINE1\n-----END PRIVATE KEY-----'
+      const expectedKey = '-----BEGIN PRIVATE KEY-----\nLINE1\n-----END PRIVATE KEY-----'
+      
+      vi.mocked(useRuntimeConfig).mockReturnValue({
+        googleServiceAccountEmail: 'test@example.com',
+        googlePrivateKey: rawKey,
+        googleSpreadsheetId: 'sheet-id-123'
+      })
+
+      await getSheetsClient()
+      
+      expect(google.auth.GoogleAuth).toHaveBeenCalledWith({
+        credentials: {
+          client_email: 'test@example.com',
+          private_key: expectedKey,
+        },
+        scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+      })
     })
   })
 
