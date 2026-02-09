@@ -10,16 +10,36 @@ const emit = defineEmits<{
   (e: 'update', data: any): void
 }>()
 
+// State
+const newBeforeImage = ref('')
+const newAfterImage = ref('')
+const currentBeforeIndex = ref(0)
+const currentAfterIndex = ref(0)
+
 // Local form state for journals
 const form = ref({ ...props.trade })
 
+// Track the current trade ID to detect changes
+const currentTradeId = computed(() => props.trade?.ID || props.trade?.id)
+
+watch(currentTradeId, () => {
+  form.value = { ...props.trade }
+  // Reset indices when trade changes to avoid persisting from previous trade
+  currentBeforeIndex.value = 0
+  currentAfterIndex.value = 0
+}, { immediate: true })
+
+// Also watch for deep changes if the trade is updated from outside (e.g. autosave)
 watch(() => props.trade, (newVal) => {
-  form.value = { ...newVal }
+  if (newVal) {
+    form.value = { ...newVal }
+  }
 }, { deep: true })
 
 const updateJournal = (key: string, value: string) => {
   form.value[key] = value
-  emit('update', { ...form.value })
+  // Emit only the changed field to avoid bulk object issues
+  emit('update', { [key]: value })
 }
 
 const getImages = (type: 'before' | 'after') => {
@@ -35,15 +55,13 @@ const getImages = (type: 'before' | 'after') => {
 }
 
 const findJournalKey = (candidates: string[]) => {
-  return Object.keys(props.trade).find(k => 
-    candidates.some(cand => k.toLowerCase() === cand.toLowerCase())
-  ) || candidates[0]
+  const existingKey = Object.keys(props.trade).find(k => 
+    candidates.some(cand => k.trim().toLowerCase() === cand.trim().toLowerCase())
+  )
+  if (existingKey) return existingKey
+  
+  return candidates[0]
 }
-
-const newBeforeImage = ref('')
-const newAfterImage = ref('')
-const currentBeforeIndex = ref(0)
-const currentAfterIndex = ref(0)
 
 const beforeImages = computed(() => getImages('before'))
 const afterImages = computed(() => getImages('after'))
@@ -134,14 +152,12 @@ const openOriginal = (url: string) => {
         </div>
         
         <div v-if="beforeImages.length > 0" class="relative group border border-terminal-gray rounded-lg overflow-hidden bg-terminal-black flex items-center justify-center min-h-[200px]">
-          <transition name="fade" mode="out-in">
-            <img 
-              :key="beforeImages[currentBeforeIndex]"
-              :src="beforeImages[currentBeforeIndex]" 
-              class="w-full h-auto block" 
-              alt="Before Setup" 
-            />
-          </transition>
+          <img 
+            :key="beforeImages[currentBeforeIndex]"
+            :src="beforeImages[currentBeforeIndex]" 
+            class="w-full h-auto block" 
+            alt="Before Setup" 
+          />
           
           <!-- Carousel Controls -->
           <div v-if="beforeImages.length > 1" class="absolute inset-0 flex items-center justify-between p-2 pointer-events-none">
@@ -240,14 +256,12 @@ const openOriginal = (url: string) => {
         </div>
         
         <div v-if="afterImages.length > 0" class="relative group border border-terminal-gray rounded-lg overflow-hidden bg-terminal-black flex items-center justify-center min-h-[200px]">
-          <transition name="fade" mode="out-in">
-            <img 
-              :key="afterImages[currentAfterIndex]"
-              :src="afterImages[currentAfterIndex]" 
-              class="w-full h-auto block" 
-              alt="After Result" 
-            />
-          </transition>
+          <img 
+            :key="afterImages[currentAfterIndex]"
+            :src="afterImages[currentAfterIndex]" 
+            class="w-full h-auto block" 
+            alt="After Result" 
+          />
           
           <!-- Carousel Controls -->
           <div v-if="afterImages.length > 1" class="absolute inset-0 flex items-center justify-between p-2 pointer-events-none">
@@ -338,7 +352,7 @@ const openOriginal = (url: string) => {
     <div class="bg-terminal-black/40 border border-terminal-gray/50 rounded-lg p-6 focus-within:border-terminal-accent/50 transition-colors">
       <div class="flex items-center gap-2 mb-3 text-terminal-highlight/60">
         <FileText class="w-4 h-4" />
-        <span class="text-[10px] uppercase font-bold tracking-widest">During Journal / Execution Notes</span>
+        <span class="text-[10px] uppercase font-bold tracking-widest">During Journal</span>
       </div>
       <textarea
         :value="form[duringJournalKey]"
