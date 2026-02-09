@@ -69,13 +69,8 @@ const displayDate = computed(() => {
   if (!val) return '--/--/----'
 
   // Handle Excel Serial Date (e.g. 45985)
-  // 25569 is the offset between 1900-01-01 (Excel epoch) and 1970-01-01 (JS epoch)
-  if (!isNaN(val) && Number(val) > 20000) {
+  if (!isNaN(Number(val)) && Number(val) > 20000) {
     const date = new Date((Number(val) - 25569) * 86400 * 1000)
-    // Adjust for timezone offset if necessary, but usually UTC conversion is enough for simple dates.
-    // However, the serial is usually "local" to the spreadsheet. 
-    // We'll use simple UTC parts to avoid timezone shifts changing the day.
-    // Or just simple string formatting.
     const mm = String(date.getUTCMonth() + 1).padStart(2, '0')
     const dd = String(date.getUTCDate()).padStart(2, '0')
     const yyyy = date.getUTCFullYear()
@@ -88,70 +83,70 @@ const displayDate = computed(() => {
 
 <template>
   <div 
-    class="border-b border-terminal-gray/50 transition-colors cursor-pointer group relative overflow-hidden"
+    class="border-b border-terminal-gray/50 transition-colors cursor-pointer group relative"
     :class="[
       active ? 'bg-terminal-gray/20 border-l-4 border-l-terminal-accent' : 'hover:bg-terminal-gray/10 border-l-4 border-l-transparent',
-      collapsed ? 'p-3' : 'p-3'
+      'p-3'
     ]"
     :title="collapsed ? trade.Pair : ''"
   >
     <div 
-      class="grid gap-2 items-center text-[11px]"
-      :class="collapsed ? 'grid-cols-1' : 'grid-cols-[1.2fr_0.8fr_1fr_0.8fr_1.2fr]'"
+      class="gap-2 items-center text-[11px]"
+      :class="collapsed ? 'flex items-center justify-between gap-3' : 'grid grid-cols-[1.5fr_0.6fr_1fr_0.7fr_1.2fr_0.2fr]'"
     >
       <!-- Col 1: Pair -->
       <div 
-        class="font-bold text-terminal-highlight truncate flex items-center gap-1"
+        class="font-bold text-terminal-highlight flex items-center min-w-0"
       >
-        <span class="truncate">{{ trade.Pair || 'Untitled' }}</span>
-        
-        <!-- Context Menu -->
-        <div class="relative ml-auto" ref="menuRef">
-          <button 
-            @click="toggleMenu"
-            class="p-1 hover:bg-terminal-gray/30 rounded transition-colors text-terminal-text/40 hover:text-terminal-highlight opacity-0 group-hover:opacity-100 focus:opacity-100"
-            aria-label="More options"
-          >
-            <MoreVertical class="w-3.5 h-3.5" />
-          </button>
-
-          <div 
-            v-if="showMenu"
-            class="absolute left-0 mt-1 w-32 bg-terminal-black border border-terminal-gray rounded-md shadow-xl z-10 py-1"
-          >
-            <button
-              @click="handleDelete"
-              class="w-full text-left px-3 py-1.5 text-[10px] text-error hover:bg-error/10 flex items-center gap-2 transition-colors font-medium"
-            >
-              <Trash2 class="w-3 h-3" />
-              Delete Trade
-            </button>
-          </div>
-        </div>
+        <span class="whitespace-nowrap">{{ trade.Pair || 'Untitled' }}</span>
       </div>
 
       <!-- Col 2: Action -->
-      <div v-show="!collapsed">
+      <div v-if="!collapsed">
         <span :class="['px-1.5 py-0.5 rounded border text-[9px] font-bold uppercase tracking-tighter', actionClass]">
           {{ trade.Action || '???' }}
         </span>
       </div>
 
       <!-- Col 3: Market -->
-      <div v-show="!collapsed" class="text-terminal-text/60 truncate uppercase tracking-tight">
+      <div v-if="!collapsed" class="text-terminal-text/60 truncate uppercase tracking-tight">
         {{ trade.Market || '-' }}
       </div>
 
       <!-- Col 4: Status -->
-      <div v-show="!collapsed">
+      <div v-if="!collapsed">
         <span :class="['px-1.5 py-0.5 rounded border text-[9px] font-medium uppercase truncate block text-center', statusClass]">
           {{ trade.Status || 'Unk' }}
         </span>
       </div>
 
       <!-- Col 5: Date -->
-      <div v-show="!collapsed" class="text-right text-terminal-text/60 font-mono text-[10px]">
+      <div v-if="!collapsed" class="text-right text-terminal-text/60 font-mono text-[10px]">
         {{ displayDate }}
+      </div>
+
+      <!-- Col 6: Menu -->
+      <div class="relative flex justify-end" ref="menuRef">
+        <button 
+          @click="toggleMenu"
+          class="p-1 hover:bg-terminal-gray/30 rounded transition-colors text-terminal-text/40 hover:text-terminal-highlight"
+          aria-label="More options"
+        >
+          <MoreVertical class="w-3.5 h-3.5" />
+        </button>
+
+        <div 
+          v-if="showMenu"
+          class="absolute right-0 mt-6 w-32 bg-terminal-black border border-terminal-gray rounded-md shadow-xl z-50 py-1"
+        >
+          <button
+            @click="handleDelete"
+            class="w-full text-left px-3 py-1.5 text-[10px] text-error hover:bg-error/10 flex items-center gap-2 transition-colors font-medium"
+          >
+            <Trash2 class="w-3 h-3" />
+            Delete Trade
+          </button>
+        </div>
       </div>
     </div>
   </div>

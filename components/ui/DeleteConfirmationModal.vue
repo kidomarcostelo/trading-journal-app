@@ -21,8 +21,9 @@ const confirm = () => {
 </script>
 
 <template>
-  <Teleport to="body">
+  <Teleport to="body" v-if="isOpen">
     <Transition
+      appear
       enter-active-class="transition duration-200 ease-out"
       enter-from-class="opacity-0"
       enter-to-class="opacity-100"
@@ -30,7 +31,7 @@ const confirm = () => {
       leave-from-class="opacity-100"
       leave-to-class="opacity-0"
     >
-      <div v-if="isOpen" class="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+      <div class="fixed inset-0 z-[1000] flex items-center justify-center p-4">
         <!-- Backdrop -->
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" @click="close"></div>
 
