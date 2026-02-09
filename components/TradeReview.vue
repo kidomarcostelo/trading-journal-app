@@ -18,13 +18,21 @@ const emit = defineEmits<{
 // Local form state
 const form = ref({ ...props.trade })
 
+const currentTradeId = computed(() => props.trade?.ID || props.trade?.id)
+
+watch(currentTradeId, (newId) => {
+  if (newId) {
+    form.value = { ...props.trade }
+  }
+}, { immediate: true })
+
 watch(() => props.trade, (newVal) => {
   form.value = { ...newVal }
 }, { deep: true })
 
 const updateField = (key: string, value: any) => {
   form.value[key] = value
-  emit('update', { ...form.value })
+  emit('update', { [key]: value })
 }
 
 // Helper to find actual config category by name (or variation)
@@ -84,6 +92,13 @@ const tacticalSkillOptions = computed(() => {
 })
 const tacticalSkillKey = 'Tactical Skill'
 const reviewJournalKey = 'Review Journal'
+
+const handleScreenshotsUpdate = (data: any) => {
+  // Merge into local form
+  Object.assign(form.value, data)
+  // Forward the partial update to parent
+  emit('update', data)
+}
 
 </script>
 
@@ -160,8 +175,8 @@ const reviewJournalKey = 'Review Journal'
 
     <!-- Reused Screenshot/Journal Component -->
     <TradeScreenshots 
-      :trade="trade" 
-      @update="(data) => emit('update', data)" 
+      :trade="form" 
+      @update="handleScreenshotsUpdate" 
     />
 
     <!-- Review Journal (Full Width) -->
