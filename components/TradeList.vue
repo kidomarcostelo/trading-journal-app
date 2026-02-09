@@ -49,19 +49,20 @@ watch(() => props.sortDir, (newVal) => {
     <!-- Header Row -->
     <div 
       class="grid gap-2 p-3 border-b border-terminal-gray text-[10px] uppercase tracking-widest font-bold text-terminal-text/40 bg-terminal-black sticky top-0 z-10"
-      :class="collapsed ? 'grid-cols-1' : 'grid-cols-[1.2fr_0.8fr_1fr_0.8fr_1.2fr]'"
+      :class="collapsed ? 'grid-cols-1' : 'grid-cols-[1.5fr_0.6fr_1fr_0.7fr_1.2fr_0.2fr]'"
     >
       <div>Pair</div>
       <div v-show="!collapsed">Action</div>
       <div v-show="!collapsed">Market</div>
       <div v-show="!collapsed" class="text-center">Status</div>
       <div v-show="!collapsed" class="text-right">Date</div>
+      <div></div>
     </div>
 
     <div class="flex-1 overflow-y-auto min-h-0">
       <TradeSummaryCard
-        v-for="trade in filteredTrades"
-        :key="getTradeId(trade) || Math.random()"
+        v-for="(trade, index) in filteredTrades"
+        :key="getTradeId(trade) || `trade-${index}`"
         :trade="trade"
         :active="isTradeActive(trade)"
         :collapsed="collapsed"
