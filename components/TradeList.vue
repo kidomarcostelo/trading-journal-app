@@ -14,6 +14,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'select', id: string): void
+  (e: 'delete', id: string): void
 }>()
 
 const { filteredTrades, filterPeriod, sortBy, sortDir } = useTrades(toRef(props, 'trades'))
@@ -65,6 +66,7 @@ watch(() => props.sortDir, (newVal) => {
         :active="isTradeActive(trade)"
         :collapsed="collapsed"
         @click="emit('select', getTradeId(trade))"
+        @delete="(id) => emit('delete', id)"
       />
       
       <div v-if="filteredTrades.length === 0" class="py-16 text-center text-terminal-text/40 text-sm">
