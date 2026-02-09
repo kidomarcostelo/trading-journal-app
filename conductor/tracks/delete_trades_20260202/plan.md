@@ -1,8 +1,8 @@
 # Plan: Trade Deletion Logic
 
 ## Phase 1: Backend API
-- [ ] Task: Create `server/api/trades/index.delete.ts` to handle DELETE requests.
-- [ ] Task: Update `server/utils/googleSheets.ts` with a `deleteRow` function that finds a row by ID and deletes it.
+- [x] Task: Create `server/api/trades/index.delete.ts` to handle DELETE requests. 65250fd
+- [x] Task: Update `server/utils/googleSheets.ts` with a `deleteRow` function that finds a row by ID and deletes it. 65250fd
 - [ ] Task: Conductor - User Manual Verification 'Backend API' (Protocol in workflow.md)
 
 ## Phase 2: UI Components
