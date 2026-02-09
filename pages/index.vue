@@ -14,7 +14,8 @@ import {
   Filter,
   ArrowUp,
   ArrowDown,
-  LogOut
+  LogOut,
+  Trash2
 } from 'lucide-vue-next'
 import TradeForm from '~/components/TradeForm.vue'
 import TradeList from '~/components/TradeList.vue'
@@ -29,11 +30,17 @@ import TradeReview from '~/components/TradeReview.vue'
 import CollapsibleSection from '~/components/CollapsibleSection.vue'
 import ToastNotification from '~/components/ui/ToastNotification.vue'
 import SaveControls from '~/components/ui/SaveControls.vue'
+import DeleteConfirmationModal from '~/components/ui/DeleteConfirmationModal.vue'
 import type { ChipCategory } from '~/types'
 
 const showForm = ref(false)
 const activeTab = ref('daily-trades')
 const selectedTradeId = ref<string | null>(null)
+
+// Deletion State
+const showDeleteModal = ref(false)
+const isDeletingTrade = ref(false)
+const tradeToDeleteId = ref<string | null>(null)
 
 const { user, clear } = useUserSession()
 
@@ -138,6 +145,52 @@ const selectTrade = async (id: string) => {
   if (selectedTradeId.value === id) return
   await onNavigate()
   selectedTradeId.value = id
+}
+
+const confirmDelete = (id: string) => {
+  tradeToDeleteId.value = id
+  showDeleteModal.value = true
+}
+
+const executeDelete = async () => {
+  if (!tradeToDeleteId.value) return
+  
+  isDeletingTrade.value = true
+  try {
+    await $fetch('/api/trades', {
+      method: 'DELETE',
+      query: { id: tradeToDeleteId.value }
+    })
+    
+    addToast({ 
+      title: 'Deleted', 
+      message: 'Trade removed successfully', 
+      type: 'success' 
+    })
+
+    // Find next trade to select before removing it from local list
+    const currentIndex = trades.value?.findIndex(t => (t.ID || t.id) === tradeToDeleteId.value) ?? -1
+    
+    // Remove from local list
+    if (trades.value) {
+      trades.value = trades.value.filter(t => (t.ID || t.id) !== tradeToDeleteId.value)
+    }
+
+    // Select next trade
+    if (trades.value && trades.value.length > 0) {
+      const nextIndex = Math.min(currentIndex, trades.value.length - 1)
+      selectedTradeId.value = trades.value[nextIndex].ID || trades.value[nextIndex].id
+    } else {
+      selectedTradeId.value = null
+    }
+
+    showDeleteModal.value = false
+    tradeToDeleteId.value = null
+  } catch (err) {
+    addToast({ title: 'Error', message: 'Failed to delete trade', type: 'error' })
+  } finally {
+    isDeletingTrade.value = false
+  }
 }
 
 // Helper to format date
@@ -367,6 +420,7 @@ onUnmounted(() => {
           :sort-by="sortBy"
           :sort-dir="sortDir"
           @select="selectTrade"
+          @delete="confirmDelete"
         />
       </div>
     </section>
@@ -398,6 +452,13 @@ onUnmounted(() => {
                  <div class="flex gap-2">
                    <span v-if="activeTrade.Flags?.includes('HTF FAV')" class="px-2 py-0.5 rounded bg-terminal-accent/20 text-terminal-accent text-[10px] font-bold uppercase border border-terminal-accent/30">HTF FAV</span>
                    <span v-for="badge in (activeTrade.Badges || '').split(',').filter(Boolean)" :key="badge" class="px-2 py-0.5 rounded bg-terminal-gray/20 text-terminal-text text-[10px] font-bold uppercase border border-terminal-gray/30">{{ badge }}</span>
+                   <button 
+                     @click="confirmDelete(activeTrade.ID || activeTrade.id)"
+                     class="ml-2 p-1.5 rounded-lg text-terminal-text/40 hover:text-error hover:bg-error/10 transition-all"
+                     title="Delete Trade"
+                   >
+                     <Trash2 class="w-4 h-4" />
+                   </button>
                  </div>
                </div>
                
@@ -524,6 +585,12 @@ onUnmounted(() => {
       :is-loading="isLoading"
       :dirty-count="dirtyTradeIds.size"
       @save="triggerSave"
+    />
+    <DeleteConfirmationModal 
+      :is-open="showDeleteModal"
+      :is-deleting="isDeletingTrade"
+      @close="showDeleteModal = false"
+      @confirm="executeDelete"
     />
     <ToastNotification />
   </div>
