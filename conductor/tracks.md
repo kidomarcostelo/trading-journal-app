@@ -42,7 +42,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Trade Deletion Logic**
+- [~] **Track: Trade Deletion Logic**
 *Link: [./conductor/tracks/delete_trades_20260202/](./conductor/tracks/delete_trades_20260202/)*
 
 ---
