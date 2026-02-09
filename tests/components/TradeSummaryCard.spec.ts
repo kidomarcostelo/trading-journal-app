@@ -52,4 +52,21 @@ describe('TradeSummaryCard', () => {
     // 45658 should map to roughly Jan 1 2025
     expect(wrapper.text()).toMatch(/\d{2}\/\d{2}\/\d{4}/)
   })
+
+  it('emits delete event when delete button is clicked', async () => {
+    const wrapper = mount(TradeSummaryCard, {
+      props: { trade: mockTrade }
+    })
+    
+    // Toggle menu
+    await wrapper.find('button[aria-label="More options"]').trigger('click')
+    
+    // Click delete
+    const deleteBtn = wrapper.find('button.text-error')
+    expect(deleteBtn.exists()).toBe(true)
+    await deleteBtn.trigger('click')
+    
+    expect(wrapper.emitted().delete).toBeTruthy()
+    expect(wrapper.emitted().delete[0]).toEqual(['1'])
+  })
 })

@@ -5,10 +5,13 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { MoreVertical, Trash2 } from 'lucide-vue-next'
 
 const props = defineProps<{
   trade: {
+    ID?: string | number
+    id?: string | number
     Pair?: string
     Action?: string
     Market?: string
@@ -19,6 +22,31 @@ const props = defineProps<{
   active?: boolean
   collapsed?: boolean
 }>()
+
+const emit = defineEmits(['delete'])
+
+const showMenu = ref(false)
+const menuRef = ref<HTMLElement | null>(null)
+
+const toggleMenu = (e: MouseEvent) => {
+  e.stopPropagation()
+  showMenu.value = !showMenu.value
+}
+
+const handleClickOutside = (e: MouseEvent) => {
+  if (menuRef.value && !menuRef.value.contains(e.target as Node)) {
+    showMenu.value = false
+  }
+}
+
+onMounted(() => document.addEventListener('click', handleClickOutside))
+onUnmounted(() => document.removeEventListener('click', handleClickOutside))
+
+const handleDelete = (e: MouseEvent) => {
+  e.stopPropagation()
+  showMenu.value = false
+  emit('delete', props.trade.ID || props.trade.id)
+}
 
 const actionClass = computed(() => {
   const v = String(props.trade.Action).toLowerCase()
@@ -73,9 +101,33 @@ const displayDate = computed(() => {
     >
       <!-- Col 1: Pair -->
       <div 
-        class="font-bold text-terminal-highlight truncate"
+        class="font-bold text-terminal-highlight truncate flex items-center gap-1"
       >
-        {{ trade.Pair || 'Untitled' }}
+        <span class="truncate">{{ trade.Pair || 'Untitled' }}</span>
+        
+        <!-- Context Menu -->
+        <div class="relative ml-auto" ref="menuRef">
+          <button 
+            @click="toggleMenu"
+            class="p-1 hover:bg-terminal-gray/30 rounded transition-colors text-terminal-text/40 hover:text-terminal-highlight opacity-0 group-hover:opacity-100 focus:opacity-100"
+            aria-label="More options"
+          >
+            <MoreVertical class="w-3.5 h-3.5" />
+          </button>
+
+          <div 
+            v-if="showMenu"
+            class="absolute left-0 mt-1 w-32 bg-terminal-black border border-terminal-gray rounded-md shadow-xl z-10 py-1"
+          >
+            <button
+              @click="handleDelete"
+              class="w-full text-left px-3 py-1.5 text-[10px] text-error hover:bg-error/10 flex items-center gap-2 transition-colors font-medium"
+            >
+              <Trash2 class="w-3 h-3" />
+              Delete Trade
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Col 2: Action -->
