@@ -45,6 +45,17 @@ describe('TradeList', () => {
     expect(wrapper.emitted('select')?.[0]).toEqual(['1'])
   })
 
+  it('emits delete event when a card emits delete', async () => {
+    const wrapper = mount(TradeList, {
+      props: { trades: mockTrades }
+    })
+    
+    const cards = wrapper.findAllComponents({ name: 'TradeSummaryCard' })
+    await cards[0].vm.$emit('delete', '1')
+    
+    expect(wrapper.emitted('delete')?.[0]).toEqual(['1'])
+  })
+
   it('shows empty message when no trades', () => {
     const wrapper = mount(TradeList, {
       props: { trades: [] }
