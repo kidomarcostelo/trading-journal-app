@@ -20,8 +20,10 @@ I am building a trading journal where Google Sheets acts as the database.
 1.  **Searchable "Combobox" Tagging System**
     * **Logic:** Fetch `Chips` sheet data via `/api/config`. Map categories to searchable inputs.
     * **Component:** A custom `<Combobox />` component that supports both single selection (e.g., for Pairs) and multiple selection (e.g., for Strategies).
-    * **UX:** Users can type to filter existing options or enter custom values. Selected tags appear as chips inside the input field.
-    * **Aesthetic:** Modern minimalist style with subtle emerald (win) and rose (loss) highlighting.
+        *   **UX:** Users can type to filter existing options or enter custom values. Selected tags appear as chips inside the input field.
+        *   **Customization:** Users can configure which categories (columns from the Chips sheet) are displayed in the Strategy and Psychology panels via a dedicated Settings page.
+        *   **Aesthetic:** Modern minimalist style with subtle emerald (win) and rose (loss) highlighting.
+    
 
 2.  **Trade Entry Form**
     *   **Dashboard Integration:** A Master-Detail 3-pane layout for managing trades.
