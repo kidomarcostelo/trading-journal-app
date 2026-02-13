@@ -20,6 +20,7 @@
     *   `ID` column: Auto-increments based on max existing numeric value.
     *   `Date` column: Formatted as `mm/dd/yyyy`.
     *   `Chips` sheet for dynamic configuration of categories and tags.
+    *   `Settings` sheet for persisting user-specific UI preferences (e.g., chip layout).
 *   **Image Storage:** External URLs (e.g., from image hosting services like Imgur, Cloudinary, or private links) stored as text in the spreadsheet. Supports Google Sheets `=IMAGE()` formulas.
 *   **Live Data:** TradingView JS Widget for real-time charting.
 *   **State Persistence:** Browser `localStorage` for UI layout preferences (e.g., card ordering).
