@@ -59,3 +59,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] **Track: Batch Trade Saving & Dirty State Counter**
 *Link: [./conductor/tracks/batch_trade_saving_20260204/](./conductor/tracks/batch_trade_saving_20260204/)*
+
+---
+
+- [~] **Track: Customizable Chip Display**
+*Link: [./conductor/tracks/customizable_chip_display_20260213/](./conductor/tracks/customizable_chip_display_20260213/)*

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { ref } from 'vue'
-import StrategyAccordion from '../../components/StrategyAccordion.vue'
+import PsychologyGrid from '../../components/PsychologyGrid.vue'
 
 // Mock useSettings
 vi.mock('../../composables/useSettings', () => ({
@@ -10,27 +10,27 @@ vi.mock('../../composables/useSettings', () => ({
 
 import { useSettings } from '../../composables/useSettings'
 
-describe('StrategyAccordion', () => {
+describe('PsychologyGrid', () => {
   const mockConfig = [
-    { id: 'Strategies', values: ['Trend', 'Reversal', 'Breakout'] },
-    { id: 'Price Action', values: ['Bullish', 'Bearish'] }
+    { id: 'Intention', values: ['Plan', 'Impulse'] },
+    { id: 'Mood', values: ['Calm', 'Anxious'] }
   ]
 
   const mockTrade = {
-    'Strategies': ['Trend'],
-    'Price Action': []
+    'Intention': ['Plan'],
+    'Mood': []
   }
 
   beforeEach(() => {
     vi.clearAllMocks()
     // @ts-ignore
     useSettings.mockReturnValue({
-      settings: ref({ strategy: ['Strategies', 'Price Action'], psychology: [] })
+      settings: ref({ strategy: [], psychology: ['Intention', 'Mood'] })
     })
   })
 
   it('renders categories from settings layout', () => {
-    const wrapper = mount(StrategyAccordion, {
+    const wrapper = mount(PsychologyGrid, {
       props: {
         config: mockConfig,
         modelValue: mockTrade
@@ -45,8 +45,8 @@ describe('StrategyAccordion', () => {
 
     const headers = wrapper.findAll('.text-terminal-highlight')
     expect(headers.length).toBe(2)
-    expect(headers[0].text()).toContain('Strategies')
-    expect(headers[1].text()).toContain('Price Action')
+    expect(headers[0].text()).toContain('Intention')
+    expect(headers[1].text()).toContain('Mood')
   })
 
   it('shows empty state when no categories configured', () => {
@@ -55,7 +55,7 @@ describe('StrategyAccordion', () => {
       settings: ref({ strategy: [], psychology: [] })
     })
 
-    const wrapper = mount(StrategyAccordion, {
+    const wrapper = mount(PsychologyGrid, {
       props: {
         config: mockConfig,
         modelValue: mockTrade
@@ -67,6 +67,6 @@ describe('StrategyAccordion', () => {
       }
     })
 
-    expect(wrapper.text()).toContain('No strategy categories configured')
+    expect(wrapper.text()).toContain('No psychology categories configured')
   })
 })
