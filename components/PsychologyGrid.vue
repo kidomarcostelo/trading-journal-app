@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, watch, onMounted } from 'vue'
-import CollapsibleSection from './CollapsibleSection.vue'
+import { computed } from 'vue'
 import ChipSelect from './ChipSelect.vue'
+import { useSettings } from '~/composables/useSettings'
 import type { ChipCategory, Trade } from '~/types'
 
 interface Props {
@@ -12,104 +12,22 @@ interface Props {
 const props = defineProps<Props>()
 const emit = defineEmits(['update:modelValue'])
 
-const PSYCH_SCHEMA = [
-  { id: 'Trade Intention', label: 'Trade Intention', candidates: ['Trade Intention', 'Intention'] },
-  { id: 'felt rushed to open the trade?', label: 'Rushed Entry?', candidates: ['felt rushed to open the trade?', 'Rushed', 'Impulsive'] },
-  { id: 'Anxious during trade', label: 'Anxious?', candidates: ['Anxious during trade', 'Anxiety'] },
-  { id: 'Satisfied with result?', label: 'Satisfied?', candidates: ['Satisfied with result?', 'Satisfaction'] },
-  { id: 'News Impact', label: 'News Impact', candidates: ['News Impact', 'News'] },
-  { id: 'Followed RR?', label: 'Followed RR?', candidates: ['Followed RR?', 'RR'] },
-  { id: 'did i out early?', label: 'Exited Early?', candidates: ['did i out early?', 'Early Exit'] }
-]
+const { settings } = useSettings()
 
-const sourceSections = computed(() => {
-  return PSYCH_SCHEMA.map(schema => {
-    const match = props.config.find(c => 
-      schema.candidates.some(cand => c.id.toLowerCase() === cand.toLowerCase())
-    )
+const orderedSections = computed(() => {
+  const psychologyLayout = settings.value?.psychology || []
+  
+  return psychologyLayout.map(id => {
+    const match = props.config.find(c => c.id === id)
+    if (!match) return null
     return {
-      ...schema,
-      actualId: match?.id || schema.id,
-      values: match?.values || []
+      id,
+      label: id,
+      actualId: id,
+      values: match.values
     }
-  })
+  }).filter(Boolean) as any[]
 })
-
-// Reordering Logic
-const orderedSections = ref<any[]>([])
-const draggedItemIndex = ref<number | null>(null)
-const dropTargetIndex = ref<number | null>(null)
-
-// Sync with source and restore order
-watch(sourceSections, (newSections) => {
-  if (typeof window === 'undefined' || newSections.length === 0) {
-    orderedSections.value = newSections
-    return
-  }
-
-  const savedOrder = localStorage.getItem('psychology-order')
-  if (savedOrder) {
-    try {
-      const orderIds = JSON.parse(savedOrder) as string[]
-      const sorted = [...newSections].sort((a, b) => {
-        const indexA = orderIds.indexOf(a.id)
-        const indexB = orderIds.indexOf(b.id)
-        if (indexA !== -1 && indexB !== -1) return indexA - indexB
-        if (indexA !== -1) return -1
-        if (indexB !== -1) return 1
-        return 0
-      })
-      orderedSections.value = sorted
-    } catch (e) {
-      orderedSections.value = newSections
-    }
-  } else {
-    orderedSections.value = newSections
-  }
-}, { immediate: true })
-
-const saveOrder = () => {
-  const ids = orderedSections.value.map(s => s.id)
-  localStorage.setItem('psychology-order', JSON.stringify(ids))
-}
-
-const onDragStart = (e: DragEvent, index: number) => {
-  draggedItemIndex.value = index
-  if (e.dataTransfer) {
-    e.dataTransfer.effectAllowed = 'move'
-    e.dataTransfer.dropEffect = 'move'
-    const target = e.target as HTMLElement
-    setTimeout(() => {
-      target.classList.add('opacity-50')
-    }, 0)
-  }
-}
-
-const onDragEnd = (e: DragEvent) => {
-  const target = e.target as HTMLElement
-  target.classList.remove('opacity-50')
-  draggedItemIndex.value = null
-  dropTargetIndex.value = null
-}
-
-const onDragEnter = (index: number) => {
-  if (draggedItemIndex.value !== null && draggedItemIndex.value !== index) {
-    dropTargetIndex.value = index
-  }
-}
-
-const onDrop = (index: number) => {
-  if (draggedItemIndex.value === null || draggedItemIndex.value === index) return
-  
-  const itemToMove = orderedSections.value[draggedItemIndex.value]
-  const newItems = [...orderedSections.value]
-  
-  newItems.splice(draggedItemIndex.value, 1)
-  newItems.splice(index, 0, itemToMove)
-  
-  orderedSections.value = newItems
-  saveOrder()
-}
 
 const updateCategory = (actualId: string, newValue: string[]) => {
   const newTrade = { ...props.modelValue, [actualId]: newValue }
@@ -131,21 +49,11 @@ const getModelValueForCategory = (actualId: string): string[] => {
     class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"
   >
     <div 
-      v-for="(section, index) in orderedSections" 
+      v-for="section in orderedSections" 
       :key="section.actualId" 
-      class="flex flex-col gap-3 p-4 bg-terminal-black/20 border border-terminal-gray rounded-lg cursor-move hover:border-terminal-accent/30 transition-all active:cursor-grabbing"
-      draggable="true"
-      @dragstart="onDragStart($event, index)"
-      @dragend="onDragEnd"
-      @dragover.prevent
-      @dragenter.prevent="onDragEnter(index)"
-      @drop="onDrop(index)"
-      :class="{ 
-        'border-violet-500 border-2 bg-violet-500/10': dropTargetIndex === index && draggedItemIndex !== index,
-        'opacity-50 border-dashed': draggedItemIndex === index 
-      }"
+      class="flex flex-col gap-3 p-4 bg-terminal-black/20 border border-terminal-gray rounded-lg hover:border-terminal-accent/30 transition-all"
     >
-      <div class="flex items-center justify-between border-b border-terminal-gray/30 pb-2 mb-1 pointer-events-none">
+      <div class="flex items-center justify-between border-b border-terminal-gray/30 pb-2 mb-1">
         <span class="text-[10px] font-bold text-terminal-highlight tracking-widest uppercase truncate" :title="section.label">
           {{ section.label }}
         </span>
@@ -161,6 +69,11 @@ const getModelValueForCategory = (actualId: string): string[] => {
         :category="section.actualId"
         @update:modelValue="(val) => updateCategory(section.actualId, val)"
       />
+    </div>
+
+    <div v-if="orderedSections.length === 0" key="empty" class="col-span-full text-center py-12 text-terminal-text/30 border border-dashed border-terminal-gray rounded-lg bg-terminal-black/10">
+      <p class="text-sm italic mb-2">No psychology categories configured.</p>
+      <NuxtLink to="/settings" class="text-xs text-terminal-accent hover:underline">Configure layout in Settings</NuxtLink>
     </div>
   </TransitionGroup>
 </template>

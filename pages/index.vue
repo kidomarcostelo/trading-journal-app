@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { 
   LayoutDashboard, 
   PlusCircle, 
@@ -35,6 +35,15 @@ import type { ChipCategory } from '~/types'
 
 const showForm = ref(false)
 const activeTab = ref('daily-trades')
+const previousTab = ref('daily-trades')
+
+watch(activeTab, (newTab) => {
+  if (newTab === 'settings') {
+    navigateTo('/settings')
+  }
+})
+
+
 const selectedTradeId = ref<string | null>(null)
 
 // Deletion State
