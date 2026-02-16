@@ -29,6 +29,11 @@ vi.stubGlobal('useFetch', vi.fn().mockReturnValue({
     pending: ref(false) 
 }))
 
+// Mock useState
+vi.stubGlobal('useState', vi.fn((key, init) => {
+  return { value: init ? init() : null }
+}))
+
 vi.stubGlobal('useUserSession', vi.fn().mockReturnValue({
   user: ref({ email: 'test@example.com' }),
   clear: vi.fn()
