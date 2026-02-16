@@ -227,7 +227,9 @@ onUnmounted(() => {
              <select v-model="filterPeriod" class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent outline-none cursor-pointer">
                <option value="all">All Time</option>
                <option value="week">This Week</option>
+               <option value="last-week">Last Week</option>
                <option value="month">This Month</option>
+               <option value="last-month">Last Month</option>
              </select>
              <Filter class="w-3 h-3 absolute right-2 top-1.5 text-terminal-text/40 pointer-events-none" />
            </div>
