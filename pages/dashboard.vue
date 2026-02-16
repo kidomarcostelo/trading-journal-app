@@ -233,12 +233,22 @@ onUnmounted(() => {
              </select>
              <Filter class="w-3 h-3 absolute right-2 top-1.5 text-terminal-text/40 pointer-events-none" />
            </div>
-           <div class="relative flex-1 group">
-             <select v-model="sortBy" class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent outline-none cursor-pointer">
-               <option value="Date">Date</option>
-               <option value="Status">Status</option>
-               <option value="Pair">Pair</option>
-             </select>
+           <div class="relative flex-1 group flex items-center gap-1">
+             <div class="relative flex-1">
+               <select v-model="sortBy" class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent outline-none cursor-pointer">
+                 <option value="Date">Date</option>
+                 <option value="Status">Status</option>
+                 <option value="Pair">Pair</option>
+               </select>
+             </div>
+             <button 
+               @click="sortDir = sortDir === 'asc' ? 'desc' : 'asc'"
+               class="p-1 hover:bg-terminal-gray/20 rounded transition-colors text-terminal-text/60 hover:text-terminal-highlight"
+               :title="sortDir === 'asc' ? 'Sort Ascending' : 'Sort Descending'"
+             >
+               <ArrowUp v-if="sortDir === 'asc'" class="w-3.5 h-3.5" />
+               <ArrowDown v-else class="w-3.5 h-3.5" />
+             </button>
            </div>
         </div>
       </div>
