@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { 
   X, 
   Save, 
@@ -69,6 +69,13 @@ const addPanel = () => {
 
 const removePanel = (panelId: string) => {
     localPanels.value = localPanels.value.filter(p => p.id !== panelId)
+}
+
+const removeCategory = (catId: string, panelId: string) => {
+    const panel = localPanels.value.find(p => p.id === panelId)
+    if (panel) {
+        panel.categories = panel.categories.filter(c => c !== catId)
+    }
 }
 
 const handleSaveLayout = async () => {
@@ -343,6 +350,7 @@ const addCategoryToPanel = (catId: string, panelId: string) => {
             <div 
               v-for="panel in localPanels" 
               :key="panel.id" 
+              data-testid="panel-config"
               class="p-8 rounded-2xl border-2 border-dashed transition-all duration-300 relative group"
               :class="draggedItem ? 'border-terminal-accent/30 bg-terminal-accent/5' : 'border-terminal-gray/30 bg-terminal-black/20'"
               @dragover.prevent
@@ -379,12 +387,17 @@ const addCategoryToPanel = (catId: string, panelId: string) => {
                         v-for="catId in panel.categories" 
                         :key="catId"
                         draggable="true"
+                        data-testid="category-item"
                         @dragstart="onDragStart($event, catId, panel.id)"
                         class="p-4 bg-terminal-black border border-terminal-gray rounded-xl cursor-grab active:cursor-grabbing flex items-center gap-4 hover:border-indigo-500/50 group transition-all"
                     >
                         <GripVertical class="w-4 h-4 text-terminal-text/20 group-hover:text-terminal-text/50" />
                         <span class="text-sm font-medium flex-1">{{ catId }}</span>
-                        <button @click="removeCategory(catId, panel.id)" class="p-1.5 text-terminal-text/20 hover:text-rose-400 hover:bg-rose-400/10 rounded-md transition-all">
+                        <button 
+                            @click="removeCategory(catId, panel.id)" 
+                            data-testid="remove-category-btn"
+                            class="p-1.5 text-terminal-text/20 hover:text-rose-400 hover:bg-rose-400/10 rounded-md transition-all"
+                        >
                             <X class="w-4 h-4" />
                         </button>
                     </div>
