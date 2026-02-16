@@ -40,7 +40,7 @@ describe('Settings Page', () => {
             }
           }
         })
-        expect(wrapper.text()).toContain('Journal Layout')
+        expect(wrapper.text()).toContain('System Settings')
     })
 
     it('can add a new panel', async () => {
