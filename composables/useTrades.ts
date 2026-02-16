@@ -17,6 +17,12 @@ export const useTrades = (trades: Ref<Trade[]>) => {
     return foundKey ? obj[foundKey] : undefined
   }
 
+  const customRangeLabel = computed(() => {
+    if (!startDate.value) return 'Custom Range'
+    if (!endDate.value) return `${startDate.value} - ...`
+    return `${startDate.value} to ${endDate.value}`
+  })
+
   const filteredTrades = computed(() => {
     let result = [...trades.value]
 
@@ -117,6 +123,7 @@ export const useTrades = (trades: Ref<Trade[]>) => {
     filterPeriod,
     startDate,
     endDate,
+    customRangeLabel,
     sortBy,
     sortDir,
     filteredTrades
