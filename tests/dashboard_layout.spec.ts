@@ -31,6 +31,11 @@ vi.stubGlobal('useFetch', vi.fn().mockImplementation((url) => {
   return { data: { value: null } }
 }))
 
+// Mock useState
+vi.stubGlobal('useState', vi.fn((key, init) => {
+  return { value: init ? init() : null }
+}))
+
 // Mock nuxt-auth-utils
 vi.stubGlobal('useUserSession', vi.fn().mockReturnValue({
   user: { value: { email: 'test@example.com' } },

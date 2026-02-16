@@ -19,6 +19,7 @@ import TradingViewChart from '~/components/TradingViewChart.vue'
 import TradeScreenshots from '~/components/TradeScreenshots.vue'
 import TradeReview from '~/components/TradeReview.vue'
 import ChipPanel from '~/components/ChipPanel.vue'
+import CalendarRange from '~/components/CalendarRange.vue'
 import CollapsibleSection from '~/components/CollapsibleSection.vue'
 import SaveControls from '~/components/ui/SaveControls.vue'
 import DeleteConfirmationModal from '~/components/ui/DeleteConfirmationModal.vue'
@@ -57,10 +58,28 @@ const {
   filterPeriod, 
   startDate,
   endDate,
+  customRangeLabel,
   sortBy, 
   sortDir, 
   filteredTrades 
 } = useTrades(computed(() => trades.value || []))
+
+const showCalendar = ref(false)
+watch(filterPeriod, (newVal) => {
+  if (newVal === 'custom') showCalendar.value = true
+})
+
+const handleFilterChange = () => {
+  if (filterPeriod.value === 'custom') {
+    showCalendar.value = true
+  }
+}
+
+const handleFilterClick = () => {
+  if (filterPeriod.value === 'custom') {
+    showCalendar.value = true
+  }
+}
 
 const activeDetailTab = ref<'journal' | 'charts' | 'review'>('journal')
 
@@ -227,13 +246,19 @@ onUnmounted(() => {
         <div v-if="!isListCollapsed" class="flex flex-col gap-2">
            <div class="flex items-center gap-2">
              <div class="relative flex-1">
-               <select v-model="filterPeriod" class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent outline-none cursor-pointer">
+               <select 
+                 v-model="filterPeriod" 
+                 @click="handleFilterClick"
+                 class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent outline-none cursor-pointer"
+               >
                  <option value="all">All Time</option>
                  <option value="week">This Week</option>
                  <option value="last-week">Last Week</option>
                  <option value="month">This Month</option>
                  <option value="last-month">Last Month</option>
-                 <option value="custom">Custom Range</option>
+                 <option value="custom">
+                   {{ filterPeriod === 'custom' ? customRangeLabel : 'Custom Range' }}
+                 </option>
                </select>
                <Filter class="w-3 h-3 absolute right-2 top-1.5 text-terminal-text/40 pointer-events-none" />
              </div>
@@ -256,20 +281,13 @@ onUnmounted(() => {
              </div>
            </div>
 
-           <!-- Custom Date Range Inputs -->
-           <div v-if="filterPeriod === 'custom'" class="flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-200">
-             <input 
-               type="date" 
-               v-model="startDate"
-               class="flex-1 bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1 text-[10px] text-terminal-text focus:border-terminal-accent outline-none"
-               title="Start Date"
-             />
-             <span class="text-terminal-text/30 text-[10px]">-</span>
-             <input 
-               type="date" 
-               v-model="endDate"
-               class="flex-1 bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1 text-[10px] text-terminal-text focus:border-terminal-accent outline-none"
-               title="End Date"
+           <!-- Custom Date Range Picker -->
+           <div v-if="filterPeriod === 'custom' && showCalendar" class="animate-in fade-in slide-in-from-top-1 duration-200">
+             <CalendarRange 
+               v-model:startDate="startDate"
+               v-model:endDate="endDate"
+               inline
+               @close="showCalendar = false"
              />
            </div>
         </div>
