@@ -4,7 +4,6 @@ import { saveSettings } from '../../utils/settings'
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
 
-  // Basic Validation
   if (!body || typeof body !== 'object') {
     throw createError({
         statusCode: 400,
@@ -12,12 +11,8 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // Ensure structure
-  const layout = {
-    strategy: Array.isArray(body.strategy) ? body.strategy : [],
-    psychology: Array.isArray(body.psychology) ? body.psychology : []
-  }
+  // Save the full settings object (including panels array with titles)
+  await saveSettings('chip_layout', body)
   
-  await saveSettings('chip_layout', layout)
   return { success: true }
 })

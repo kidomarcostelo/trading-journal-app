@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { h, Suspense, defineComponent } from 'vue'
-import IndexPage from '../pages/index.vue'
+import IndexPage from '../pages/dashboard.vue'
 
 vi.mock('lucide-vue-next', () => ({
   LayoutDashboard: { render: () => h('div', { 'data-testid': 'dashboard-icon' }) },

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import handler from '../../../server/api/config'
+import handler from '../../../server/api/config/index.get'
 import * as googleSheets from '../../../server/utils/googleSheets'
 
 // Mock useRuntimeConfig
