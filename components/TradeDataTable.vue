@@ -97,8 +97,8 @@ const updateField = (fieldKey: string, value: any) => {
       <input 
         type="number" 
         step="any"
-        :value="form[riskKey]"
-        @input="updateField(riskKey, ($event.target as HTMLInputElement).value)"
+        v-model.number="form[riskKey]"
+        @input="emit('update', { ...form })"
         class="bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-sm text-terminal-highlight focus:border-terminal-accent focus:outline-none transition-colors"
         placeholder="0.00"
       />
@@ -110,8 +110,8 @@ const updateField = (fieldKey: string, value: any) => {
       <input 
         type="number" 
         step="any"
-        :value="form[pnlKey]"
-        @input="updateField(pnlKey, ($event.target as HTMLInputElement).value)"
+        v-model.number="form[pnlKey]"
+        @input="emit('update', { ...form })"
         class="bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-sm font-mono focus:border-terminal-accent focus:outline-none transition-colors"
         :class="Number(form[pnlKey]) > 0 ? 'text-emerald-400' : Number(form[pnlKey]) < 0 ? 'text-rose-400' : 'text-terminal-text'"
         placeholder="0.00"
@@ -124,8 +124,8 @@ const updateField = (fieldKey: string, value: any) => {
       <input 
         type="number" 
         step="any"
-        :value="form[rrKey]"
-        @input="updateField(rrKey, ($event.target as HTMLInputElement).value)"
+        v-model.number="form[rrKey]"
+        @input="emit('update', { ...form })"
         class="bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-sm text-terminal-highlight focus:border-terminal-accent focus:outline-none transition-colors font-mono"
         placeholder="0.00"
       />
