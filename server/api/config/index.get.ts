@@ -1,6 +1,6 @@
 import { defineEventHandler, createError } from 'h3'
-import { getSheetsClient } from '../utils/googleSheets'
-import type { ChipCategory } from '../../types'
+import { getSheetsClient } from '../../utils/googleSheets'
+import type { ChipCategory } from '../../../types'
 
 export default defineEventHandler(async (event) => {
   try {

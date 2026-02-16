@@ -80,6 +80,9 @@ describe('Settings API Logic', () => {
 
       const mockClient = {
         spreadsheets: {
+          get: vi.fn().mockResolvedValue({
+            data: { sheets: [{ properties: { title: 'Settings' } }] }
+          }),
           values: {
             get: mockGet,
             update: mockUpdate,
@@ -113,6 +116,9 @@ describe('Settings API Logic', () => {
   
         const mockClient = {
           spreadsheets: {
+            get: vi.fn().mockResolvedValue({
+              data: { sheets: [{ properties: { title: 'Settings' } }] }
+            }),
             values: {
               get: mockGet,
               update: vi.fn(),

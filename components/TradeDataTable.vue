@@ -22,7 +22,7 @@ const marketKey = computed(() => findKey(form.value, ['Market', 'market']));
 const statusKey = computed(() => findKey(form.value, ['Status', 'status']));
 const riskKey = computed(() => findKey(form.value, ['Risk', 'risk']));
 const pnlKey = computed(() => findKey(form.value, ['PNL', 'PnL', 'Net PnL', 'pnl']));
-const exitDateKey = computed(() => findKey(form.value, ['Exit Date', 'exitDate', 'closedAt']));
+const rrKey = computed(() => findKey(form.value, ['RR', 'rr', 'R/R', 'Risk Reward']));
 
 // Watch for prop changes to reset form (e.g. switching trades)
 watch(() => props.trade, (newTrade) => {
@@ -30,13 +30,7 @@ watch(() => props.trade, (newTrade) => {
 }, { deep: true });
 
 const updateField = (fieldKey: string, value: any) => {
-  // Auto-set Exit Date when status becomes Closed
-  if (fieldKey === statusKey.value && value === 'Closed' && !form.value[exitDateKey.value]) {
-    form.value[exitDateKey.value] = new Date().toISOString();
-  }
-
-  const numValue = parseFloat(value);
-  form.value[fieldKey] = isNaN(numValue) && value !== '' ? value : (value === '' ? '' : numValue);
+  form.value[fieldKey] = value;
   emit('update', { ...form.value });
 };
 </script>
@@ -102,6 +96,7 @@ const updateField = (fieldKey: string, value: any) => {
       <label class="text-[10px] uppercase font-bold text-terminal-text/90 tracking-wider">Risk</label>
       <input 
         type="number" 
+        step="any"
         :value="form[riskKey]"
         @input="updateField(riskKey, ($event.target as HTMLInputElement).value)"
         class="bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-sm text-terminal-highlight focus:border-terminal-accent focus:outline-none transition-colors"
@@ -114,6 +109,7 @@ const updateField = (fieldKey: string, value: any) => {
       <label class="text-[10px] uppercase font-bold text-terminal-text/90 tracking-wider">PNL</label>
       <input 
         type="number" 
+        step="any"
         :value="form[pnlKey]"
         @input="updateField(pnlKey, ($event.target as HTMLInputElement).value)"
         class="bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-sm font-mono focus:border-terminal-accent focus:outline-none transition-colors"
@@ -122,15 +118,16 @@ const updateField = (fieldKey: string, value: any) => {
       />
     </div>
 
-    <!-- Exit Date -->
+    <!-- RR -->
     <div class="flex flex-col gap-1">
-      <label class="text-[10px] uppercase font-bold text-terminal-text/90 tracking-wider">Exit Date</label>
+      <label class="text-[10px] uppercase font-bold text-terminal-text/90 tracking-wider">RR</label>
       <input 
-        type="text" 
-        :value="form[exitDateKey]"
-        @input="updateField(exitDateKey, ($event.target as HTMLInputElement).value)"
-        class="bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-xs text-terminal-text/70 focus:border-terminal-accent focus:outline-none transition-colors font-mono"
-        placeholder="mm/dd/yyyy"
+        type="number" 
+        step="any"
+        :value="form[rrKey]"
+        @input="updateField(rrKey, ($event.target as HTMLInputElement).value)"
+        class="bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-sm text-terminal-highlight focus:border-terminal-accent focus:outline-none transition-colors font-mono"
+        placeholder="0.00"
       />
     </div>
   </div>

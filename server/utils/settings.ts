@@ -2,6 +2,49 @@ import { getSheetsClient } from './googleSheets'
 
 export const SETTINGS_SHEET_NAME = 'Settings'
 
+async function ensureSettingsSheetExists(client: any, spreadsheetId: string) {
+  try {
+    const spreadsheet = await client.spreadsheets.get({
+      spreadsheetId,
+    })
+    
+    const sheetExists = spreadsheet.data.sheets?.some(
+      (s: any) => s.properties.title === SETTINGS_SHEET_NAME
+    )
+
+    if (!sheetExists) {
+      console.log(`[Settings] Creating missing sheet: ${SETTINGS_SHEET_NAME}`)
+      await client.spreadsheets.batchUpdate({
+        spreadsheetId,
+        requestBody: {
+          requests: [
+            {
+              addSheet: {
+                properties: {
+                  title: SETTINGS_SHEET_NAME,
+                },
+              },
+            },
+          ],
+        },
+      })
+      
+      // Initialize with headers
+      await client.spreadsheets.values.update({
+        spreadsheetId,
+        range: `${SETTINGS_SHEET_NAME}!A1:B1`,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: {
+          values: [['Key', 'Value']],
+        },
+      })
+    }
+  } catch (error: any) {
+    console.error('[Settings] Error ensuring sheet exists:', error.message)
+    // If it's just a permission error or similar, we might still fail later
+  }
+}
+
 export async function getSettings() {
   const client = await getSheetsClient()
   const config = useRuntimeConfig()
@@ -61,6 +104,9 @@ export async function saveSettings(key: string, value: any) {
         })
   }
 
+  // 0. Ensure sheet exists
+  await ensureSettingsSheetExists(client, spreadsheetId)
+
   // 1. Get current settings to find row index
   const response = await client.spreadsheets.values.get({
     spreadsheetId,
@@ -92,18 +138,6 @@ export async function saveSettings(key: string, value: any) {
     })
   } else {
     // Append new row
-    // First, ensure header exists if empty
-    if (rows.length === 0) {
-        await client.spreadsheets.values.append({
-            spreadsheetId,
-            range: `${SETTINGS_SHEET_NAME}!A:B`,
-            valueInputOption: 'USER_ENTERED',
-            requestBody: {
-                values: [['Key', 'Value']]
-            }
-        })
-    }
-    
     await client.spreadsheets.values.append({
       spreadsheetId,
       range: `${SETTINGS_SHEET_NAME}!A:B`,

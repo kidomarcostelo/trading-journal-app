@@ -31,14 +31,14 @@ describe('Settings API Endpoints', () => {
     it('returns the chip_layout setting', async () => {
       // @ts-ignore
       settingsUtils.getSettings.mockResolvedValue({
-        chip_layout: { strategy: ['A'], psychology: ['B'] }
+        chip_layout: { panels: [{ id: '1', title: 'Test', categories: ['A'] }] }
       })
 
       const response = await getHandler({} as any)
 
       expect(settingsUtils.getSettings).toHaveBeenCalled()
       expect(response).toEqual({
-        strategy: ['A'], psychology: ['B']
+        panels: [{ id: '1', title: 'Test', categories: ['A'] }]
       })
     })
 
@@ -49,7 +49,7 @@ describe('Settings API Endpoints', () => {
       const response = await getHandler({} as any)
 
       expect(response).toEqual({
-        strategy: [], psychology: []
+        panels: []
       })
     })
   })
