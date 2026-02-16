@@ -38,6 +38,7 @@ export interface Trade extends TradeEntry {
   size?: number
   pnl?: number
   mae?: number
+  mfe?: number
 }
 
 export interface AppConfig {
