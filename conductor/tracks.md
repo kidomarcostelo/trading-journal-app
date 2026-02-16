@@ -64,3 +64,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] **Track: Customizable Chip Display**
 *Link: [./conductor/tracks/customizable_chip_display_20260213/](./conductor/tracks/customizable_chip_display_20260213/)*
+
+---
+
+- [ ] **Track: Analytics Engine**
+*Link: [./conductor/tracks/analytics_engine_20260216/](./conductor/tracks/analytics_engine_20260216/)*
