@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { h, nextTick, ref, computed, Suspense, defineComponent } from 'vue'
-import IndexPage from '../../pages/index.vue'
+import IndexPage from '../../pages/dashboard.vue'
 
 // Mock Lucide icons
 vi.mock('lucide-vue-next', () => ({

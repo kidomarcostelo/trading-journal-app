@@ -1,7 +1,6 @@
 export const useSettings = () => {
   const settings = useState('settings-layout', () => ({
-    strategy: [] as string[],
-    psychology: [] as string[]
+    panels: [] as { id: string, title: string, categories: string[] }[]
   }))
   
   const isLoading = useState('settings-loading', () => false)
@@ -11,9 +10,17 @@ export const useSettings = () => {
     isLoading.value = true
     error.value = null
     try {
-      const data = await $fetch<{ strategy: string[], psychology: string[] }>('/api/settings')
+      const data = await $fetch<any>('/api/settings')
       if (data) {
-        settings.value = data
+        // Migration logic: convert old strategy/psychology keys to new panels array
+        if (data.strategy || data.psychology) {
+          const migratedPanels = []
+          if (data.strategy) migratedPanels.push({ id: 'strategy-' + Date.now(), title: 'Strategy & Tags', categories: data.strategy })
+          if (data.psychology) migratedPanels.push({ id: 'psychology-' + Date.now(), title: 'Psychology', categories: data.psychology })
+          settings.value = { panels: migratedPanels }
+        } else {
+          settings.value = data
+        }
       }
     } catch (e) {
       error.value = e
