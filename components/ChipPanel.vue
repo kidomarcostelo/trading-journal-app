@@ -25,13 +25,19 @@ const orderedSections = computed(() => {
   }).filter(Boolean) as any[]
 })
 
+const findKey = (obj: any, targetKey: string) => {
+  return Object.keys(obj).find(k => k.toLowerCase() === targetKey.toLowerCase())
+}
+
 const updateCategory = (actualId: string, newValue: string[]) => {
-  const newTrade = { ...props.modelValue, [actualId]: newValue }
+  const existingKey = findKey(props.modelValue, actualId) || actualId
+  const newTrade = { ...props.modelValue, [existingKey]: newValue }
   emit('update:modelValue', newTrade)
 }
 
 const getModelValueForCategory = (actualId: string): string[] => {
-  const val = props.modelValue[actualId]
+  const existingKey = findKey(props.modelValue, actualId) || actualId
+  const val = props.modelValue[existingKey]
   if (Array.isArray(val)) return val
   if (typeof val === 'string') return [val]
   return []
