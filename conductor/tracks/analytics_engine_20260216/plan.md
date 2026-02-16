@@ -3,7 +3,7 @@
 ## Phase 1: Data Model & Core Metrics (Client-Side)
 
 - [x] Task: Update `types/index.ts` to include `mfe` (Maximum Favorable Excursion) field in `Trade` interface. [commit: a84100e]
-- [ ] Task: Create `composables/useAnalytics.ts`.
+- [x] Task: Create `composables/useAnalytics.ts`. [commit: 3f2ec9c]
     - [ ] Implement `calculateProfitFactor(trades: Trade[]): number`.
     - [ ] Implement `calculateWinRate(trades: Trade[]): number`.
     - [ ] Implement `calculateExpectancy(trades: Trade[]): number`.
