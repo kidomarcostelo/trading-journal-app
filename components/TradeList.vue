@@ -6,6 +6,8 @@ import TradeSummaryCard from './TradeSummaryCard.vue'
 const props = defineProps<{
   trades: any[]
   filterPeriod?: FilterPeriod
+  startDate?: string
+  endDate?: string
   sortBy?: SortField
   sortDir?: SortDir
   activeId?: string
@@ -17,7 +19,7 @@ const emit = defineEmits<{
   (e: 'delete', id: string): void
 }>()
 
-const { filteredTrades, filterPeriod, sortBy, sortDir } = useTrades(toRef(props, 'trades'))
+const { filteredTrades, filterPeriod, startDate, endDate, sortBy, sortDir } = useTrades(toRef(props, 'trades'))
 
 // Helper to get ID consistently
 const getTradeId = (trade: any) => {
@@ -33,6 +35,14 @@ const isTradeActive = (trade: any) => {
 // Sync props to internal composable state
 watch(() => props.filterPeriod, (newVal) => {
   if (newVal) filterPeriod.value = newVal
+}, { immediate: true })
+
+watch(() => props.startDate, (newVal) => {
+  if (newVal !== undefined) startDate.value = newVal
+}, { immediate: true })
+
+watch(() => props.endDate, (newVal) => {
+  if (newVal !== undefined) endDate.value = newVal
 }, { immediate: true })
 
 watch(() => props.sortBy, (newVal) => {
