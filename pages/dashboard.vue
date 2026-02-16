@@ -55,6 +55,8 @@ const { getDuration } = useDuration()
 
 const { 
   filterPeriod, 
+  startDate,
+  endDate,
   sortBy, 
   sortDir, 
   filteredTrades 
@@ -222,33 +224,53 @@ onUnmounted(() => {
           </div>
         </div>
 
-        <div v-if="!isListCollapsed" class="flex items-center gap-2">
-           <div class="relative flex-1">
-             <select v-model="filterPeriod" class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent outline-none cursor-pointer">
-               <option value="all">All Time</option>
-               <option value="week">This Week</option>
-               <option value="last-week">Last Week</option>
-               <option value="month">This Month</option>
-               <option value="last-month">Last Month</option>
-             </select>
-             <Filter class="w-3 h-3 absolute right-2 top-1.5 text-terminal-text/40 pointer-events-none" />
-           </div>
-           <div class="relative flex-1 group flex items-center gap-1">
+        <div v-if="!isListCollapsed" class="flex flex-col gap-2">
+           <div class="flex items-center gap-2">
              <div class="relative flex-1">
-               <select v-model="sortBy" class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent outline-none cursor-pointer">
-                 <option value="Date">Date</option>
-                 <option value="Status">Status</option>
-                 <option value="Pair">Pair</option>
+               <select v-model="filterPeriod" class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent outline-none cursor-pointer">
+                 <option value="all">All Time</option>
+                 <option value="week">This Week</option>
+                 <option value="last-week">Last Week</option>
+                 <option value="month">This Month</option>
+                 <option value="last-month">Last Month</option>
+                 <option value="custom">Custom Range</option>
                </select>
+               <Filter class="w-3 h-3 absolute right-2 top-1.5 text-terminal-text/40 pointer-events-none" />
              </div>
-             <button 
-               @click="sortDir = sortDir === 'asc' ? 'desc' : 'asc'"
-               class="p-1 hover:bg-terminal-gray/20 rounded transition-colors text-terminal-text/60 hover:text-terminal-highlight"
-               :title="sortDir === 'asc' ? 'Sort Ascending' : 'Sort Descending'"
-             >
-               <ArrowUp v-if="sortDir === 'asc'" class="w-3.5 h-3.5" />
-               <ArrowDown v-else class="w-3.5 h-3.5" />
-             </button>
+             <div class="relative flex-1 group flex items-center gap-1">
+               <div class="relative flex-1">
+                 <select v-model="sortBy" class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent outline-none cursor-pointer">
+                   <option value="Date">Date</option>
+                   <option value="Status">Status</option>
+                   <option value="Pair">Pair</option>
+                 </select>
+               </div>
+               <button 
+                 @click="sortDir = sortDir === 'asc' ? 'desc' : 'asc'"
+                 class="p-1 hover:bg-terminal-gray/20 rounded transition-colors text-terminal-text/60 hover:text-terminal-highlight"
+                 :title="sortDir === 'asc' ? 'Sort Ascending' : 'Sort Descending'"
+               >
+                 <ArrowUp v-if="sortDir === 'asc'" class="w-3.5 h-3.5" />
+                 <ArrowDown v-else class="w-3.5 h-3.5" />
+               </button>
+             </div>
+           </div>
+
+           <!-- Custom Date Range Inputs -->
+           <div v-if="filterPeriod === 'custom'" class="flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-200">
+             <input 
+               type="date" 
+               v-model="startDate"
+               class="flex-1 bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1 text-[10px] text-terminal-text focus:border-terminal-accent outline-none"
+               title="Start Date"
+             />
+             <span class="text-terminal-text/30 text-[10px]">-</span>
+             <input 
+               type="date" 
+               v-model="endDate"
+               class="flex-1 bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1 text-[10px] text-terminal-text focus:border-terminal-accent outline-none"
+               title="End Date"
+             />
            </div>
         </div>
       </div>
@@ -259,6 +281,8 @@ onUnmounted(() => {
           :active-id="selectedTradeId"
           :collapsed="isListCollapsed"
           :filter-period="filterPeriod"
+          :start-date="startDate"
+          :end-date="endDate"
           :sort-by="sortBy"
           :sort-dir="sortDir"
           @select="selectTrade"
