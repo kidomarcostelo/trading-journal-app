@@ -9,7 +9,7 @@ definePageMeta({
 const { loggedIn, user } = useUserSession()
 
 watch(loggedIn, (val) => {
-  if (val) navigateTo('/')
+  if (val) navigateTo('/dashboard')
 }, { immediate: true })
 
 const login = () => {

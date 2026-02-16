@@ -89,6 +89,28 @@ describe('useTrades Composable', () => {
     expect(ids).not.toContain('1') // Jan
   })
 
+  it('filters by Custom Range', () => {
+    const { filterPeriod, startDate, endDate, filteredTrades } = useTrades(mockTrades)
+    
+    filterPeriod.value = 'custom'
+    startDate.value = '2026-01-05'
+    endDate.value = '2026-01-10'
+    
+    const ids = filteredTrades.value.map(t => t.ID)
+    expect(ids).toContain('2') // Jan 10
+    expect(ids).not.toContain('1') // Jan 11 (after end)
+    expect(ids).not.toContain('5') // Jan 1 (before start)
+
+    // Only start date (inclusive)
+    startDate.value = '2026-01-11'
+    endDate.value = ''
+    const idsStart = filteredTrades.value.map(t => t.ID)
+    expect(idsStart).toContain('1') // Jan 11
+    expect(idsStart).toContain('6') // Jan 11
+    expect(idsStart).toContain('4') // Jan 12
+    expect(idsStart).not.toContain('2') // Jan 10
+  })
+
   it('sorts by Status', () => {
     const { sortBy, sortDir, filteredTrades } = useTrades(mockTrades)
     sortBy.value = 'Status'

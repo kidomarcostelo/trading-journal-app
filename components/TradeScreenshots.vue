@@ -376,3 +376,4 @@ const openOriginal = (url: string) => {
   opacity: 0;
 }
 </style>
+``
