@@ -24,7 +24,7 @@ describe('TradeDataTable', () => {
     expect(wrapper.text()).toContain('Status')
     expect(wrapper.text()).toContain('Risk')
     expect(wrapper.text()).toContain('PNL')
-    expect(wrapper.text()).toContain('Exit Date')
+    expect(wrapper.text()).toContain('RR')
     
     // Check values
     const selects = wrapper.findAll('select')
@@ -32,7 +32,7 @@ describe('TradeDataTable', () => {
     expect(selects[1].element.value).toBe('Open') // Status
     
     const inputs = wrapper.findAll('input')
-    // Order: Risk, PNL, Exit Date
+    // Order: Risk, PNL, RR
     expect(inputs[0].element.value).toBe('100') // Risk
     expect(inputs[1].element.value).toBe('250') // PNL
   })

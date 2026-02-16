@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { h, nextTick, ref, computed, Suspense, defineComponent } from 'vue'
-import IndexPage from '../../pages/index.vue'
+import IndexPage from '../../pages/dashboard.vue'
 
 // Mock Lucide icons
 vi.mock('lucide-vue-next', () => ({
@@ -35,6 +35,11 @@ vi.stubGlobal('useFetch', vi.fn().mockImplementation((url) => {
     return { data: ref([]), refresh: vi.fn(), pending: ref(false) }
   }
   return { data: ref(null) }
+}))
+
+// Mock useState
+vi.stubGlobal('useState', vi.fn((key, init) => {
+  return { value: init ? init() : null }
 }))
 
 // Mock nuxt-auth-utils
