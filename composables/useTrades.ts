@@ -1,12 +1,14 @@
 import { computed, ref, type Ref } from 'vue'
 import type { Trade } from '../types'
 
-export type FilterPeriod = 'week' | 'month' | 'last-week' | 'last-month' | 'all'
+export type FilterPeriod = 'week' | 'month' | 'last-week' | 'last-month' | 'all' | 'custom'
 export type SortField = 'Status' | 'Date' | 'Pair'
 export type SortDir = 'asc' | 'desc'
 
 export const useTrades = (trades: Ref<Trade[]>) => {
   const filterPeriod = ref<FilterPeriod>('all')
+  const startDate = ref<string>('')
+  const endDate = ref<string>('')
   const sortBy = ref<SortField>('Date')
   const sortDir = ref<SortDir>('desc')
 
@@ -68,6 +70,21 @@ export const useTrades = (trades: Ref<Trade[]>) => {
           return tDate.getMonth() === lastMonthDate.getMonth() && tDate.getFullYear() === lastMonthDate.getFullYear()
         }
 
+        if (filterPeriod.value === 'custom') {
+          const start = startDate.value ? new Date(startDate.value) : null
+          const end = endDate.value ? new Date(endDate.value) : null
+          
+          if (start) {
+            start.setHours(0, 0, 0, 0)
+            if (tDate < start) return false
+          }
+          if (end) {
+            end.setHours(23, 59, 59, 999)
+            if (tDate > end) return false
+          }
+          return true
+        }
+
         return true
       })
     }
@@ -98,6 +115,8 @@ export const useTrades = (trades: Ref<Trade[]>) => {
 
   return {
     filterPeriod,
+    startDate,
+    endDate,
     sortBy,
     sortDir,
     filteredTrades
