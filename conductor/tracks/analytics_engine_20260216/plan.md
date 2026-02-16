@@ -1,0 +1,43 @@
+# Implementation Plan - Analytics Engine
+
+## Phase 1: Data Model & Core Metrics (Client-Side)
+
+- [ ] Task: Update `types/index.ts` to include `mfe` (Maximum Favorable Excursion) field in `Trade` interface.
+- [ ] Task: Create `composables/useAnalytics.ts`.
+    - [ ] Implement `calculateProfitFactor(trades: Trade[]): number`.
+    - [ ] Implement `calculateWinRate(trades: Trade[]): number`.
+    - [ ] Implement `calculateExpectancy(trades: Trade[]): number`.
+    - [ ] Implement `calculateAverageRMultiple(trades: Trade[]): number`.
+    - [ ] Implement `calculateAverageHoldingTime(trades: Trade[]): { wins: number, losses: number }`.
+- [ ] Task: Update `TradeList.vue` or create a new `AnalyticsDashboard.vue` component to display these initial metrics.
+- [ ] Task: Write unit tests for `useAnalytics` functions in `tests/composables/useAnalytics.spec.ts`.
+- [ ] Task: Conductor - User Manual Verification 'Phase 1: Data Model & Core Metrics' (Protocol in workflow.md)
+
+## Phase 2: Risk & Drawdown (Hybrid)
+
+- [ ] Task: Create `server/api/analytics/risk.get.ts`.
+    - [ ] Implement `calculateRiskOfRuin(winRate: number, riskPerTrade: number, edge: number): number`.
+    - [ ] Implement `generateEquityCurve(trades: Trade[], initialBalance: number): { date: string, equity: number }[]`.
+- [ ] Task: Update `useAnalytics` to fetch risk data from the API.
+- [ ] Task: Create `RiskDashboard.vue` component to display Risk of Ruin, MDD, and Consecutive Losses.
+- [ ] Task: Write integration tests for the `/api/analytics/risk` endpoint.
+- [ ] Task: Conductor - User Manual Verification 'Phase 2: Risk & Drawdown' (Protocol in workflow.md)
+
+## Phase 3: Trade Efficiency & Backfill (Server-Side)
+
+- [ ] Task: Create `server/utils/marketData.ts` to interface with an external API (e.g., Yahoo Finance).
+- [ ] Task: Create `server/api/trades/backfill.post.ts`.
+    - [ ] Implement logic to fetch historical High/Low prices for closed trades missing `mae`/`mfe`.
+    - [ ] Update Google Sheet with calculated `mae`/`mfe` values.
+- [ ] Task: add a "Backfill MAE/MFE" button in the Settings or Analytics dashboard to trigger this process.
+- [ ] Task: Update `TradeForm.vue` to allow manual entry/editing of `mfe`.
+- [ ] Task: Write tests for the backfill logic and API integration.
+- [ ] Task: Conductor - User Manual Verification 'Phase 3: Trade Efficiency & Backfill' (Protocol in workflow.md)
+
+## Phase 4: Visualization (Frontend)
+
+- [ ] Task: Install a charting library (e.g., `chart.js`, `vue-chartjs`, or `apexcharts`).
+- [ ] Task: Create `EquityCurveChart.vue` component using the data from Phase 2.
+- [ ] Task: Create `PerformanceHeatmap.vue` component using the daily PnL data.
+- [ ] Task: Integrate these charts into the main Analytics Dashboard.
+- [ ] Task: Conductor - User Manual Verification 'Phase 4: Visualization' (Protocol in workflow.md)
