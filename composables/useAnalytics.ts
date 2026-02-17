@@ -2,6 +2,15 @@ import type { Trade } from '~/types'
 
 export const useAnalytics = () => {
   
+  const parseNumber = (val: any): number => {
+    if (typeof val === 'number') return val
+    if (!val) return 0
+    // Remove currency symbols, commas, and spaces, keep - and .
+    const clean = String(val).replace(/[^0-9.-]/g, '')
+    const num = parseFloat(clean)
+    return isNaN(num) ? 0 : num
+  }
+
   const getClosedTrades = (trades: Trade[]) => {
     return trades.filter(t => t.status === 'Closed' || t.Status === 'Closed')
   }
@@ -12,7 +21,7 @@ export const useAnalytics = () => {
     let grossLoss = 0
 
     closed.forEach(t => {
-      const pnl = Number(t.pnl || t.PnL || 0)
+      const pnl = parseNumber(t.pnl || t.PnL || 0)
       if (pnl > 0) grossProfit += pnl
       else grossLoss += Math.abs(pnl)
     })
@@ -25,7 +34,7 @@ export const useAnalytics = () => {
     const closed = getClosedTrades(trades)
     if (closed.length === 0) return 0
     
-    const wins = closed.filter(t => Number(t.pnl || t.PnL || 0) > 0).length
+    const wins = closed.filter(t => parseNumber(t.pnl || t.PnL || 0) > 0).length
     return Number(((wins / closed.length) * 100).toFixed(2))
   }
 
@@ -33,15 +42,15 @@ export const useAnalytics = () => {
     const closed = getClosedTrades(trades)
     if (closed.length === 0) return 0
 
-    const wins = closed.filter(t => Number(t.pnl || t.PnL || 0) > 0)
-    const losses = closed.filter(t => Number(t.pnl || t.PnL || 0) <= 0)
+    const wins = closed.filter(t => parseNumber(t.pnl || t.PnL || 0) > 0)
+    const losses = closed.filter(t => parseNumber(t.pnl || t.PnL || 0) <= 0)
 
     const avgWin = wins.length > 0 
-      ? wins.reduce((sum, t) => sum + Number(t.pnl || t.PnL || 0), 0) / wins.length 
+      ? wins.reduce((sum, t) => sum + parseNumber(t.pnl || t.PnL || 0), 0) / wins.length 
       : 0
     
     const avgLoss = losses.length > 0 
-      ? Math.abs(losses.reduce((sum, t) => sum + Number(t.pnl || t.PnL || 0), 0)) / losses.length 
+      ? Math.abs(losses.reduce((sum, t) => sum + parseNumber(t.pnl || t.PnL || 0), 0)) / losses.length 
       : 0
 
     const winRate = wins.length / closed.length
@@ -58,9 +67,9 @@ export const useAnalytics = () => {
     let count = 0
 
     closed.forEach(t => {
-      const pnl = Number(t.pnl || t.PnL || 0)
+      const pnl = parseNumber(t.pnl || t.PnL || 0)
       // Check for Risk or risk, as keys might be dynamic
-      const risk = Number(t.Risk || t.risk || 0)
+      const risk = parseNumber(t.Risk || t.risk || 0)
       
       if (risk > 0) {
         totalR += pnl / risk
@@ -75,13 +84,13 @@ export const useAnalytics = () => {
   const calculateAverageHoldingTime = (trades: Trade[]): { wins: number, losses: number } => {
     const closed = getClosedTrades(trades)
     
-    const wins = closed.filter(t => Number(t.pnl || t.PnL || 0) > 0)
-    const losses = closed.filter(t => Number(t.pnl || t.PnL || 0) <= 0)
+    const wins = closed.filter(t => parseNumber(t.pnl || t.PnL || 0) > 0)
+    const losses = closed.filter(t => parseNumber(t.pnl || t.PnL || 0) <= 0)
 
     const getDuration = (t: Trade) => {
-      const start = Number(t.createdAt || t.Date)
-      const end = Number(t['Exit Date'])
-      if (isNaN(start) || isNaN(end)) return 0
+      const start = parseNumber(t.createdAt || t.Date)
+      const end = parseNumber(t['Exit Date'])
+      if (start === 0 || end === 0) return 0
       return end - start
     }
 
