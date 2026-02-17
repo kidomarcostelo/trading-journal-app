@@ -102,6 +102,13 @@ const tradeDuration = computed(() => {
   )
 })
 
+// Contextual Analytics: Filter by Active Trade Pair
+const analyticsTrades = computed(() => {
+  if (!activeTrade.value || !activeTrade.value.Pair) return filteredTrades.value
+  const currentPair = activeTrade.value.Pair.toLowerCase()
+  return filteredTrades.value.filter(t => (t.Pair || '').toLowerCase() === currentPair)
+})
+
 const saveTrades = async (dirtyIds: Set<string>) => {
   if (dirtyIds.size === 0) return
   const tradesToSave = trades.value?.filter(t => dirtyIds.has(t.ID || t.id)) || []
@@ -403,7 +410,7 @@ onUnmounted(() => {
         </div>
         <div v-else-if="activeDetailTab === 'review'"><TradeReview :trade="activeTrade" :config="config || []" @update="handleTradeUpdate" /></div>
         <div v-else-if="activeDetailTab === 'analytics'">
-          <AnalyticsDashboard :trades="filteredTrades" />
+          <AnalyticsDashboard :trades="analyticsTrades" />
         </div>
       </div>
 
