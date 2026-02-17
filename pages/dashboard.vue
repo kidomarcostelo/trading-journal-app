@@ -132,7 +132,12 @@ const handleTradeUpdate = (updatedFields: any) => {
   if (!activeTrade.value || !trades.value) return
   const index = trades.value.findIndex(t => (t.ID || t.id) === selectedTradeId.value)
   if (index !== -1) {
-    trades.value[index] = { ...trades.value[index], ...updatedFields }
+    const currentTrade = trades.value[index]
+    
+    // Use shared logic for updates (e.g. auto Exit Date)
+    const processedUpdates = processTradeUpdate(currentTrade, updatedFields)
+
+    trades.value[index] = { ...trades.value[index], ...processedUpdates }
     trackChange(activeTrade.value.ID || activeTrade.value.id)
   }
 }
