@@ -15,6 +15,7 @@ import TradeForm from '~/components/TradeForm.vue'
 import TradeList from '~/components/TradeList.vue'
 import TradeDataTable from '~/components/TradeDataTable.vue'
 import TradeStats from '~/components/TradeStats.vue'
+import AnalyticsDashboard from '~/components/AnalyticsDashboard.vue'
 import TradingViewChart from '~/components/TradingViewChart.vue'
 import TradeScreenshots from '~/components/TradeScreenshots.vue'
 import TradeReview from '~/components/TradeReview.vue'
@@ -81,7 +82,7 @@ const handleFilterClick = () => {
   }
 }
 
-const activeDetailTab = ref<'journal' | 'charts' | 'review'>('journal')
+const activeDetailTab = ref<'journal' | 'charts' | 'review' | 'analytics'>('journal')
 
 const activeTrade = computed(() => {
   return filteredTrades.value.find(t => (t.ID || t.id) === selectedTradeId.value)
@@ -364,6 +365,9 @@ onUnmounted(() => {
           <button @click="activeDetailTab = 'review'" class="pb-2 text-sm font-medium transition-colors relative" :class="activeDetailTab === 'review' ? 'text-terminal-highlight' : 'text-terminal-text/60'">
             Review <span v-if="activeDetailTab === 'review'" class="absolute bottom-0 left-0 w-full h-0.5 bg-terminal-accent"></span>
           </button>
+          <button @click="activeDetailTab = 'analytics'" class="pb-2 text-sm font-medium transition-colors relative" :class="activeDetailTab === 'analytics' ? 'text-terminal-highlight' : 'text-terminal-text/60'">
+            Analytics <span v-if="activeDetailTab === 'analytics'" class="absolute bottom-0 left-0 w-full h-0.5 bg-terminal-accent"></span>
+          </button>
         </div>
         
         <div v-if="activeDetailTab === 'journal'" class="space-y-4">
@@ -398,6 +402,9 @@ onUnmounted(() => {
            <CollapsibleSection title="Screenshots"><TradeScreenshots :trade="activeTrade" @update="handleTradeUpdate" /></CollapsibleSection>
         </div>
         <div v-else-if="activeDetailTab === 'review'"><TradeReview :trade="activeTrade" :config="config || []" @update="handleTradeUpdate" /></div>
+        <div v-else-if="activeDetailTab === 'analytics'">
+          <AnalyticsDashboard :trades="filteredTrades" />
+        </div>
       </div>
 
       <div v-else class="p-8 max-w-4xl mx-auto text-center py-20 text-terminal-text/40">
