@@ -17,19 +17,11 @@ export const useAnalytics = () => {
     return foundKey ? obj[foundKey] : undefined
   }
 
-  const getClosedTrades = (trades: Trade[]) => {
-    return trades.filter(t => {
-      const status = String(getVal(t, 'status') || '').trim().toLowerCase()
-      return status === 'closed'
-    })
-  }
-
   const calculateProfitFactor = (trades: Trade[]): number => {
-    const closed = getClosedTrades(trades)
     let grossProfit = 0
     let grossLoss = 0
 
-    closed.forEach(t => {
+    trades.forEach(t => {
       const pnl = parseNumber(getVal(t, 'pnl'))
       if (pnl > 0) grossProfit += pnl
       else grossLoss += Math.abs(pnl)
@@ -40,19 +32,17 @@ export const useAnalytics = () => {
   }
 
   const calculateWinRate = (trades: Trade[]): number => {
-    const closed = getClosedTrades(trades)
-    if (closed.length === 0) return 0
+    if (trades.length === 0) return 0
     
-    const wins = closed.filter(t => parseNumber(getVal(t, 'pnl')) > 0).length
-    return Number(((wins / closed.length) * 100).toFixed(2))
+    const wins = trades.filter(t => parseNumber(getVal(t, 'pnl')) > 0).length
+    return Number(((wins / trades.length) * 100).toFixed(2))
   }
 
   const calculateExpectancy = (trades: Trade[]): number => {
-    const closed = getClosedTrades(trades)
-    if (closed.length === 0) return 0
+    if (trades.length === 0) return 0
 
-    const wins = closed.filter(t => parseNumber(getVal(t, 'pnl')) > 0)
-    const losses = closed.filter(t => parseNumber(getVal(t, 'pnl')) <= 0)
+    const wins = trades.filter(t => parseNumber(getVal(t, 'pnl')) > 0)
+    const losses = trades.filter(t => parseNumber(getVal(t, 'pnl')) <= 0)
 
     const avgWin = wins.length > 0 
       ? wins.reduce((sum, t) => sum + parseNumber(getVal(t, 'pnl')), 0) / wins.length 
@@ -62,20 +52,19 @@ export const useAnalytics = () => {
       ? Math.abs(losses.reduce((sum, t) => sum + parseNumber(getVal(t, 'pnl')), 0)) / losses.length 
       : 0
 
-    const winRate = wins.length / closed.length
-    const lossRate = losses.length / closed.length
+    const winRate = wins.length / trades.length
+    const lossRate = losses.length / trades.length
 
     return Number(((avgWin * winRate) - (avgLoss * lossRate)).toFixed(2))
   }
 
   const calculateAverageRMultiple = (trades: Trade[]): number => {
-    const closed = getClosedTrades(trades)
-    if (closed.length === 0) return 0
+    if (trades.length === 0) return 0
 
     let totalR = 0
     let count = 0
 
-    closed.forEach(t => {
+    trades.forEach(t => {
       const pnl = parseNumber(getVal(t, 'pnl'))
       const risk = parseNumber(getVal(t, 'risk'))
       
@@ -90,15 +79,19 @@ export const useAnalytics = () => {
   }
 
   const calculateAverageHoldingTime = (trades: Trade[]): { wins: number, losses: number } => {
-    const closed = getClosedTrades(trades)
-    
-    const wins = closed.filter(t => parseNumber(getVal(t, 'pnl')) > 0)
-    const losses = closed.filter(t => parseNumber(getVal(t, 'pnl')) <= 0)
+    const wins = trades.filter(t => parseNumber(getVal(t, 'pnl')) > 0)
+    const losses = trades.filter(t => parseNumber(getVal(t, 'pnl')) <= 0)
 
     const getDuration = (t: Trade) => {
       const start = parseNumber(getVal(t, 'createdAt') || getVal(t, 'date') || getVal(t, 'date created'))
-      const end = parseNumber(getVal(t, 'exit date'))
-      if (start === 0 || end === 0) return 0
+      let end = parseNumber(getVal(t, 'exit date'))
+      
+      // If no exit date, use now (for open trades)
+      if (end === 0) {
+        end = Date.now()
+      }
+
+      if (start === 0) return 0
       return end - start
     }
 
