@@ -31,10 +31,43 @@ export default defineEventHandler(async (event) => {
       range: 'Master!1:1', // First row only
     })
 
-    const headers = headerResponse.data.values?.[0]
+    let headers = headerResponse.data.values?.[0]
     if (!headers || headers.length === 0) {
       throw new Error('Master sheet has no headers. Cannot append trade.')
     }
+
+    // --- Dynamic Header Expansion ---
+    const missingHeaders: string[] = []
+    const existingHeadersLower = headers.map((h: string) => h.toLowerCase())
+
+    Object.keys(body).forEach(key => {
+      // Skip ID as it's handled separately
+      if (key.toLowerCase() === 'id') return
+      
+      if (!existingHeadersLower.includes(key.toLowerCase())) {
+        missingHeaders.push(key)
+      }
+    })
+
+    if (missingHeaders.length > 0) {
+      console.log(`[Trades POST] Adding missing headers: ${missingHeaders.join(', ')}`)
+      
+      // Update the local headers array
+      headers = [...headers, ...missingHeaders]
+      
+      // Update the remote Sheet headers
+      // We need to calculate the new range for the header row
+      const range = `Master!A1:${getColumnLetter(headers.length - 1)}1`
+      await client.spreadsheets.values.update({
+        spreadsheetId,
+        range,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: {
+          values: [headers]
+        }
+      })
+    }
+    // --------------------------------
 
     // 2. Prepare System Values
     
