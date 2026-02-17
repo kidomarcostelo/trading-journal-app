@@ -40,6 +40,7 @@ export const useDuration = () => {
   };
 
   return {
-    getDuration
+    getDuration,
+    formatDuration
   };
 };

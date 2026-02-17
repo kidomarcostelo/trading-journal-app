@@ -9,7 +9,7 @@
     - [ ] Implement `calculateExpectancy(trades: Trade[]): number`.
     - [ ] Implement `calculateAverageRMultiple(trades: Trade[]): number`.
     - [ ] Implement `calculateAverageHoldingTime(trades: Trade[]): { wins: number, losses: number }`.
-- [ ] Task: Update `TradeList.vue` or create a new `AnalyticsDashboard.vue` component to display these initial metrics.
+- [~] Task: Update `TradeList.vue` or create a new `AnalyticsDashboard.vue` component to display these initial metrics.
 - [ ] Task: Write unit tests for `useAnalytics` functions in `tests/composables/useAnalytics.spec.ts`.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Data Model & Core Metrics' (Protocol in workflow.md)
 
