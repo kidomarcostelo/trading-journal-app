@@ -43,10 +43,44 @@ export default defineEventHandler(async (event) => {
       range: 'Master!1:1',
     })
 
-    const headers = headerResponse.data.values?.[0]
+    let headers = headerResponse.data.values?.[0]
     if (!headers || headers.length === 0) {
       throw new Error('Master sheet has no headers.')
     }
+
+    // --- Dynamic Header Expansion ---
+    const missingHeaders: Set<string> = new Set()
+    const existingHeadersLower = headers.map((h: string) => h.toLowerCase())
+
+    // Check all trades in the batch for missing headers
+    for (const trade of body) {
+      Object.keys(trade).forEach(key => {
+        if (key.toLowerCase() === 'id') return
+        if (!existingHeadersLower.includes(key.toLowerCase())) {
+          missingHeaders.add(key)
+        }
+      })
+    }
+
+    if (missingHeaders.size > 0) {
+      const newHeaders = Array.from(missingHeaders)
+      console.log(`[Trades Batch PUT] Adding missing headers: ${newHeaders.join(', ')}`)
+      
+      // Update local headers
+      headers = [...headers, ...newHeaders]
+      
+      // Update remote headers
+      const range = `Master!A1:${getColumnLetter(headers.length - 1)}1`
+      await client.spreadsheets.values.update({
+        spreadsheetId,
+        range,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: {
+          values: [headers]
+        }
+      })
+    }
+    // --------------------------------
 
     // 2. Find ID Column and Row Indices for all trades
     const idIndex = headers.findIndex((h: string) => h.toLowerCase() === 'id')
