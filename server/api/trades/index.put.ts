@@ -30,10 +30,42 @@ export default defineEventHandler(async (event) => {
       range: 'Master!1:1',
     })
 
-    const headers = headerResponse.data.values?.[0]
+    let headers = headerResponse.data.values?.[0]
     if (!headers || headers.length === 0) {
       throw new Error('Master sheet has no headers.')
     }
+
+    // --- Dynamic Header Expansion ---
+    const missingHeaders: string[] = []
+    const existingHeadersLower = headers.map((h: string) => h.toLowerCase())
+
+    Object.keys(body).forEach(key => {
+      // Skip ID as it's handled separately and should exist
+      if (key.toLowerCase() === 'id') return
+      
+      if (!existingHeadersLower.includes(key.toLowerCase())) {
+        missingHeaders.push(key)
+      }
+    })
+
+    if (missingHeaders.length > 0) {
+      console.log(`[Trades PUT] Adding missing headers: ${missingHeaders.join(', ')}`)
+      
+      // Update the local headers array
+      headers = [...headers, ...missingHeaders]
+      
+      // Update the remote Sheet headers
+      const range = `Master!A1:${getColumnLetter(headers.length - 1)}1`
+      await client.spreadsheets.values.update({
+        spreadsheetId,
+        range,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: {
+          values: [headers]
+        }
+      })
+    }
+    // --------------------------------
 
     const sheetRowIndex = await findRowIndexById(client, spreadsheetId, tradeId)
     
