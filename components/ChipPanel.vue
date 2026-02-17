@@ -39,7 +39,12 @@ const getModelValueForCategory = (actualId: string): string[] => {
   const existingKey = findKey(props.modelValue, actualId) || actualId
   const val = props.modelValue[existingKey]
   if (Array.isArray(val)) return val
-  if (typeof val === 'string') return [val]
+  if (typeof val === 'string') {
+    if (val.includes(',')) {
+      return val.split(',').map(s => s.trim()).filter(Boolean)
+    }
+    return [val]
+  }
   return []
 }
 </script>

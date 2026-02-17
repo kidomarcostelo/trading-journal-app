@@ -2,14 +2,14 @@
 
 ## Phase 1: Data Model & Core Metrics (Client-Side)
 
-- [ ] Task: Update `types/index.ts` to include `mfe` (Maximum Favorable Excursion) field in `Trade` interface.
-- [ ] Task: Create `composables/useAnalytics.ts`.
+- [x] Task: Update `types/index.ts` to include `mfe` (Maximum Favorable Excursion) field in `Trade` interface. [commit: a84100e]
+- [x] Task: Create `composables/useAnalytics.ts`. [commit: 3f2ec9c]
     - [ ] Implement `calculateProfitFactor(trades: Trade[]): number`.
     - [ ] Implement `calculateWinRate(trades: Trade[]): number`.
     - [ ] Implement `calculateExpectancy(trades: Trade[]): number`.
     - [ ] Implement `calculateAverageRMultiple(trades: Trade[]): number`.
     - [ ] Implement `calculateAverageHoldingTime(trades: Trade[]): { wins: number, losses: number }`.
-- [ ] Task: Update `TradeList.vue` or create a new `AnalyticsDashboard.vue` component to display these initial metrics.
+- [~] Task: Update `TradeList.vue` or create a new `AnalyticsDashboard.vue` component to display these initial metrics.
 - [ ] Task: Write unit tests for `useAnalytics` functions in `tests/composables/useAnalytics.spec.ts`.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Data Model & Core Metrics' (Protocol in workflow.md)
 
