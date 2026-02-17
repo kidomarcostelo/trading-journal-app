@@ -51,9 +51,25 @@ export const useAnalytics = () => {
   }
 
   const calculateAverageRMultiple = (trades: Trade[]): number => {
-    // Placeholder as we lack explicit 'Risk' or 'Initial Stop' data in the Trade model currently.
-    // Ideally: Sum(PnL / Risk) / TotalTrades
-    return 0
+    const closed = getClosedTrades(trades)
+    if (closed.length === 0) return 0
+
+    let totalR = 0
+    let count = 0
+
+    closed.forEach(t => {
+      const pnl = Number(t.pnl || t.PnL || 0)
+      // Check for Risk or risk, as keys might be dynamic
+      const risk = Number(t.Risk || t.risk || 0)
+      
+      if (risk > 0) {
+        totalR += pnl / risk
+        count++
+      }
+    })
+
+    if (count === 0) return 0
+    return Number((totalR / count).toFixed(2))
   }
 
   const calculateAverageHoldingTime = (trades: Trade[]): { wins: number, losses: number } => {
