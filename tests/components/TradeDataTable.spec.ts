@@ -1,6 +1,30 @@
 import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { h, Suspense, defineComponent } from 'vue'
 import TradeDataTable from '../../components/TradeDataTable.vue'
+
+// Mock useFetch
+vi.stubGlobal('useFetch', vi.fn().mockResolvedValue({
+  data: {
+    value: [
+      { id: 'Status', values: ['Open', 'Closed', 'Cancelled', 'Missed'] },
+      { id: 'Action', values: ['Long', 'Short'] },
+      { id: 'Market', values: ['Crypto', 'Forex', 'Indices', 'Stocks', 'Commodities'] }
+    ]
+  },
+  pending: { value: false }
+}))
+
+const mountSuspense = (component: any, props: any = {}) => {
+  return mount(defineComponent({
+    render() {
+      return h(Suspense, null, {
+        default: h(component, props),
+        fallback: h('div', 'Loading...')
+      })
+    }
+  }))
+}
 
 describe('TradeDataTable', () => {
   const mockTrade = {
@@ -11,12 +35,9 @@ describe('TradeDataTable', () => {
     PNL: 250
   }
 
-  it('renders labels and data from props', () => {
-    const wrapper = mount(TradeDataTable, {
-      props: {
-        trade: mockTrade
-      }
-    })
+  it('renders labels and data from props', async () => {
+    const wrapper = mountSuspense(TradeDataTable, { trade: mockTrade })
+    await new Promise(resolve => setTimeout(resolve, 50)) // wait for suspense
     
     // Check for new headers
     expect(wrapper.text()).toContain('Action')
@@ -38,17 +59,16 @@ describe('TradeDataTable', () => {
   })
 
   it('emits update when an input changes', async () => {
-    const wrapper = mount(TradeDataTable, {
-      props: {
-        trade: mockTrade
-      }
-    })
+    const wrapper = mountSuspense(TradeDataTable, { trade: mockTrade })
+    await new Promise(resolve => setTimeout(resolve, 50)) // wait for suspense
 
     const inputs = wrapper.findAll('input')
     await inputs[0].setValue('150') // Risk input is now first input (after selects)
 
-    expect(wrapper.emitted('update')).toBeTruthy()
-    const emittedValue = wrapper.emitted('update')![0][0] as any
+    // The emitted event is fired from the child component inside the suspense
+    const childComponent = wrapper.findComponent(TradeDataTable)
+    expect(childComponent.emitted('update')).toBeTruthy()
+    const emittedValue = childComponent.emitted('update')![0][0] as any
     expect(emittedValue.Risk).toBe(150)
   })
 })
