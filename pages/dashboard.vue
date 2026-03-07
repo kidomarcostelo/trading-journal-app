@@ -16,7 +16,6 @@ import TradeList from '~/components/TradeList.vue'
 import TradeDataTable from '~/components/TradeDataTable.vue'
 import TradeStats from '~/components/TradeStats.vue'
 import AnalyticsDashboard from '~/components/AnalyticsDashboard.vue'
-import TradingViewChart from '~/components/TradingViewChart.vue'
 import TradeScreenshots from '~/components/TradeScreenshots.vue'
 import TradeReview from '~/components/TradeReview.vue'
 import ChipPanel from '~/components/ChipPanel.vue'
@@ -136,14 +135,14 @@ const saveTrades = async (dirtyIds: Set<string>) => {
 
 const { saveMode, isDirty, dirtyTradeIds, isLoading, trackChange, triggerSave, onNavigate } = useAutoSave(saveTrades)
 
-const handleTradeUpdate = (updatedFields: any) => {
+const handleTradeUpdate = (fieldsToUpdate: any) => {
   if (!activeTrade.value || !trades.value) return
   const index = trades.value.findIndex(t => (t.ID || t.id) === selectedTradeId.value)
   if (index !== -1) {
     const currentTrade = trades.value[index]
     
     // Use shared logic for updates (e.g. auto Exit Date)
-    const processedUpdates = processTradeUpdate(currentTrade, updatedFields)
+    const processedUpdates = processTradeUpdate(currentTrade, fieldsToUpdate)
 
     trades.value[index] = { ...trades.value[index], ...processedUpdates }
     trackChange(activeTrade.value.ID || activeTrade.value.id)
@@ -181,8 +180,13 @@ const executeDelete = async () => {
 
 const formatDate = (val: any) => {
   if (!val) return '--'
-  if (!isNaN(Number(val)) && Number(val) > 20000) {
-    return new Date((Number(val) - 25569) * 86400 * 1000).toLocaleDateString()
+  const numVal = Number(val)
+  if (!isNaN(numVal)) {
+    if (numVal > 20000 && numVal < 100000) {
+      return new Date((numVal - 25569) * 86400 * 1000).toLocaleDateString()
+    } else if (numVal > 100000) {
+      return new Date(numVal).toLocaleDateString()
+    }
   }
   return String(val)
 }
@@ -335,7 +339,7 @@ onUnmounted(() => {
           <button @click="showForm = false" class="absolute top-4 right-4 text-terminal-text/40 hover:text-terminal-text z-10">
             <PlusCircle class="w-6 h-6 rotate-45" />
           </button>
-          <TradeForm @success="refresh(); showForm = false" />
+          <TradeForm :config="config || []" @success="refresh(); showForm = false" />
         </div>
       </div>
 
@@ -353,7 +357,7 @@ onUnmounted(() => {
                  <span class="w-1 h-1 rounded-full bg-terminal-gray/40"></span>
                  <span>{{ activeTrade.Market }}</span>
                  <span class="w-1 h-1 rounded-full bg-terminal-gray/40"></span>
-                 <span>{{ formatDate(activeTrade.createdAt || activeTrade.Date) }}</span>
+                 <span>{{ formatDate(activeTrade.createdAt || activeTrade.Date || activeTrade['Date Created']) }}</span>
                  <span class="w-1 h-1 rounded-full bg-terminal-gray/40"></span>
                  <span>{{ tradeDuration }}</span>
                </div>
@@ -379,7 +383,7 @@ onUnmounted(() => {
         
         <div v-if="activeDetailTab === 'journal'" class="space-y-4">
            <CollapsibleSection title="Trade Data">
-             <TradeDataTable :trade="activeTrade" @update="handleTradeUpdate" />
+             <TradeDataTable :trade="activeTrade" :config="config || []" @update="handleTradeUpdate" />
            </CollapsibleSection>
 
            <!-- Dynamic Configurable Panels -->
@@ -405,7 +409,6 @@ onUnmounted(() => {
            </div>
         </div>
         <div v-else-if="activeDetailTab === 'charts'" class="space-y-4">
-           <CollapsibleSection title="Live Chart"><TradingViewChart :symbol="activeTrade.Pair || ''" :market="activeTrade.Market" /></CollapsibleSection>
            <CollapsibleSection title="Screenshots"><TradeScreenshots :trade="activeTrade" @update="handleTradeUpdate" /></CollapsibleSection>
         </div>
         <div v-else-if="activeDetailTab === 'review'"><TradeReview :trade="activeTrade" :config="config || []" @update="handleTradeUpdate" /></div>

@@ -16,13 +16,13 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [~] **Track: Fix Edge Theme Toggle and Huawei Tablet Sidebar Layout**
+- [x] **Track: Fix Edge Theme Toggle and Huawei Tablet Sidebar Layout**
 *Link: [./tracks/fix_edge_theme_and_sidebar_20260125/](./tracks/fix_edge_theme_and_sidebar_20260125/)*
 
 
   
   
-- [ ] **Track: Enhanced Dashboard & Chip Management (Collapsible Panes, Entry/Open Chips, Chips Manager)**
+- [x] **Track: Enhanced Dashboard & Chip Management (Collapsible Panes, Entry/Open Chips, Chips Manager)**
   *Link: [./conductor/tracks/enhanced_chip_management_20260110/](./conductor/tracks/enhanced_chip_management_20260110/)*
 
 ---
@@ -52,7 +52,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Persist calculated trade duration (Days Opened) to Google Sheets when trade is not Open**
+- [x] **Track: Persist calculated trade duration (Days Opened) to Google Sheets when trade is not Open**
 *Link: [./conductor/tracks/persist_days_opened_20260202/](./conductor/tracks/persist_days_opened_20260202/)*
 
 ---
@@ -69,3 +69,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [~] **Track: Analytics Engine**
 *Link: [./conductor/tracks/analytics_engine_20260216/](./conductor/tracks/analytics_engine_20260216/)*
+
+---
+
+- [ ] **Track: Refactor frontend to Feature-Based Architecture and modernize Settings module**
+*Link: [./tracks/feature_based_restructure_20260307/](./tracks/feature_based_restructure_20260307/)*

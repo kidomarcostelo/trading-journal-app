@@ -1,13 +1,37 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
+import type { ChipCategory } from '~/types'
 
 const props = defineProps<{
   trade: any
+  config?: ChipCategory[]
 }>()
 
 const emit = defineEmits<{
   (e: 'update', data: any): void
 }>()
+
+const statusOptions = computed(() => {
+  const cat = props.config?.find(c => ['status', 'Status'].includes(c.id))
+  let options = cat ? [...cat.values] : ['Open', 'Closed', 'Cancelled', 'Missed']
+  
+  // Ensure the current value is always in the options so the dropdown doesn't blank it out
+  const currentVal = form.value[statusKey.value]
+  if (currentVal && !options.includes(currentVal)) {
+    options.push(currentVal)
+  }
+  return options
+})
+
+const actionOptions = computed(() => {
+  const actionCat = props.config?.find(c => ['action', 'Action'].includes(c.id))
+  return actionCat ? actionCat.values : ['Long', 'Short']
+})
+
+const marketOptions = computed(() => {
+  const marketCat = props.config?.find(c => ['market', 'Market'].includes(c.id))
+  return marketCat ? marketCat.values : ['Crypto', 'Forex', 'Indices', 'Stocks', 'Commodities']
+})
 
 // Local state for editing
 const form = ref({ ...props.trade })
@@ -67,11 +91,7 @@ const updateField = (fieldKey: string, value: any) => {
         class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent focus:outline-none transition-colors cursor-pointer"
       >
         <option value="" disabled>Select Market</option>
-        <option value="Crypto">Crypto</option>
-        <option value="Forex">Forex</option>
-        <option value="Indices">Indices</option>
-        <option value="Stocks">Stocks</option>
-        <option value="Commodities">Commodities</option>
+        <option v-for="option in marketOptions" :key="option" :value="option">{{ option }}</option>
       </select>
     </div>
 
@@ -84,10 +104,9 @@ const updateField = (fieldKey: string, value: any) => {
         class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent focus:outline-none transition-colors cursor-pointer"
       >
         <option value="" disabled>Select Status</option>
-        <option value="Open">Open</option>
-        <option value="Closed">Closed</option>
-        <option value="Cancelled">Cancelled</option>
-        <option value="Missed">Missed</option>
+        <option v-for="status in statusOptions" :key="status" :value="status">
+          {{ status }}
+        </option>
       </select>
     </div>
 
