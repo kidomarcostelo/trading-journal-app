@@ -4,27 +4,33 @@ import type { ChipCategory } from '~/types'
 
 const props = defineProps<{
   trade: any
+  config?: ChipCategory[]
 }>()
 
 const emit = defineEmits<{
   (e: 'update', data: any): void
 }>()
 
-const { data: config } = await useFetch<ChipCategory[]>('/api/config')
-
 const statusOptions = computed(() => {
-  const statusCat = config.value?.find(c => c.id.toLowerCase() === 'status')
-  return statusCat ? statusCat.values : ['Open', 'Closed', 'Cancelled', 'Missed']
+  const cat = props.config?.find(c => ['status', 'Status'].includes(c.id))
+  let options = cat ? [...cat.values] : ['Open', 'Closed', 'Cancelled', 'Missed']
+  
+  // Ensure the current value is always in the options so the dropdown doesn't blank it out
+  const currentVal = form.value[statusKey.value]
+  if (currentVal && !options.includes(currentVal)) {
+    options.push(currentVal)
+  }
+  return options
 })
 
 const actionOptions = computed(() => {
-  const actionCat = config.value?.find(c => c.id.toLowerCase() === 'action')
+  const actionCat = props.config?.find(c => ['action', 'Action'].includes(c.id))
   return actionCat ? actionCat.values : ['Long', 'Short']
 })
 
 const marketOptions = computed(() => {
-  const marketCat = config.value?.find(c => c.id.toLowerCase() === 'market')
-  return marketCat ? marketCat.values : ['Forex', 'Crypto', 'Indices', 'Stocks', 'Commodities']
+  const marketCat = props.config?.find(c => ['market', 'Market'].includes(c.id))
+  return marketCat ? marketCat.values : ['Crypto', 'Forex', 'Indices', 'Stocks', 'Commodities']
 })
 
 // Local state for editing
@@ -98,7 +104,9 @@ const updateField = (fieldKey: string, value: any) => {
         class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent focus:outline-none transition-colors cursor-pointer"
       >
         <option value="" disabled>Select Status</option>
-        <option v-for="option in statusOptions" :key="option" :value="option">{{ option }}</option>
+        <option v-for="status in statusOptions" :key="status" :value="status">
+          {{ status }}
+        </option>
       </select>
     </div>
 

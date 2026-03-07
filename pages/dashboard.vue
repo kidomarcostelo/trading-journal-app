@@ -16,7 +16,6 @@ import TradeList from '~/components/TradeList.vue'
 import TradeDataTable from '~/components/TradeDataTable.vue'
 import TradeStats from '~/components/TradeStats.vue'
 import AnalyticsDashboard from '~/components/AnalyticsDashboard.vue'
-import TradingViewChart from '~/components/TradingViewChart.vue'
 import TradeScreenshots from '~/components/TradeScreenshots.vue'
 import TradeReview from '~/components/TradeReview.vue'
 import ChipPanel from '~/components/ChipPanel.vue'
@@ -340,7 +339,7 @@ onUnmounted(() => {
           <button @click="showForm = false" class="absolute top-4 right-4 text-terminal-text/40 hover:text-terminal-text z-10">
             <PlusCircle class="w-6 h-6 rotate-45" />
           </button>
-          <TradeForm @success="refresh(); showForm = false" />
+          <TradeForm :config="config || []" @success="refresh(); showForm = false" />
         </div>
       </div>
 
@@ -384,7 +383,7 @@ onUnmounted(() => {
         
         <div v-if="activeDetailTab === 'journal'" class="space-y-4">
            <CollapsibleSection title="Trade Data">
-             <TradeDataTable :trade="activeTrade" @update="handleTradeUpdate" />
+             <TradeDataTable :trade="activeTrade" :config="config || []" @update="handleTradeUpdate" />
            </CollapsibleSection>
 
            <!-- Dynamic Configurable Panels -->
@@ -410,7 +409,6 @@ onUnmounted(() => {
            </div>
         </div>
         <div v-else-if="activeDetailTab === 'charts'" class="space-y-4">
-           <CollapsibleSection title="Live Chart"><TradingViewChart :symbol="activeTrade.Pair || ''" :market="activeTrade.Market" /></CollapsibleSection>
            <CollapsibleSection title="Screenshots"><TradeScreenshots :trade="activeTrade" @update="handleTradeUpdate" /></CollapsibleSection>
         </div>
         <div v-else-if="activeDetailTab === 'review'"><TradeReview :trade="activeTrade" :config="config || []" @update="handleTradeUpdate" /></div>
