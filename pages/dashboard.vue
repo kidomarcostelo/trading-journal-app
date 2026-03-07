@@ -136,14 +136,14 @@ const saveTrades = async (dirtyIds: Set<string>) => {
 
 const { saveMode, isDirty, dirtyTradeIds, isLoading, trackChange, triggerSave, onNavigate } = useAutoSave(saveTrades)
 
-const handleTradeUpdate = (updatedFields: any) => {
+const handleTradeUpdate = (fieldsToUpdate: any) => {
   if (!activeTrade.value || !trades.value) return
   const index = trades.value.findIndex(t => (t.ID || t.id) === selectedTradeId.value)
   if (index !== -1) {
     const currentTrade = trades.value[index]
     
     // Use shared logic for updates (e.g. auto Exit Date)
-    const processedUpdates = processTradeUpdate(currentTrade, updatedFields)
+    const processedUpdates = processTradeUpdate(currentTrade, fieldsToUpdate)
 
     trades.value[index] = { ...trades.value[index], ...processedUpdates }
     trackChange(activeTrade.value.ID || activeTrade.value.id)
