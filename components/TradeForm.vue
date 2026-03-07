@@ -7,6 +7,21 @@ const emit = defineEmits(['success'])
 
 const { data: categories, pending: loadingConfig } = await useFetch<ChipCategory[]>('/api/config')
 
+const statusOptions = computed(() => {
+  const statusCat = categories.value?.find(c => c.id.toLowerCase() === 'status')
+  return statusCat ? statusCat.values : ['Open', 'Closed', 'Cancelled', 'Missed']
+})
+
+const actionOptions = computed(() => {
+  const actionCat = categories.value?.find(c => c.id.toLowerCase() === 'action')
+  return actionCat ? actionCat.values : ['Long', 'Short']
+})
+
+const marketOptions = computed(() => {
+  const marketCat = categories.value?.find(c => c.id.toLowerCase() === 'market')
+  return marketCat ? marketCat.values : ['Forex', 'Crypto', 'Indices', 'Stocks', 'Commodities']
+})
+
 const initialForm = {
   Pair: '',
   Action: 'Long',
@@ -120,28 +135,20 @@ const submitTrade = async () => {
             <div>
               <label class="block text-[10px] font-bold text-terminal-text/70 mb-1.5 ml-1 uppercase tracking-wider">Action</label>
               <select v-model="form.Action" class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent focus:outline-none transition-colors cursor-pointer">
-                <option value="Long">Long</option>
-                <option value="Short">Short</option>
+                <option v-for="option in actionOptions" :key="option" :value="option">{{ option }}</option>
               </select>
             </div>
             <div>
               <label class="block text-[10px] font-bold text-terminal-text/70 mb-1.5 ml-1 uppercase tracking-wider">Market</label>
               <select v-model="form.Market" class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent focus:outline-none transition-colors cursor-pointer">
                 <option value="" disabled>Select...</option>
-                <option value="Crypto">Crypto</option>
-                <option value="Forex">Forex</option>
-                <option value="Indices">Indices</option>
-                <option value="Stocks">Stocks</option>
-                <option value="Commodities">Commodities</option>
+                <option v-for="option in marketOptions" :key="option" :value="option">{{ option }}</option>
               </select>
             </div>
             <div>
               <label class="block text-[10px] font-bold text-terminal-text/70 mb-1.5 ml-1 uppercase tracking-wider">Status</label>
               <select v-model="form.Status" class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent focus:outline-none transition-colors cursor-pointer">
-                <option value="Open">Open</option>
-                <option value="Closed">Closed</option>
-                <option value="Cancelled">Cancelled</option>
-                <option value="Missed">Missed</option>
+                <option v-for="option in statusOptions" :key="option" :value="option">{{ option }}</option>
               </select>
             </div>
           </div>
