@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import TradeList from '../../components/TradeList.vue'
+import TradeSummaryCard from '../../components/TradeSummaryCard.vue'
 
 describe('TradeList Filtering and Sorting', () => {
   const mockTrades = [
@@ -53,12 +54,13 @@ describe('TradeList Filtering and Sorting', () => {
     const wrapper = mount(TradeList, {
       props: { 
         trades: mockTrades,
+        filterPeriod: 'all',
         sortBy: 'Status',
         sortDir: 'asc'
       }
     })
     
-    const cards = wrapper.findAllComponents({ name: 'TradeSummaryCard' })
+    const cards = wrapper.findAllComponents(TradeSummaryCard)
     expect(cards.length).toBe(3)
     
     // Check order: Open (ID 1), Closed (ID 2), Cancelled (ID 3)

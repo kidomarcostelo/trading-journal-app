@@ -13,15 +13,27 @@ export const useAnalytics = () => {
 
   const getVal = (obj: any, key: string) => {
     if (!obj) return undefined
-    const foundKey = Object.keys(obj).find(k => k.toLowerCase() === key.toLowerCase())
-    return foundKey ? obj[foundKey] : undefined
+    const keys = Object.keys(obj)
+    const foundKey = keys.find(k => k.toLowerCase() === key.toLowerCase())
+    if (foundKey) return obj[foundKey]
+    
+    // Fallback for space-less versions like "exitdate" for "Exit Date"
+    const flatKey = key.toLowerCase().replace(/\s/g, '')
+    const foundFlatKey = keys.find(k => k.toLowerCase().replace(/\s/g, '') === flatKey)
+    return foundFlatKey ? obj[foundFlatKey] : undefined
+  }
+
+  const isClosed = (t: Trade): boolean => {
+    const status = String(getVal(t, 'status') || '').toLowerCase()
+    return status !== 'open' && status !== ''
   }
 
   const calculateProfitFactor = (trades: Trade[]): number => {
+    const closedTrades = trades.filter(isClosed)
     let grossProfit = 0
     let grossLoss = 0
 
-    trades.forEach(t => {
+    closedTrades.forEach(t => {
       const pnl = parseNumber(getVal(t, 'pnl'))
       if (pnl > 0) grossProfit += pnl
       else grossLoss += Math.abs(pnl)
@@ -32,17 +44,19 @@ export const useAnalytics = () => {
   }
 
   const calculateWinRate = (trades: Trade[]): number => {
-    if (trades.length === 0) return 0
+    const closedTrades = trades.filter(isClosed)
+    if (closedTrades.length === 0) return 0
     
-    const wins = trades.filter(t => parseNumber(getVal(t, 'pnl')) > 0).length
-    return Number(((wins / trades.length) * 100).toFixed(2))
+    const wins = closedTrades.filter(t => parseNumber(getVal(t, 'pnl')) > 0).length
+    return Number(((wins / closedTrades.length) * 100).toFixed(2))
   }
 
   const calculateExpectancy = (trades: Trade[]): number => {
-    if (trades.length === 0) return 0
+    const closedTrades = trades.filter(isClosed)
+    if (closedTrades.length === 0) return 0
 
-    const wins = trades.filter(t => parseNumber(getVal(t, 'pnl')) > 0)
-    const losses = trades.filter(t => parseNumber(getVal(t, 'pnl')) <= 0)
+    const wins = closedTrades.filter(t => parseNumber(getVal(t, 'pnl')) > 0)
+    const losses = closedTrades.filter(t => parseNumber(getVal(t, 'pnl')) <= 0)
 
     const avgWin = wins.length > 0 
       ? wins.reduce((sum, t) => sum + parseNumber(getVal(t, 'pnl')), 0) / wins.length 
@@ -52,19 +66,20 @@ export const useAnalytics = () => {
       ? Math.abs(losses.reduce((sum, t) => sum + parseNumber(getVal(t, 'pnl')), 0)) / losses.length 
       : 0
 
-    const winRate = wins.length / trades.length
-    const lossRate = losses.length / trades.length
+    const winRate = wins.length / closedTrades.length
+    const lossRate = losses.length / closedTrades.length
 
     return Number(((avgWin * winRate) - (avgLoss * lossRate)).toFixed(2))
   }
 
   const calculateAverageRMultiple = (trades: Trade[]): number => {
-    if (trades.length === 0) return 0
+    const closedTrades = trades.filter(isClosed)
+    if (closedTrades.length === 0) return 0
 
     let totalR = 0
     let count = 0
 
-    trades.forEach(t => {
+    closedTrades.forEach(t => {
       const pnl = parseNumber(getVal(t, 'pnl'))
       const risk = parseNumber(getVal(t, 'risk'))
       
@@ -79,33 +94,29 @@ export const useAnalytics = () => {
   }
 
   const calculateAverageHoldingTime = (trades: Trade[]): { wins: number, losses: number } => {
-    const wins = trades.filter(t => parseNumber(getVal(t, 'pnl')) > 0)
-    const losses = trades.filter(t => parseNumber(getVal(t, 'pnl')) <= 0)
+    const closedTrades = trades.filter(isClosed)
+    const wins = closedTrades.filter(t => parseNumber(getVal(t, 'pnl')) > 0)
+    const losses = closedTrades.filter(t => parseNumber(getVal(t, 'pnl')) <= 0)
 
-    const getDuration = (t: Trade) => {
+    const getDurationMs = (t: Trade) => {
       const start = parseNumber(getVal(t, 'createdAt') || getVal(t, 'date') || getVal(t, 'date created'))
-      let end = parseNumber(getVal(t, 'exit date'))
+      const end = parseNumber(getVal(t, 'exit date') || getVal(t, 'exitdate'))
       
-      // If no exit date, use now (for open trades)
-      if (end === 0) {
-        end = Date.now()
-      }
-
-      if (start === 0) return 0
-      return end - start
+      if (start === 0 || end === 0) return 0
+      return Math.abs(end - start)
     }
 
     const avgWinTime = wins.length > 0
-      ? wins.reduce((sum, t) => sum + getDuration(t), 0) / wins.length
+      ? wins.reduce((sum, t) => sum + getDurationMs(t), 0) / wins.length
       : 0
 
     const avgLossTime = losses.length > 0
-      ? losses.reduce((sum, t) => sum + getDuration(t), 0) / losses.length
+      ? losses.reduce((sum, t) => sum + getDurationMs(t), 0) / losses.length
       : 0
 
     return {
-      wins: avgWinTime,
-      losses: avgLossTime
+      wins: Math.round(avgWinTime),
+      losses: Math.round(avgLossTime)
     }
   }
 
