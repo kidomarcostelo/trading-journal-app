@@ -26,6 +26,7 @@
     "@types/node": "^22.10.5",
     "@vitejs/plugin-vue": "^6.0.3",
     "@vue/test-utils": "^2.4.6",
+    "commander": "^13.1.0",
     "happy-dom": "^20.4.0",
     "jsdom": "^27.4.0",
     "playwright-core": "^1.49.1",
