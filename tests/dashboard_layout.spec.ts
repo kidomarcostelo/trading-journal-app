@@ -60,7 +60,6 @@ const mountSuspense = (component: any) => {
         PaneNav: true,
         StrategyAccordion: true,
         PsychologyGrid: true,
-        TradingViewChart: true,
         TradeScreenshots: true,
         TradeReview: true,
         CollapsibleSection: true

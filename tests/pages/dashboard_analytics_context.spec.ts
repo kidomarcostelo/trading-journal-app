@@ -43,7 +43,7 @@ vi.mock('~/composables/useAnalytics', async (importOriginal) => {
 // Mock Trades Logic to return data
 vi.mock('~/composables/useTrades', () => ({
   useTrades: (trades: any) => ({
-    filterPeriod: ref('all'),
+    filterPeriod: ref('week'),
     sortBy: ref('Date'),
     sortDir: ref('desc'),
     filteredTrades: computed(() => trades.value)
@@ -70,7 +70,6 @@ const mountSuspense = () => {
       stubs: {
         TradeForm: true,
         TradeList: { template: '<div class="trade-list-stub"><div v-for="t in trades" :key="t.id" :class="`trade-item-${t.id}`" @click="$emit(\'select\', t.id)"></div></div>', props: ['trades'] },
-        TradeDataTable: true, TradeStats: true, PaneNav: true, TradingViewChart: true, TradeScreenshots: true, TradeReview: true,
         CollapsibleSection: { template: '<div><slot /></div>' },
         SaveControls: true, DeleteConfirmationModal: true, ChipPanel: true, NuxtLink: true, CalendarRange: true
       }

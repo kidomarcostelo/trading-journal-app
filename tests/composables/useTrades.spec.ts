@@ -30,9 +30,12 @@ describe('useTrades Composable', () => {
 
   it('initializes with default values', () => {
     const { filterPeriod, sortBy, filteredTrades } = useTrades(mockTrades)
-    expect(filterPeriod.value).toBe('all')
+    expect(filterPeriod.value).toBe('week')
     expect(sortBy.value).toBe('Date')
-    expect(filteredTrades.value.length).toBe(7)
+    // Defaults to week, should filter immediately. 
+    // Jan 15 is system date (Thu). Week starts Sun Jan 11.
+    // Trades in week: 1 (Jan 14), 4 (Jan 12), 6 (Jan 11).
+    expect(filteredTrades.value.length).toBe(3) 
   })
 
   it('filters by Week (Current Week starts Sunday Jan 11)', () => {
@@ -110,44 +113,46 @@ describe('useTrades Composable', () => {
     expect(idsStart).toContain('4') // Jan 12
     expect(idsStart).not.toContain('2') // Jan 10
   })
+it('sorts by Status', () => {
+  const { filterPeriod, sortBy, sortDir, filteredTrades } = useTrades(mockTrades)
+  filterPeriod.value = 'all' // Ensure all data for sorting test
+  sortBy.value = 'Status'
 
-  it('sorts by Status', () => {
-    const { sortBy, sortDir, filteredTrades } = useTrades(mockTrades)
-    sortBy.value = 'Status'
-    sortDir.value = 'asc' // Open (0), Closed (1)
-    
-    // Order: Open, Closed, Cancelled, Missed
-    // Open: 1, 5, 6
-    let statuses = filteredTrades.value.map(t => t.Status)
-    expect(statuses[0]).toBe('Open')
-    expect(statuses[3]).toBe('Closed')
+  // Test Ascending (Default)
+  sortDir.value = 'asc'
+  // Order: Open, Closed, Cancelled, Missed
+  // Open: 1, 5, 6
+  let statuses = filteredTrades.value.map(t => t.Status)
+  expect(statuses[0]).toBe('Open')
+  expect(statuses[3]).toBe('Closed')
 
-    // Test Descending
-    sortDir.value = 'desc'
-    statuses = filteredTrades.value.map(t => t.Status)
-    // Cancelled (2) or Missed (3) should be first (depending on data presence)
-    // 3 is Cancelled, 4 is Missed.
-    // Order Values: Open 0, Closed 1, Cancelled 2, Missed 3
-    // Descending: Missed (3), Cancelled (2), Closed (1), Open (0)
-    expect(statuses[0]).toBe('Missed')
-  })
+  // Test Descending
+  sortDir.value = 'desc'
+  statuses = filteredTrades.value.map(t => t.Status)
+  // Cancelled (2) or Missed (3) should be first (depending on data presence)
+  // 3 is Cancelled, 4 is Missed.
+  // Order Values: Open 0, Closed 1, Cancelled 2, Missed 3
+  // Descending: Missed (3), Cancelled (2), Closed (1), Open (0)
+  expect(statuses[0]).toBe('Missed')
+})
 
-  it('sorts by Date', () => {
-    const { sortBy, sortDir, filteredTrades } = useTrades(mockTrades)
-    sortBy.value = 'Date'
-    
-    // Test Descending (Default)
-    sortDir.value = 'desc'
-    let ids = filteredTrades.value.map(t => t.ID)
-    // 4 (Jan 12) > 1/6 (Jan 11) > 2 (Jan 10) > 5 (Jan 1) > 3/7 (Dec)
-    expect(ids[0]).toBe('4')
+it('sorts by Date', () => {
+  const { filterPeriod, sortBy, sortDir, filteredTrades } = useTrades(mockTrades)
+  filterPeriod.value = 'all' // Ensure all data for sorting test
+  sortBy.value = 'Date'
 
-    // Test Ascending
-    sortDir.value = 'asc'
-    ids = filteredTrades.value.map(t => t.ID)
-    // Oldest first: 3/7 (Dec 2025)
-    expect(['3', '7']).toContain(ids[0])
-    expect(['3', '7']).toContain(ids[1])
-    expect(ids[2]).toBe('5') // Jan 1
-  })
+  // Test Descending (Default)
+  sortDir.value = 'desc'
+  let ids = filteredTrades.value.map(t => t.ID)
+  // 4 (Jan 12) > 1/6 (Jan 11) > 2 (Jan 10) > 5 (Jan 1) > 3/7 (Dec)
+  expect(ids[0]).toBe('4')
+
+  // Test Ascending
+  sortDir.value = 'asc'
+  ids = filteredTrades.value.map(t => t.ID)
+  // Oldest first: 3/7 (Dec 2025)
+  expect(['3', '7']).toContain(ids[0])
+  expect(['3', '7']).toContain(ids[1])
+  expect(ids[2]).toBe('5') // Jan 1
+})
 })

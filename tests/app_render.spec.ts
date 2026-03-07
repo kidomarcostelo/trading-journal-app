@@ -73,7 +73,6 @@ const mountSuspense = (component: any) => {
         TradeStats: true,
         StrategyAccordion: true,
         PsychologyGrid: true,
-        TradingViewChart: true,
         TradeScreenshots: true,
         TradeReview: true,
         CollapsibleSection: true

@@ -1,5 +1,5 @@
-export const processTradeUpdate = (currentTrade: any, updatedFields: any): any => {
-  const result = { ...updatedFields }
+export function processTradeUpdate(currentTrade: any, fieldsToUpdate: any): any {
+  const result = { ...fieldsToUpdate }
   
   // Helper to find key case-insensitively
   const findKey = (obj: any, target: string) => 
