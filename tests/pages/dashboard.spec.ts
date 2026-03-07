@@ -55,7 +55,7 @@ vi.stubGlobal('$fetch', mockFetch)
 // Mock composables
 vi.mock('~/composables/useTrades', () => ({
   useTrades: vi.fn((trades) => ({
-    filterPeriod: ref('all'),
+    filterPeriod: ref('week'),
     sortBy: ref('Date'),
     sortDir: ref('desc'),
     filteredTrades: computed(() => trades.value)
@@ -107,7 +107,6 @@ const mountSuspense = () => {
         PaneNav: true,
         StrategyAccordion: true,
         PsychologyGrid: true,
-        TradingViewChart: true,
         TradeScreenshots: true,
         TradeReview: true,
         CollapsibleSection: true,

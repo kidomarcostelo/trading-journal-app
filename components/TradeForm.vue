@@ -1,11 +1,37 @@
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, watch } from 'vue'
 import type { ChipCategory } from '~/types'
 import { Save, Loader2, Image as ImageIcon } from 'lucide-vue-next'
 
+const props = defineProps<{
+  config?: ChipCategory[]
+}>()
+
 const emit = defineEmits(['success'])
 
-const { data: categories, pending: loadingConfig } = await useFetch<ChipCategory[]>('/api/config')
+// Initialize tags based on categories
+const categories = computed(() => props.config || [])
+
+const statusOptions = computed(() => {
+  const cat = categories.value?.find(c => ['status', 'Status'].includes(c.id))
+  let options = cat ? [...cat.values] : ['Open', 'Closed', 'Cancelled', 'Missed']
+  
+  // Safeguard current value
+  if (form.Status && !options.includes(form.Status)) {
+    options.push(form.Status)
+  }
+  return options
+})
+
+const actionOptions = computed(() => {
+  const actionCat = categories.value?.find(c => ['action', 'Action'].includes(c.id))
+  return actionCat ? actionCat.values : ['Long', 'Short']
+})
+
+const marketOptions = computed(() => {
+  const marketCat = categories.value?.find(c => ['market', 'Market'].includes(c.id))
+  return marketCat ? marketCat.values : ['Forex', 'Crypto', 'Indices', 'Stocks', 'Commodities']
+})
 
 const initialForm = {
   Pair: '',
@@ -25,13 +51,15 @@ const tags = reactive<Record<string, string[]>>({})
 const ALLOWED_CHIP_CATEGORIES = ['Strategies', 'Price Action', 'Trade Intention']
 
 // Initialize tags based on categories
-if (categories.value) {
-  categories.value.forEach(cat => {
-    if (ALLOWED_CHIP_CATEGORIES.some(allowed => cat.id.toLowerCase().includes(allowed.toLowerCase()))) {
-      tags[cat.id] = []
-    }
-  })
-}
+watch(() => props.config, (newVal) => {
+  if (newVal) {
+    newVal.forEach(cat => {
+      if (ALLOWED_CHIP_CATEGORIES.some(allowed => cat.id.toLowerCase().includes(allowed.toLowerCase()))) {
+        if (!tags[cat.id]) tags[cat.id] = []
+      }
+    })
+  }
+}, { immediate: true })
 
 // Special handling for "Pair" category
 const pairCategory = computed(() => {
@@ -120,28 +148,22 @@ const submitTrade = async () => {
             <div>
               <label class="block text-[10px] font-bold text-terminal-text/70 mb-1.5 ml-1 uppercase tracking-wider">Action</label>
               <select v-model="form.Action" class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent focus:outline-none transition-colors cursor-pointer">
-                <option value="Long">Long</option>
-                <option value="Short">Short</option>
+                <option v-for="option in actionOptions" :key="option" :value="option">{{ option }}</option>
               </select>
             </div>
             <div>
               <label class="block text-[10px] font-bold text-terminal-text/70 mb-1.5 ml-1 uppercase tracking-wider">Market</label>
               <select v-model="form.Market" class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent focus:outline-none transition-colors cursor-pointer">
                 <option value="" disabled>Select...</option>
-                <option value="Crypto">Crypto</option>
-                <option value="Forex">Forex</option>
-                <option value="Indices">Indices</option>
-                <option value="Stocks">Stocks</option>
-                <option value="Commodities">Commodities</option>
+                <option v-for="option in marketOptions" :key="option" :value="option">{{ option }}</option>
               </select>
             </div>
             <div>
               <label class="block text-[10px] font-bold text-terminal-text/70 mb-1.5 ml-1 uppercase tracking-wider">Status</label>
               <select v-model="form.Status" class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-xs text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent focus:outline-none transition-colors cursor-pointer">
-                <option value="Open">Open</option>
-                <option value="Closed">Closed</option>
-                <option value="Cancelled">Cancelled</option>
-                <option value="Missed">Missed</option>
+                <option v-for="status in statusOptions" :key="status" :value="status">
+                  {{ status }}
+                </option>
               </select>
             </div>
           </div>
@@ -194,7 +216,7 @@ const submitTrade = async () => {
           </div>
 
           <!-- Chips Section -->
-          <div v-if="!loadingConfig && filteredCategories.length > 0" class="space-y-6 pt-6 border-t border-terminal-gray/50">
+          <div v-if="filteredCategories.length > 0" class="space-y-6 pt-6 border-t border-terminal-gray/50">
             <Combobox
               v-for="cat in filteredCategories"
               :key="cat.id"
