@@ -1,4 +1,4 @@
-export const processTradeUpdate = (currentTrade: any, updatedFields: any): any => {
+const processTradeUpdate = (currentTrade: any, updatedFields: any): any => {
   const result = { ...updatedFields }
   
   // Helper to find key case-insensitively
@@ -33,3 +33,5 @@ export const processTradeUpdate = (currentTrade: any, updatedFields: any): any =
 
   return result
 }
+
+export { processTradeUpdate }

@@ -2,9 +2,15 @@ export const useDuration = () => {
   const parseDate = (val: string | number | undefined): Date | null => {
     if (!val) return null;
     
-    // Excel Serial Date
-    if (!isNaN(Number(val)) && Number(val) > 20000) {
-      return new Date((Number(val) - 25569) * 86400 * 1000);
+    const numVal = Number(val);
+    if (!isNaN(numVal)) {
+      if (numVal > 20000 && numVal < 100000) {
+        // Excel Serial Date
+        return new Date((numVal - 25569) * 86400 * 1000);
+      } else if (numVal > 100000) {
+        // Standard Timestamp
+        return new Date(numVal);
+      }
     }
     
     const d = new Date(val);

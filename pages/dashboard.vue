@@ -181,8 +181,13 @@ const executeDelete = async () => {
 
 const formatDate = (val: any) => {
   if (!val) return '--'
-  if (!isNaN(Number(val)) && Number(val) > 20000) {
-    return new Date((Number(val) - 25569) * 86400 * 1000).toLocaleDateString()
+  const numVal = Number(val)
+  if (!isNaN(numVal)) {
+    if (numVal > 20000 && numVal < 100000) {
+      return new Date((numVal - 25569) * 86400 * 1000).toLocaleDateString()
+    } else if (numVal > 100000) {
+      return new Date(numVal).toLocaleDateString()
+    }
   }
   return String(val)
 }
@@ -353,7 +358,7 @@ onUnmounted(() => {
                  <span class="w-1 h-1 rounded-full bg-terminal-gray/40"></span>
                  <span>{{ activeTrade.Market }}</span>
                  <span class="w-1 h-1 rounded-full bg-terminal-gray/40"></span>
-                 <span>{{ formatDate(activeTrade.createdAt || activeTrade.Date) }}</span>
+                 <span>{{ formatDate(activeTrade.createdAt || activeTrade.Date || activeTrade['Date Created']) }}</span>
                  <span class="w-1 h-1 rounded-full bg-terminal-gray/40"></span>
                  <span>{{ tradeDuration }}</span>
                </div>
