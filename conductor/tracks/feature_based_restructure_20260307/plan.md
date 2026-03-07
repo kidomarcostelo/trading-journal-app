@@ -34,4 +34,5 @@ Goal: Ensure system integrity and remove any legacy code.
 - [ ] Task: Run full test suite (`npm test`) to ensure zero regressions
 - [ ] Task: Perform a final build check (`npm run build`)
 - [ ] Task: Remove any unused legacy component references or empty directories
+- [ ] Task: Create `FRONTEND_ARCHITECTURE.md` for future developers and AI agents
 - [ ] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)

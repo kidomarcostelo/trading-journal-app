@@ -22,6 +22,9 @@ Migrate all components from the flat `components/` directory into domain-specifi
 - **Settings Factory (`SettingsFactory.tsx`):** Implement a factory that instantiates components based on the registry.
 - **Dispatcher/Factory Split:** Decouple the logic that determines *which* component to show from the logic that *renders* it.
 
+### 2.4 Architecture Documentation
+- **Create `FRONTEND_ARCHITECTURE.md`:** Document the feature-based structure, the Factory/Dispatcher pattern, and "Do's and Don'ts" for future developers and AI agents to preserve system integrity.
+
 ## 3. Non-Functional Requirements
 - **Type Safety:** All new registry and factory logic must be strictly typed using TypeScript.
 - **Performance:** Ensure the refactor does not negatively impact build times or bundle size.
