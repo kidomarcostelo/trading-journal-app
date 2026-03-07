@@ -74,3 +74,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [ ] **Track: Refactor frontend to Feature-Based Architecture and modernize Settings module**
 *Link: [./tracks/feature_based_restructure_20260307/](./tracks/feature_based_restructure_20260307/)*
+
+---
+
+- [ ] **Track: Analytics Tab & Data Engine**
+*Link: [./tracks/analytics_tab_20260307/](./tracks/analytics_tab_20260307/)*
