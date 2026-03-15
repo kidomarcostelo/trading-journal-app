@@ -25,7 +25,7 @@ export const useAnalytics = () => {
 
   const isClosed = (t: Trade): boolean => {
     const status = String(getVal(t, 'status') || '').toLowerCase()
-    return status !== 'open' && status !== ''
+    return status === 'closed'
   }
 
   const calculateProfitFactor = (trades: Trade[]): number => {
