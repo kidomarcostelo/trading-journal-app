@@ -10,8 +10,6 @@ const stats = computed(() => {
     return { count: 0, pnl: 0, winRate: 0 }
   }
 
-  const count = props.trades.length
-  
   const getVal = (obj: any, key: string) => {
     const foundKey = Object.keys(obj).find(k => k.toLowerCase() === key.toLowerCase())
     return foundKey ? obj[foundKey] : undefined
@@ -26,11 +24,13 @@ const stats = computed(() => {
     return isNaN(num) ? 0 : num
   }
 
+  const closedTrades = props.trades.filter(t => (getVal(t, 'status') || '').toLowerCase() === 'closed')
+  const count = closedTrades.length
+  
   // Calculate Total PnL
   const pnl = props.trades.reduce((sum, t) => sum + parsePnL(getVal(t, 'pnl')), 0)
 
   // Calculate Win Rate (based on CLOSED trades only)
-  const closedTrades = props.trades.filter(t => (getVal(t, 'status') || '').toLowerCase() === 'closed')
   const wins = closedTrades.filter(t => parsePnL(getVal(t, 'pnl')) > 0).length
   
   const winRate = closedTrades.length > 0 
