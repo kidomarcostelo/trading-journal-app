@@ -25,8 +25,8 @@ describe('TradeStats', () => {
       props: { trades: mockTrades }
     })
     
-    // Total Trades: 4
-    expect(wrapper.text()).toContain('4')
+    // Total Closed Trades: 3
+    expect(wrapper.text()).toContain('3')
     
     // Total PnL: 100 - 50 + 200 = 250
     expect(wrapper.text()).toContain('250')
