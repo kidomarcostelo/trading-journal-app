@@ -58,12 +58,13 @@ watch(() => props.sortDir, (newVal) => {
   <div class="flex flex-col bg-terminal-black h-full overflow-hidden">
     <!-- Header Row -->
     <div 
-      class="grid gap-2 p-3 border-b border-terminal-gray text-[10px] uppercase tracking-widest font-bold text-terminal-text/40 bg-terminal-black sticky top-0 z-10"
-      :class="collapsed ? 'grid-cols-1' : 'grid-cols-[1.5fr_0.6fr_1fr_0.7fr_1.2fr_0.2fr]'"
+      class="grid gap-2 border-b border-terminal-gray text-[10px] uppercase tracking-widest font-bold text-terminal-text/40 bg-terminal-black sticky top-0 z-10"
+      :class="[
+        collapsed ? 'grid-cols-1 py-3 px-1.5' : 'grid-cols-[1.5fr_0.6fr_0.7fr_1.2fr_0.2fr] p-3'
+      ]"
     >
       <div>Pair</div>
       <div v-show="!collapsed">Action</div>
-      <div v-show="!collapsed">Market</div>
       <div v-show="!collapsed" class="text-center">Status</div>
       <div v-show="!collapsed" class="text-right">Date</div>
       <div></div>
