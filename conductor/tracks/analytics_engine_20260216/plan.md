@@ -15,10 +15,10 @@
 
 ## Phase 2: Risk & Drawdown (Hybrid)
 
-- [ ] Task: Create `server/api/analytics/risk.get.ts`.
-    - [ ] Implement `calculateRiskOfRuin(winRate: number, riskPerTrade: number, edge: number): number`.
-    - [ ] Implement `generateEquityCurve(trades: Trade[], initialBalance: number): { date: string, equity: number }[]`.
-- [ ] Task: Update `useAnalytics` to fetch risk data from the API.
+- [x] Task: Create `server/api/analytics/risk.get.ts`. [59207f7]
+    - [x] Implement `calculateRiskOfRuin(winRate: number, riskPerTrade: number, edge: number): number`.
+    - [x] Implement `generateEquityCurve(trades: Trade[], initialBalance: number): { date: string, equity: number }[]`.
+- [x] Task: Update `useAnalytics` to fetch risk data from the API. [2ad1e10]
 - [ ] Task: Create `RiskDashboard.vue` component to display Risk of Ruin, MDD, and Consecutive Losses.
 - [ ] Task: Write integration tests for the `/api/analytics/risk` endpoint.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Risk & Drawdown' (Protocol in workflow.md)
