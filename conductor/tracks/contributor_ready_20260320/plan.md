@@ -1,11 +1,11 @@
 # Implementation Plan: Contributor-Ready Repository
 
 ## Phase 1: Standard Repository Infrastructure
-- [ ] Task: Create `.editorconfig` to ensure consistent formatting across editors.
-- [ ] Task: Create `CODE_OF_CONDUCT.md` to establish community standards.
-- [ ] Task: Create GitHub Issue Templates in `.github/ISSUE_TEMPLATE/` for bug reports and feature requests.
-- [ ] Task: Create a GitHub Pull Request Template in `.github/PULL_REQUEST_TEMPLATE.md`.
-- [ ] Task: Conductor - User Manual Verification 'Standard Repository Infrastructure' (Protocol in workflow.md)
+- [x] Task: Create `.editorconfig` to ensure consistent formatting across editors.
+- [x] Task: Create `CODE_OF_CONDUCT.md` to establish community standards.
+- [x] Task: Create GitHub Issue Templates in `.github/ISSUE_TEMPLATE/` for bug reports and feature requests.
+- [x] Task: Create a GitHub Pull Request Template in `.github/PULL_REQUEST_TEMPLATE.md`.
+- [x] Task: Conductor - User Manual Verification 'Standard Repository Infrastructure' (Protocol in workflow.md) 8a734f9
 
 ## Phase 2: Seeding Utility & Documentation
 - [ ] Task: Create a seeding script (`scripts/seed-spreadsheet.ts`) using `jiti` or `tsx` to interact with Google Sheets via `googleapis`.
