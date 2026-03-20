@@ -120,11 +120,22 @@ export const useAnalytics = () => {
     }
   }
 
+  const fetchRiskData = async (initialBalance: number = 0, riskPerTrade: number = 0.02) => {
+    try {
+      return await $fetch('/api/analytics/risk', {
+        query: { initialBalance, riskPerTrade }
+      })
+    } catch (error: any) {
+      throw error
+    }
+  }
+
   return {
     calculateProfitFactor,
     calculateWinRate,
     calculateExpectancy,
     calculateAverageRMultiple,
-    calculateAverageHoldingTime
+    calculateAverageHoldingTime,
+    fetchRiskData
   }
 }
