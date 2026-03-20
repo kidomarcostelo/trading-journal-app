@@ -82,5 +82,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Make repo contributors ready with readme, contributing guidelines, community standards, templates, and a seeding script.**
+- [x] **Track: Make repo contributors ready with readme, contributing guidelines, community standards, templates, and a seeding script.**
 *Link: [./tracks/contributor_ready_20260320/](./tracks/contributor_ready_20260320/)*
