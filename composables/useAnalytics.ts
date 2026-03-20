@@ -120,6 +120,51 @@ export const useAnalytics = () => {
     }
   }
 
+  const calculateMaxConsecutiveLosses = (trades: Trade[]): number => {
+    const closedTrades = trades
+      .filter(isClosed)
+      .sort((a, b) => {
+        const dateA = new Date(getVal(a, 'date') || getVal(a, 'createdAt')).getTime()
+        const dateB = new Date(getVal(b, 'date') || getVal(b, 'createdAt')).getTime()
+        return dateA - dateB
+      })
+
+    let maxStreak = 0
+    let currentStreak = 0
+
+    closedTrades.forEach(t => {
+      const pnl = parseNumber(getVal(t, 'pnl'))
+      if (pnl <= 0) {
+        currentStreak++
+        if (currentStreak > maxStreak) maxStreak = currentStreak
+      } else {
+        currentStreak = 0
+      }
+    })
+
+    return maxStreak
+  }
+
+  const calculateMaxDrawdown = (equityCurve: { equity: number }[]): number => {
+    if (equityCurve.length === 0) return 0
+
+    let maxEquity = -Infinity
+    let maxDD = 0
+
+    equityCurve.forEach(point => {
+      if (point.equity > maxEquity) {
+        maxEquity = point.equity
+      }
+      
+      if (maxEquity > 0) {
+        const dd = (maxEquity - point.equity) / maxEquity
+        if (dd > maxDD) maxDD = dd
+      }
+    })
+
+    return Number((maxDD * 100).toFixed(2))
+  }
+
   const fetchRiskData = async (initialBalance: number = 0, riskPerTrade: number = 0.02) => {
     try {
       return await $fetch('/api/analytics/risk', {
@@ -136,6 +181,8 @@ export const useAnalytics = () => {
     calculateExpectancy,
     calculateAverageRMultiple,
     calculateAverageHoldingTime,
+    calculateMaxConsecutiveLosses,
+    calculateMaxDrawdown,
     fetchRiskData
   }
 }
