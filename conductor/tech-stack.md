@@ -31,6 +31,8 @@
 *   **Animations:** Vue transitions or simple Tailwind transitions for a smooth experience.
 
 ## Tooling & Deployment
-*   **Package Manager:** npm or pnpm
+*   **Package Manager:** npm
 *   **Version Control:** Git
 *   **Environment Variables:** `dotenv` (Managed by Nuxt)
+*   **Development Tooling:** `tsx` for running standalone TypeScript scripts (e.g., seeding).
+*   **Seeding Utility:** Standalone script (`scripts/seed-spreadsheet.ts`) using `googleapis` and `dotenv` to initialize and populate Google Sheets.

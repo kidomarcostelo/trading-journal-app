@@ -1,6 +1,6 @@
 # Initial Concept
 
-**Goal:** Build a "Trading Journal" Web Application using **Nuxt 3** with **TypeScript**.
+**Goal:** Build a professional-grade, open-source "Trading Journal" Web Application using **Nuxt 3** with **TypeScript**, designed for both personal use and community contribution.
 
 **Strict Tech Stack:**
 * **Framework:** Nuxt 3 (Vue 3 + Vite).
@@ -70,6 +70,11 @@ I am building a trading journal where Google Sheets acts as the database.
 *   **Hosting:** Google Cloud Run (Serverless Containers).
 *   **Authentication:** Application-level Google OAuth 2.0 with restricted email whitelist.
 *   **CI/CD:** GitHub Actions automated deployment from `master`. Continuous Integration (tests) on `develop`.
+
+### Contributor-Ready Infrastructure
+* **Documentation:** Comprehensive `README.md`, `CONTRIBUTING.md`, and `CODE_OF_CONDUCT.md`.
+* **Standardization:** `.editorconfig` and GitHub templates for issues and pull requests.
+* **Seeding Utility:** A standalone `npm run seed` script to quickly populate Google Sheets with sample data for development and testing.
 
 ## Target Audience
 *   **Primary User:** Solo Retail Swing Trader (Self).
