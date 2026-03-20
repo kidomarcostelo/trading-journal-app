@@ -19,7 +19,7 @@
     - [x] Implement `calculateRiskOfRuin(winRate: number, riskPerTrade: number, edge: number): number`.
     - [x] Implement `generateEquityCurve(trades: Trade[], initialBalance: number): { date: string, equity: number }[]`.
 - [x] Task: Update `useAnalytics` to fetch risk data from the API. [2ad1e10]
-- [ ] Task: Create `RiskDashboard.vue` component to display Risk of Ruin, MDD, and Consecutive Losses.
+- [x] Task: Create `RiskDashboard.vue` component to display Risk of Ruin, MDD, and Consecutive Losses. [899bde5]
 - [ ] Task: Write integration tests for the `/api/analytics/risk` endpoint.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Risk & Drawdown' (Protocol in workflow.md)
 
