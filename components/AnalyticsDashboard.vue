@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import type { Trade } from '~/types'
 import { useAnalytics } from '~/composables/useAnalytics'
 import { useDuration } from '~/composables/useDuration'
+import RiskDashboard from './RiskDashboard.vue'
 
 const props = defineProps<{
   trades: Trade[]
@@ -84,5 +85,10 @@ const metrics = computed(() => {
         {{ formatDuration(metrics.avgHold.losses) }}
       </div>
     </div>
+  </div>
+
+  <div class="mt-8 pt-8 border-t border-terminal-gray/20">
+    <h3 class="text-xs font-bold uppercase tracking-widest text-terminal-text/40 mb-4 ml-1">Risk & Drawdown</h3>
+    <RiskDashboard :trades="props.trades" :initial-balance="10000" :risk-per-trade="0.02" />
   </div>
 </template>
