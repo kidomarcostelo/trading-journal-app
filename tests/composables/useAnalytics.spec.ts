@@ -8,7 +8,9 @@ describe('useAnalytics', () => {
     calculateWinRate, 
     calculateExpectancy, 
     calculateAverageRMultiple,
-    calculateAverageHoldingTime
+    calculateAverageHoldingTime,
+    calculateMaxDrawdown,
+    calculateMaxConsecutiveLosses
   } = useAnalytics()
 
   const mockTrades: Trade[] = [
@@ -55,5 +57,37 @@ describe('useAnalytics', () => {
     const result = calculateAverageHoldingTime(mockTrades)
     expect(result.wins).toBe(129600000)
     expect(result.losses).toBe(172800000)
+  })
+
+  it('calculates Max Consecutive Losses correctly', () => {
+    // Trades: W, L, W, Open, L
+    // Max consecutive losses is 1
+    expect(calculateMaxConsecutiveLosses(mockTrades)).toBe(1)
+
+    const streakTrades: Trade[] = [
+      { id: '1', status: 'Closed', pnl: -100, createdAt: '1', 'Exit Date': '2' },
+      { id: '2', status: 'Closed', pnl: -50, createdAt: '2', 'Exit Date': '3' },
+      { id: '3', status: 'Closed', pnl: 100, createdAt: '3', 'Exit Date': '4' },
+      { id: '4', status: 'Closed', pnl: -20, createdAt: '4', 'Exit Date': '5' },
+      { id: '5', status: 'Closed', pnl: -10, createdAt: '5', 'Exit Date': '6' },
+      { id: '6', status: 'Closed', pnl: -30, createdAt: '6', 'Exit Date': '7' },
+    ]
+    expect(calculateMaxConsecutiveLosses(streakTrades)).toBe(3)
+  })
+
+  it('calculates Max Drawdown correctly', () => {
+    // Equity: 1000, 1100, 1050, 1250, 1150
+    // Peaks: 1000, 1100, 1100, 1250, 1250
+    // DD: 0, 0, 50, 0, 100
+    // MDD = 100 (at equity 1150 from peak 1250)
+    const equityCurve = [
+      { date: 'Initial', equity: 1000 },
+      { date: '1', equity: 1100 },
+      { date: '2', equity: 1050 },
+      { date: '3', equity: 1250 },
+      { date: '4', equity: 1150 },
+    ]
+    // 100 / 1250 = 0.08 = 8%
+    expect(calculateMaxDrawdown(equityCurve)).toBe(8)
   })
 })
