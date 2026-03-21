@@ -23,7 +23,7 @@
 - [x] Task: Write integration tests for the `/api/analytics/risk` endpoint. [61e348f]
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Risk & Drawdown' (Protocol in workflow.md) [bf78e48]
 
-## Phase 3: Trade Efficiency & Backfill (Server-Side)
+## Phase 3: Trade Efficiency & Backfill (Server-Side) [checkpoint: dc73277]
 
 - [x] Task: Create `server/utils/marketData.ts` to interface with an external API (e.g., Yahoo Finance). [943433a]
 - [x] Task: Create `server/api/trades/backfill.post.ts`. [ab83774]
@@ -32,7 +32,7 @@
 - [x] Task: add a "Backfill MAE/MFE" button in the Settings or Analytics dashboard to trigger this process. [4deb42a]
 - [x] Task: Update `TradeForm.vue` to allow manual entry/editing of `mfe`. [f3bc84f]
 - [x] Task: Write tests for the backfill logic and API integration. [c44658f]
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Trade Efficiency & Backfill' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Trade Efficiency & Backfill' (Protocol in workflow.md) [85b3ca8]
 
 ## Phase 4: Visualization (Frontend)
 
