@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import type { Trade } from '~/types'
 import { useAnalytics } from '~/composables/useAnalytics'
 import { useDuration } from '~/composables/useDuration'
 import { useToast } from '~/composables/useToast'
 import RiskDashboard from './RiskDashboard.vue'
+import EquityCurveChart from './EquityCurveChart.vue'
+import PerformanceHeatmap from './PerformanceHeatmap.vue'
 import { Database, RefreshCw } from 'lucide-vue-next'
 
 const props = defineProps<{
@@ -16,13 +18,29 @@ const {
   calculateWinRate, 
   calculateExpectancy, 
   calculateAverageRMultiple,
-  calculateAverageHoldingTime 
+  calculateAverageHoldingTime,
+  fetchRiskData
 } = useAnalytics()
 
 const { formatDuration } = useDuration()
 const { addToast } = useToast()
 
 const isBackfilling = ref(false)
+const equityCurve = ref<{ date: string, equity: number }[]>([])
+
+const loadRiskData = async () => {
+  try {
+    const data = await fetchRiskData(10000, 0.02)
+    if (data.equityCurve) {
+      equityCurve.value = data.equityCurve
+    }
+  } catch (err) {
+    console.error('Failed to load equity curve:', err)
+  }
+}
+
+onMounted(loadRiskData)
+watch(() => props.trades, loadRiskData, { deep: true })
 
 const handleBackfill = async () => {
   isBackfilling.value = true
@@ -120,6 +138,12 @@ const metrics = computed(() => {
   <div class="mt-8 pt-8 border-t border-terminal-gray/20">
     <h3 class="text-xs font-bold uppercase tracking-widest text-terminal-text/40 mb-4 ml-1">Risk & Drawdown</h3>
     <RiskDashboard :trades="props.trades" :initial-balance="10000" :risk-per-trade="0.02" />
+  </div>
+
+  <!-- Charts -->
+  <div class="mt-8 pt-8 border-t border-terminal-gray/20 grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <EquityCurveChart :data="equityCurve" />
+    <PerformanceHeatmap :trades="props.trades" />
   </div>
 
   <!-- Actions -->
