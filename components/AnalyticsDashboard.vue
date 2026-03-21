@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import type { Trade } from '~/types'
 import { useAnalytics } from '~/composables/useAnalytics'
 import { useDuration } from '~/composables/useDuration'
+import { useToast } from '~/composables/useToast'
 import RiskDashboard from './RiskDashboard.vue'
+import { Database, RefreshCw } from 'lucide-vue-next'
 
 const props = defineProps<{
   trades: Trade[]
@@ -18,6 +20,34 @@ const {
 } = useAnalytics()
 
 const { formatDuration } = useDuration()
+const { addToast } = useToast()
+
+const isBackfilling = ref(false)
+
+const handleBackfill = async () => {
+  isBackfilling.value = true
+  try {
+    const result = await $fetch<{ success: boolean, processed: number, totalFound: number }>('/api/trades/backfill', {
+      method: 'POST'
+    })
+    
+    if (result.success) {
+      addToast({
+        title: 'Backfill Complete',
+        message: `Successfully processed ${result.processed} trades.`,
+        type: 'success'
+      })
+    }
+  } catch (err: any) {
+    addToast({
+      title: 'Backfill Failed',
+      message: err.message || 'An error occurred during backfill.',
+      type: 'error'
+    })
+  } finally {
+    isBackfilling.value = false
+  }
+}
 
 const metrics = computed(() => {
   const profitFactor = calculateProfitFactor(props.trades)
@@ -90,5 +120,31 @@ const metrics = computed(() => {
   <div class="mt-8 pt-8 border-t border-terminal-gray/20">
     <h3 class="text-xs font-bold uppercase tracking-widest text-terminal-text/40 mb-4 ml-1">Risk & Drawdown</h3>
     <RiskDashboard :trades="props.trades" :initial-balance="10000" :risk-per-trade="0.02" />
+  </div>
+
+  <!-- Actions -->
+  <div class="mt-8 pt-8 border-t border-terminal-gray/20 flex flex-col gap-4">
+    <h3 class="text-xs font-bold uppercase tracking-widest text-terminal-text/40 ml-1">Data Management</h3>
+    <div class="bg-terminal-black/40 border border-terminal-gray/30 rounded-xl p-6 flex items-center justify-between group hover:border-terminal-accent/30 transition-all">
+      <div class="flex items-center gap-4">
+        <div class="p-3 bg-terminal-black border border-terminal-gray rounded-lg group-hover:border-terminal-accent transition-colors">
+          <Database class="w-5 h-5 text-terminal-highlight" />
+        </div>
+        <div>
+          <h4 class="text-sm font-bold text-terminal-highlight">Backfill MAE/MFE</h4>
+          <p class="text-xs text-terminal-text/40 leading-relaxed max-w-md">
+            Automatically fetch historical market data from Yahoo Finance to calculate Maximum Adverse Excursion and Maximum Favorable Excursion for closed trades.
+          </p>
+        </div>
+      </div>
+      <button 
+        @click="handleBackfill" 
+        :disabled="isBackfilling"
+        class="px-6 py-2.5 bg-terminal-accent/10 hover:bg-terminal-accent/20 border border-terminal-accent/30 hover:border-terminal-accent/50 text-terminal-accent text-xs font-bold uppercase tracking-widest rounded-lg transition-all flex items-center gap-2 disabled:opacity-50"
+      >
+        <RefreshCw :class="['w-4 h-4', isBackfilling ? 'animate-spin' : '']" />
+        {{ isBackfilling ? 'Processing...' : 'Run Backfill' }}
+      </button>
+    </div>
   </div>
 </template>
