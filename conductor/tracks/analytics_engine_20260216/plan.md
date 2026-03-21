@@ -36,7 +36,7 @@
 
 ## Phase 4: Visualization (Frontend)
 
-- [ ] Task: Install a charting library (e.g., `chart.js`, `vue-chartjs`, or `apexcharts`).
+- [~] Task: Install a charting library (e.g., `chart.js`, `vue-chartjs`, or `apexcharts`).
 - [ ] Task: Create `EquityCurveChart.vue` component using the data from Phase 2.
 - [ ] Task: Create `PerformanceHeatmap.vue` component using the daily PnL data.
 - [ ] Task: Integrate these charts into the main Analytics Dashboard.
