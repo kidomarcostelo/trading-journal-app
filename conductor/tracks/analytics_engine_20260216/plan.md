@@ -31,7 +31,7 @@
     - [x] Update Google Sheet with calculated `mae`/`mfe` values.
 - [x] Task: add a "Backfill MAE/MFE" button in the Settings or Analytics dashboard to trigger this process. [4deb42a]
 - [x] Task: Update `TradeForm.vue` to allow manual entry/editing of `mfe`. [f3bc84f]
-- [ ] Task: Write tests for the backfill logic and API integration.
+- [~] Task: Write tests for the backfill logic and API integration.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Trade Efficiency & Backfill' (Protocol in workflow.md)
 
 ## Phase 4: Visualization (Frontend)
