@@ -26,7 +26,7 @@
 ## Phase 3: Trade Efficiency & Backfill (Server-Side)
 
 - [x] Task: Create `server/utils/marketData.ts` to interface with an external API (e.g., Yahoo Finance). [943433a]
-- [ ] Task: Create `server/api/trades/backfill.post.ts`.
+- [~] Task: Create `server/api/trades/backfill.post.ts`.
     - [ ] Implement logic to fetch historical High/Low prices for closed trades missing `mae`/`mfe`.
     - [ ] Update Google Sheet with calculated `mae`/`mfe` values.
 - [ ] Task: add a "Backfill MAE/MFE" button in the Settings or Analytics dashboard to trigger this process.
