@@ -75,4 +75,22 @@ describe('AnalyticsDashboard', () => {
     expect(wrapper.text()).toContain('Backfill MAE/MFE')
     expect(wrapper.text()).toContain('Run Backfill')
   })
+
+  it('renders charts section', () => {
+    const wrapper = mount(AnalyticsDashboard, {
+      props: {
+        trades: []
+      },
+      global: {
+        stubs: {
+          'EquityCurveChart': true,
+          'PerformanceHeatmap': true,
+          'RiskDashboard': true
+        }
+      }
+    })
+
+    expect(wrapper.findComponent({ name: 'EquityCurveChart' }).exists()).toBe(true)
+    expect(wrapper.findComponent({ name: 'PerformanceHeatmap' }).exists()).toBe(true)
+  })
 })
