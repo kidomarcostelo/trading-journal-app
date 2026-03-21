@@ -40,6 +40,8 @@ const initialForm = {
   Status: 'Open',
   Risk: '',
   PNL: '',
+  MAE: '',
+  MFE: '',
   'Before Picture': '',
   'Before Journal': ''
 }
@@ -188,6 +190,30 @@ const submitTrade = async () => {
                 step="any"
                 placeholder="0.00"
                 class="w-full bg-terminal-black border border-terminal-gray rounded-lg hover:border-terminal-gray/50 focus:border-terminal-accent focus:ring-1 focus:ring-terminal-accent/20 text-terminal-highlight px-3 py-2 outline-none font-mono text-sm transition-all"
+              />
+            </div>
+          </div>
+
+          <!-- MAE & MFE (Only show if closed) -->
+          <div v-if="form.Status === 'Closed'" class="grid grid-cols-2 gap-4 p-4 bg-terminal-black/30 border border-terminal-gray/30 rounded-xl animate-in fade-in slide-in-from-top-1 duration-300">
+            <div>
+              <label class="block text-[10px] font-bold text-terminal-text/40 mb-1.5 ml-1 uppercase tracking-widest">MAE (Adverse)</label>
+              <input
+                v-model="form.MAE"
+                type="number"
+                step="any"
+                placeholder="0.00"
+                class="w-full bg-terminal-black/50 border border-terminal-gray/50 rounded-lg focus:border-rose-500/50 focus:ring-1 focus:ring-rose-500/10 text-rose-400 px-3 py-2 outline-none font-mono text-sm transition-all"
+              />
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-terminal-text/40 mb-1.5 ml-1 uppercase tracking-widest">MFE (Favorable)</label>
+              <input
+                v-model="form.MFE"
+                type="number"
+                step="any"
+                placeholder="0.00"
+                class="w-full bg-terminal-black/50 border border-terminal-gray/50 rounded-lg focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/10 text-emerald-400 px-3 py-2 outline-none font-mono text-sm transition-all"
               />
             </div>
           </div>
