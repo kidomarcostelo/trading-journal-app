@@ -13,7 +13,7 @@
 - [x] Task: Write unit tests for `useAnalytics` functions in `tests/composables/useAnalytics.spec.ts`. [commit: 3434308]
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Data Model & Core Metrics' (Protocol in workflow.md) [checkpoint: 2417ca7]
 
-## Phase 2: Risk & Drawdown (Hybrid)
+## Phase 2: Risk & Drawdown (Hybrid) [checkpoint: d05827d]
 
 - [x] Task: Create `server/api/analytics/risk.get.ts`. [59207f7]
     - [x] Implement `calculateRiskOfRuin(winRate: number, riskPerTrade: number, edge: number): number`.
@@ -21,7 +21,7 @@
 - [x] Task: Update `useAnalytics` to fetch risk data from the API. [2ad1e10]
 - [x] Task: Create `RiskDashboard.vue` component to display Risk of Ruin, MDD, and Consecutive Losses. [899bde5]
 - [x] Task: Write integration tests for the `/api/analytics/risk` endpoint. [61e348f]
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Risk & Drawdown' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Risk & Drawdown' (Protocol in workflow.md) [bf78e48]
 
 ## Phase 3: Trade Efficiency & Backfill (Server-Side)
 
