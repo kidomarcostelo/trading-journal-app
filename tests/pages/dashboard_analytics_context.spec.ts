@@ -14,7 +14,12 @@ vi.mock('lucide-vue-next', () => ({
   ArrowUp: { render: () => h('div') },
   ArrowDown: { render: () => h('div') },
   Trash2: { render: () => h('div') },
-  FileText: { render: () => h('div') }
+  FileText: { render: () => h('div') },
+  Database: { render: () => h('div') },
+  TrendingDown: { render: () => h('div') },
+  RefreshCcw: { render: () => h('div') },
+  ShieldCheck: { render: () => h('div') },
+  AlertCircle: { render: () => h('div') }
 }))
 
 // Mock Data
