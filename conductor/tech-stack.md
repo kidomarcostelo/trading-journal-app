@@ -23,11 +23,13 @@
     *   `Settings` sheet for persisting user-specific UI preferences (e.g., chip layout).
 *   **Image Storage:** External URLs (e.g., from image hosting services like Imgur, Cloudinary, or private links) stored as text in the spreadsheet. Supports Google Sheets `=IMAGE()` formulas.
 *   **Live Data:** TradingView JS Widget for real-time charting.
+*   **Market Data:** `yahoo-finance2` for fetching historical high/low prices for MAE/MFE calculations.
 *   **State Persistence:** Browser `localStorage` for UI layout preferences (e.g., card ordering).
 
 ## Styling & UI
 *   **Framework:** Tailwind CSS (Utility-first approach), Floating UI (for dynamic positioning).
 *   **Icons:** Nuxt Icon or Lucide Vue (Recommended for a clean, professional look).
+*   **Visualization:** `apexcharts` and `vue3-apexcharts` for interactive equity curves and heatmaps.
 *   **Animations:** Vue transitions or simple Tailwind transitions for a smooth experience.
 
 ## Tooling & Deployment
