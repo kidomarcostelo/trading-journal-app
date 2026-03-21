@@ -34,10 +34,13 @@
 - [x] Task: Write tests for the backfill logic and API integration. [c44658f]
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Trade Efficiency & Backfill' (Protocol in workflow.md) [85b3ca8]
 
-## Phase 4: Visualization (Frontend)
+## Phase 4: Visualization (Frontend) [checkpoint: bd24578]
 
 - [x] Task: Install a charting library (e.g., `chart.js`, `vue-chartjs`, or `apexcharts`). [693924a]
 - [x] Task: Create `EquityCurveChart.vue` component using the data from Phase 2. [a887374]
 - [x] Task: Create `PerformanceHeatmap.vue` component using the daily PnL data. [cd2c2f5]
 - [x] Task: Integrate these charts into the main Analytics Dashboard. [8881fe1]
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Visualization' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Visualization' (Protocol in workflow.md) [199de3b]
+
+## Phase: Review Fixes
+- [x] Task: Apply review suggestions [9e2b7fb]
