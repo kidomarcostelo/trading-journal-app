@@ -29,7 +29,7 @@
 - [x] Task: Create `server/api/trades/backfill.post.ts`. [ab83774]
     - [x] Implement logic to fetch historical High/Low prices for closed trades missing `mae`/`mfe`.
     - [x] Update Google Sheet with calculated `mae`/`mfe` values.
-- [ ] Task: add a "Backfill MAE/MFE" button in the Settings or Analytics dashboard to trigger this process.
+- [~] Task: add a "Backfill MAE/MFE" button in the Settings or Analytics dashboard to trigger this process.
 - [ ] Task: Update `TradeForm.vue` to allow manual entry/editing of `mfe`.
 - [ ] Task: Write tests for the backfill logic and API integration.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Trade Efficiency & Backfill' (Protocol in workflow.md)

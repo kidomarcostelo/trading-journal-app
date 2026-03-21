@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import AnalyticsDashboard from '../../components/AnalyticsDashboard.vue'
-import { ref } from 'vue'
 
 // Mock useAnalytics
 vi.mock('~/composables/useAnalytics', () => ({
@@ -10,7 +9,20 @@ vi.mock('~/composables/useAnalytics', () => ({
     calculateWinRate: () => 60.0,
     calculateExpectancy: () => 150.0,
     calculateAverageRMultiple: () => 0,
-    calculateAverageHoldingTime: () => ({ wins: 86400000, losses: 172800000 }) // 1d, 2d
+    calculateAverageHoldingTime: () => ({ wins: 86400000, losses: 172800000 }), // 1d, 2d
+    fetchRiskData: vi.fn().mockResolvedValue({
+      riskOfRuin: 0.05,
+      equityCurve: []
+    }),
+    calculateMaxDrawdown: vi.fn().mockReturnValue(5.0),
+    calculateMaxConsecutiveLosses: vi.fn().mockReturnValue(2)
+  })
+}))
+
+// Mock useToast
+vi.mock('~/composables/useToast', () => ({
+  useToast: () => ({
+    addToast: vi.fn()
   })
 }))
 
@@ -25,7 +37,7 @@ describe('AnalyticsDashboard', () => {
   it('renders core metrics correctly', () => {
     const wrapper = mount(AnalyticsDashboard, {
       props: {
-        trades: [] // Mock trades, the composable mock handles the return values
+        trades: []
       }
     })
 
@@ -51,5 +63,16 @@ describe('AnalyticsDashboard', () => {
 
     expect(wrapper.text()).toContain('Avg Hold (Loss)')
     expect(wrapper.text()).toContain('2d')
+  })
+
+  it('renders backfill section', () => {
+    const wrapper = mount(AnalyticsDashboard, {
+      props: {
+        trades: []
+      }
+    })
+
+    expect(wrapper.text()).toContain('Backfill MAE/MFE')
+    expect(wrapper.text()).toContain('Run Backfill')
   })
 })
