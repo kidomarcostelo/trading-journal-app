@@ -18,7 +18,8 @@
     "nuxt": "^3.15.1",
     "nuxt-auth-utils": "^0.5.27",
     "vue": "^3.5.13",
-    "vue-router": "^4.5.0"
+    "vue-router": "^4.5.0",
+    "yahoo-finance2": "^3.13.2"
   },
   "devDependencies": {
     "@nuxt/test-utils": "^3.15.1",
