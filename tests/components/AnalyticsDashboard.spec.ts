@@ -10,6 +10,11 @@ vi.mock('~/composables/useAnalytics', () => ({
     calculateExpectancy: () => 150.0,
     calculateAverageRMultiple: () => 0,
     calculateAverageHoldingTime: () => ({ wins: 86400000, losses: 172800000 }), // 1d, 2d
+    calculateBehavioralStats: () => ({
+      executionRate: 95.0,
+      mentalDistribution: { A: 10, B: 5, C: 2 },
+      emotionFrequency: { 'Calm': 8, 'Greed': 3 }
+    }),
     fetchRiskData: vi.fn().mockResolvedValue({
       riskOfRuin: 0.05,
       equityCurve: []
@@ -92,5 +97,20 @@ describe('AnalyticsDashboard', () => {
 
     expect(wrapper.findComponent({ name: 'EquityCurveChart' }).exists()).toBe(true)
     expect(wrapper.findComponent({ name: 'PerformanceHeatmap' }).exists()).toBe(true)
+  })
+
+  it('renders behavioral metrics', () => {
+    const wrapper = mount(AnalyticsDashboard, {
+      props: {
+        trades: []
+      }
+    })
+
+    expect(wrapper.text()).toContain('Execution %')
+    expect(wrapper.text()).toContain('95%')
+    expect(wrapper.text()).toContain('Mental Distribution')
+    expect(wrapper.text()).toContain('Common Emotions')
+    expect(wrapper.text()).toContain('Calm')
+    expect(wrapper.text()).toContain('8')
   })
 })

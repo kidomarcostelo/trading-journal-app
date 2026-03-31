@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
-import { defineComponent, h, Suspense } from 'vue'
+import { defineComponent, h, Suspense, nextTick } from 'vue'
 import TradeForm from '../../components/TradeForm.vue'
 
 // Mock useFetch
@@ -45,5 +45,19 @@ describe('TradeForm', () => {
     // We need to find the actual component instance to check the form state
     const formComponent = wrapper.findComponent(TradeForm)
     expect((formComponent.vm as any).form.Pair).toBe('BTC/USD')
+  })
+
+  it('renders new behavioral fields when status is Closed', async () => {
+    const wrapper = mountSuspense(TradeForm)
+    await new Promise(resolve => setTimeout(resolve, 0))
+    const formComponent = wrapper.findComponent(TradeForm)
+    
+    // Set status to Closed
+    ;(formComponent.vm as any).form.Status = 'Closed'
+    await nextTick()
+    
+    expect(wrapper.text()).toContain('MAE (Adverse)')
+    expect(wrapper.text()).toContain('Execution & Mindset')
+    expect(wrapper.text()).toContain('Timing & Session')
   })
 })

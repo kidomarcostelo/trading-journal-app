@@ -3,6 +3,7 @@ import {
   LayoutDashboard, 
   FileText, 
   List as ListIcon, 
+  BarChart3,
   Settings, 
   Moon, 
   Sun,
@@ -69,6 +70,14 @@ defineEmits<{
       >
         <ListIcon class="w-5 h-5 flex-shrink-0" />
         <span v-if="!collapsed" class="text-sm font-medium">Daily Trades</span>
+      </button>
+      <button 
+        @click="$emit('update:activeTab', 'analytics')"
+        :class="['w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all overflow-hidden whitespace-nowrap', activeTab === 'analytics' ? 'bg-terminal-gray text-terminal-highlight' : 'text-terminal-text/60 hover:bg-terminal-gray/30 hover:text-terminal-text', collapsed ? 'justify-center' : '']"
+        title="Analytics"
+      >
+        <BarChart3 class="w-5 h-5 flex-shrink-0" />
+        <span v-if="!collapsed" class="text-sm font-medium">Analytics</span>
       </button>
       <button 
         @click="$emit('update:activeTab', 'settings')"
