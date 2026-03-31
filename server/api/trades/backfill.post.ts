@@ -44,11 +44,11 @@ export default defineEventHandler(async (event) => {
         let mfe = 0
 
         if (direction === 'long' || direction === 'buy') {
-          mae = entryPrice - low
-          mfe = high - entryPrice
+          mae = Math.max(0, entryPrice - low)
+          mfe = Math.max(0, high - entryPrice)
         } else if (direction === 'short' || direction === 'sell') {
-          mae = high - entryPrice
-          mfe = entryPrice - low
+          mae = Math.max(0, high - entryPrice)
+          mfe = Math.max(0, entryPrice - low)
         }
 
         updatedTrades.push({

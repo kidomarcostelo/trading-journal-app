@@ -11,7 +11,8 @@ const route = useRoute()
 // Sync active tab based on route if necessary
 watch(() => route.path, (path) => {
   if (path === '/settings') activeTab.value = 'settings'
-  else if (path === '/dashboard' && activeTab.value === 'settings') {
+  else if (path === '/analytics') activeTab.value = 'analytics'
+  else if (path === '/dashboard' && (activeTab.value === 'settings' || activeTab.value === 'analytics')) {
     activeTab.value = 'daily-trades'
   }
 }, { immediate: true })
@@ -20,6 +21,8 @@ const handleTabChange = (tab: string) => {
   activeTab.value = tab
   if (tab === 'settings') {
     navigateTo('/settings')
+  } else if (tab === 'analytics') {
+    navigateTo('/analytics')
   } else {
     navigateTo('/dashboard')
   }

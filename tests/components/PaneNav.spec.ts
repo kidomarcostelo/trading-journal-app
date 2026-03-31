@@ -8,6 +8,7 @@ vi.mock('lucide-vue-next', () => ({
   LayoutDashboard: { render: () => h('div') },
   FileText: { render: () => h('div') },
   List: { render: () => h('div') },
+  BarChart3: { render: () => h('div') },
   Settings: { render: () => h('div') },
   Moon: { render: () => h('div') },
   Sun: { render: () => h('div') },
