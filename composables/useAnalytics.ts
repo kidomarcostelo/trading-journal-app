@@ -233,6 +233,58 @@ export const useAnalytics = () => {
     })
   }
 
+  const getPairStats = (trades: Trade[], pair: string, timeframe: 'All Time' | { start?: Date | null, end?: Date | null } = 'All Time') => {
+    const timeFiltered = filterTradesByTimeframe(trades, timeframe)
+    const pairTrades = timeFiltered.filter(t => (t.pair === pair || t.Pair === pair))
+    const closedTrades = pairTrades.filter(isClosed)
+    
+    if (closedTrades.length === 0) return { winRate: 0, pnl: 0, count: 0 }
+
+    let wins = 0
+    let totalPnl = 0
+
+    closedTrades.forEach(t => {
+      const pnl = parseNumber(getVal(t, 'pnl'))
+      totalPnl += pnl
+      if (pnl > 0) wins++
+    })
+
+    return {
+      winRate: Number(((wins / closedTrades.length) * 100).toFixed(2)),
+      pnl: Number(totalPnl.toFixed(2)),
+      count: closedTrades.length
+    }
+  }
+
+  const getTopProfitablePair = (trades: Trade[], timeframe: 'All Time' | { start?: Date | null, end?: Date | null } = 'All Time') => {
+    const timeFiltered = filterTradesByTimeframe(trades, timeframe)
+    const closedTrades = timeFiltered.filter(isClosed)
+    
+    if (closedTrades.length === 0) return null
+
+    const pairPnls: Record<string, number> = {}
+
+    closedTrades.forEach(t => {
+      const pairStr = String(getVal(t, 'pair') || 'Unknown')
+      const pnl = parseNumber(getVal(t, 'pnl'))
+      pairPnls[pairStr] = (pairPnls[pairStr] || 0) + pnl
+    })
+
+    let topPair = ''
+    let maxPnl = -Infinity
+
+    for (const [pairKey, pnl] of Object.entries(pairPnls)) {
+      if (pnl > maxPnl) {
+        maxPnl = pnl
+        topPair = pairKey
+      }
+    }
+
+    if (!topPair || maxPnl === -Infinity) return null
+
+    return { pair: topPair, pnl: Number(maxPnl.toFixed(2)) }
+  }
+
   return {
     calculateProfitFactor,
     calculateWinRate,
@@ -243,6 +295,8 @@ export const useAnalytics = () => {
     calculateMaxDrawdown,
     calculateBehavioralStats,
     fetchRiskData,
-    filterTradesByTimeframe
+    filterTradesByTimeframe,
+    getPairStats,
+    getTopProfitablePair
   }
 }
