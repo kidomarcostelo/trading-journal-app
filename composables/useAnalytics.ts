@@ -216,6 +216,23 @@ export const useAnalytics = () => {
     }
   }
 
+  const filterTradesByTimeframe = (trades: Trade[], timeframe: 'All Time' | { start?: Date | null, end?: Date | null }) => {
+    if (timeframe === 'All Time') return trades
+
+    return trades.filter(t => {
+      const dateVal = getVal(t, 'date') || getVal(t, 'createdAt') || getVal(t, 'date created')
+      if (!dateVal) return false
+
+      const tradeDate = new Date(dateVal).getTime()
+      if (isNaN(tradeDate)) return false
+
+      const start = timeframe.start ? new Date(timeframe.start).getTime() : -Infinity
+      const end = timeframe.end ? new Date(timeframe.end).setHours(23, 59, 59, 999) : Infinity
+
+      return tradeDate >= start && tradeDate <= end
+    })
+  }
+
   return {
     calculateProfitFactor,
     calculateWinRate,
@@ -225,6 +242,7 @@ export const useAnalytics = () => {
     calculateMaxConsecutiveLosses,
     calculateMaxDrawdown,
     calculateBehavioralStats,
-    fetchRiskData
+    fetchRiskData,
+    filterTradesByTimeframe
   }
 }
