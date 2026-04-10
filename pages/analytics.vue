@@ -24,7 +24,7 @@ const dateRange = computed(() => {
   }
 })
 
-const { getPairStats, getTopProfitablePair, filterTradesByTimeframe } = useAnalytics()
+const { getPairStats, getTopProfitablePairs, filterTradesByTimeframe } = useAnalytics()
 
 const uniquePairs = computed(() => {
   const pairs = new Set<string>()
@@ -42,8 +42,8 @@ watch(uniquePairs, (newPairs) => {
   }
 }, { immediate: true })
 
-const topProfitablePair = computed(() => {
-  return getTopProfitablePair(tradesList.value, dateRange.value)
+const topProfitablePairs = computed(() => {
+  return getTopProfitablePairs(tradesList.value, dateRange.value, 10)
 })
 
 const pairStats = computed(() => {
@@ -113,14 +113,24 @@ const selectedPairTrades = computed(() => {
         </button>
       </div>
 
-      <!-- Top Profitable Highlight (Only in Pair Analysis) -->
-      <div v-if="activeTab === 'pair' && topProfitablePair" class="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl flex items-center gap-4">
-        <TrendingUp class="w-6 h-6 text-emerald-400" />
-        <div>
-          <p class="text-xs font-bold text-emerald-500/70 uppercase tracking-widest">Top Profitable Pair</p>
-          <p class="text-lg font-bold text-emerald-400 mt-0.5">
-            {{ topProfitablePair.pair }} <span class="text-terminal-highlight ml-2">+{{ topProfitablePair.pnl }}</span>
-          </p>
+      <!-- Top 10 Profitable Highlight (Only in Pair Analysis) -->
+      <div v-if="activeTab === 'pair' && topProfitablePairs.length > 0" class="mb-6 p-4 bg-terminal-black/40 border border-terminal-gray/30 rounded-xl">
+        <div class="flex items-center gap-3 mb-4">
+          <TrendingUp class="w-5 h-5 text-emerald-400" />
+          <h3 class="text-xs font-bold text-terminal-text/60 uppercase tracking-widest">Top 10 Profitable Pairs</h3>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <div 
+            v-for="(pair, index) in topProfitablePairs" 
+            :key="pair.pair"
+            class="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-lg cursor-pointer hover:bg-emerald-500/20 transition-colors"
+            @click="selectedPair = pair.pair"
+            title="Click to analyze pair"
+          >
+            <span class="text-xs font-bold text-emerald-500/50">#{{ index + 1 }}</span>
+            <span class="text-sm font-bold text-emerald-400">{{ pair.pair }}</span>
+            <span class="text-sm font-mono text-terminal-highlight ml-1">+{{ pair.pnl }}</span>
+          </div>
         </div>
       </div>
 

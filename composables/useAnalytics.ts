@@ -256,11 +256,11 @@ export const useAnalytics = () => {
     }
   }
 
-  const getTopProfitablePair = (trades: Trade[], timeframe: 'All Time' | { start?: Date | null, end?: Date | null } = 'All Time') => {
+  const getTopProfitablePairs = (trades: Trade[], timeframe: 'All Time' | { start?: Date | null, end?: Date | null } = 'All Time', limit = 10) => {
     const timeFiltered = filterTradesByTimeframe(trades, timeframe)
     const closedTrades = timeFiltered.filter(isClosed)
     
-    if (closedTrades.length === 0) return null
+    if (closedTrades.length === 0) return []
 
     const pairPnls: Record<string, number> = {}
 
@@ -270,19 +270,11 @@ export const useAnalytics = () => {
       pairPnls[pairStr] = (pairPnls[pairStr] || 0) + pnl
     })
 
-    let topPair = ''
-    let maxPnl = -Infinity
+    const sortedPairs = Object.entries(pairPnls)
+      .map(([pair, pnl]) => ({ pair, pnl: Number(pnl.toFixed(2)) }))
+      .sort((a, b) => b.pnl - a.pnl)
 
-    for (const [pairKey, pnl] of Object.entries(pairPnls)) {
-      if (pnl > maxPnl) {
-        maxPnl = pnl
-        topPair = pairKey
-      }
-    }
-
-    if (!topPair || maxPnl === -Infinity) return null
-
-    return { pair: topPair, pnl: Number(maxPnl.toFixed(2)) }
+    return sortedPairs.slice(0, limit)
   }
 
   return {
@@ -297,6 +289,6 @@ export const useAnalytics = () => {
     fetchRiskData,
     filterTradesByTimeframe,
     getPairStats,
-    getTopProfitablePair
+    getTopProfitablePairs
   }
 }

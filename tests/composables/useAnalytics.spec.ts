@@ -13,7 +13,7 @@ describe('useAnalytics', () => {
     calculateMaxConsecutiveLosses,
     filterTradesByTimeframe,
     getPairStats,
-    getTopProfitablePair
+    getTopProfitablePairs
   } = useAnalytics()
 
   const mockTrades: Trade[] = [
@@ -112,7 +112,7 @@ describe('useAnalytics', () => {
     expect(ethStats.count).toBe(1)
   })
 
-  it('identifies top profitable pair correctly', () => {
+  it('identifies top profitable pairs correctly', () => {
     const pairTrades: Trade[] = [
       { id: '1', status: 'Closed', pnl: 100, pair: 'BTC/USD', createdAt: '2024-01-01' },
       { id: '2', status: 'Closed', pnl: -50, pair: 'BTC/USD', createdAt: '2024-01-02' },
@@ -120,12 +120,16 @@ describe('useAnalytics', () => {
       { id: '4', status: 'Closed', pnl: 300, pair: 'SOL/USD', createdAt: '2024-02-01' },
     ]
 
-    const allTimeTop = getTopProfitablePair(pairTrades, 'All Time')
-    expect(allTimeTop?.pair).toBe('SOL/USD')
-    expect(allTimeTop?.pnl).toBe(300)
+    const allTimeTop = getTopProfitablePairs(pairTrades, 'All Time')
+    expect(allTimeTop.length).toBe(3)
+    expect(allTimeTop[0].pair).toBe('SOL/USD')
+    expect(allTimeTop[0].pnl).toBe(300)
+    expect(allTimeTop[1].pair).toBe('ETH/USD')
+    expect(allTimeTop[1].pnl).toBe(200)
 
-    const janOnlyTop = getTopProfitablePair(pairTrades, { start: new Date('2024-01-01'), end: new Date('2024-01-31') })
-    expect(janOnlyTop?.pair).toBe('ETH/USD')
-    expect(janOnlyTop?.pnl).toBe(200)
+    const janOnlyTop = getTopProfitablePairs(pairTrades, { start: new Date('2024-01-01'), end: new Date('2024-01-31') })
+    expect(janOnlyTop.length).toBe(2)
+    expect(janOnlyTop[0].pair).toBe('ETH/USD')
+    expect(janOnlyTop[0].pnl).toBe(200)
   })
 })
