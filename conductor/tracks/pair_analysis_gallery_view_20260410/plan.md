@@ -5,7 +5,7 @@
   - [ ] Write failing unit tests for filtering by "All Time" vs custom ranges.
   - [ ] Implement the filter logic.
   - [ ] Refactor and ensure all tests pass.
-- [ ] Task: Implement Pair Analysis data aggregation.
+- [x] Task: Implement Pair Analysis data aggregation. 7f11430
   - [ ] Write failing unit tests in `useAnalytics.spec.ts` for calculating win rate and PnL by specific pair.
   - [ ] Implement `getPairStats(pair, dateRange)` in `useAnalytics`.
   - [ ] Write failing unit tests for identifying the "Top Profitable Pair".
