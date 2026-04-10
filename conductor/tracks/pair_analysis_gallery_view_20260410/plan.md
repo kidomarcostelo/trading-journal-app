@@ -19,7 +19,7 @@
   - [ ] Implement a vertical list of unique traded pairs.
   - [ ] Implement click handler to emit the selected pair.
   - [ ] Refactor and ensure all tests pass.
-- [ ] Task: Create `PairGallery` view component.
+- [x] Task: Create `PairGallery` view component. 621122c
   - [ ] Write component tests verifying it renders trade cards with Before/After images, stats, and chips.
   - [ ] Implement the gallery grid/layout using Tailwind CSS.
   - [ ] Integrate existing UI components (like TradeSummaryCard or similar) into the gallery if applicable.
