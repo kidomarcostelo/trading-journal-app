@@ -14,7 +14,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Composables and Data Logic' (Protocol in workflow.md) 98ac20d
 
 ## Phase 2: UI Components
-- [ ] Task: Create `PairSidebar` component.
+- [x] Task: Create `PairSidebar` component. 62da864
   - [ ] Write component render tests for displaying a list of pairs.
   - [ ] Implement a vertical list of unique traded pairs.
   - [ ] Implement click handler to emit the selected pair.
