@@ -79,3 +79,6 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [ ] **Track: Analytics Tab & Data Engine**
 *Link: [./tracks/analytics_tab_20260307/](./tracks/analytics_tab_20260307/)*
+
+- [ ] **Track: Make repo contributors ready with readme, contributing guidelines, community standards, templates, and a seeding script.**
+*Link: [./tracks/contributor_ready_20260320/](./tracks/contributor_ready_20260320/)*

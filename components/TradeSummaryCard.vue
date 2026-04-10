@@ -6,7 +6,7 @@ export default {
 
 <script setup lang="ts">
 import { computed, ref, onMounted, onUnmounted } from 'vue'
-import { MoreVertical, Trash2 } from 'lucide-vue-next'
+import { MoreVertical, Trash2, ArrowUp, ArrowDown, Minus } from 'lucide-vue-next'
 
 const props = defineProps<{
   trade: {
@@ -81,6 +81,27 @@ const statusClass = computed(() => {
   return 'border-terminal-gray text-terminal-text/40'
 })
 
+const outcome = computed(() => {
+  const v = String(props.trade.Status).toLowerCase()
+  if (v !== 'closed') return null
+
+  const pnlKey = Object.keys(props.trade).find(k => k.toLowerCase() === 'pnl' || k.toLowerCase() === 'net pnl')
+  const pnlVal = pnlKey ? props.trade[pnlKey] : 0
+  let pnlNum = 0
+  
+  if (typeof pnlVal === 'number') {
+    pnlNum = pnlVal
+  } else if (pnlVal) {
+    const clean = String(pnlVal).replace(/[^0-9.-]/g, '')
+    pnlNum = parseFloat(clean)
+    if (isNaN(pnlNum)) pnlNum = 0
+  }
+
+  if (pnlNum > 0) return { icon: ArrowUp, class: 'text-emerald-400' }
+  if (pnlNum < 0) return { icon: ArrowDown, class: 'text-rose-400' }
+  return { icon: Minus, class: 'text-terminal-text/40' }
+})
+
 const displayDate = computed(() => {
   const val = props.trade.Date || props.trade['Date Created'] || props.trade['Created At'] || props.trade.date
   
@@ -104,19 +125,24 @@ const displayDate = computed(() => {
     class="border-b border-terminal-gray/50 transition-colors cursor-pointer group relative"
     :class="[
       active ? 'bg-terminal-gray/20 border-l-4 border-l-terminal-accent' : 'hover:bg-terminal-gray/10 border-l-4 border-l-transparent',
-      'p-3'
+      collapsed ? 'py-3 px-1.5' : 'p-3'
     ]"
     :title="collapsed ? trade.Pair : ''"
   >
     <div 
       class="gap-2 items-center text-[11px]"
-      :class="collapsed ? 'flex items-center justify-between gap-3' : 'grid grid-cols-[1.5fr_0.6fr_1fr_0.7fr_1.2fr_0.2fr]'"
+      :class="collapsed ? 'flex items-center' : 'grid grid-cols-[1.5fr_0.6fr_0.7fr_1.2fr_0.2fr]'"
     >
-      <!-- Col 1: Pair -->
+      <!-- Col 1: Pair & Outcome Icon -->
       <div 
-        class="font-bold text-terminal-highlight flex items-center min-w-0"
+        class="font-bold text-terminal-highlight flex items-center min-w-0 gap-1.5"
       >
-        <span class="whitespace-nowrap">{{ trade.Pair || 'Untitled' }}</span>
+        <component 
+          v-if="outcome" 
+          :is="outcome.icon" 
+          :class="['w-3.5 h-3.5 flex-shrink-0', outcome.class]" 
+        />
+        <span class="whitespace-nowrap truncate">{{ trade.Pair || 'Untitled' }}</span>
       </div>
 
       <!-- Col 2: Action -->
@@ -126,25 +152,20 @@ const displayDate = computed(() => {
         </span>
       </div>
 
-      <!-- Col 3: Market -->
-      <div v-if="!collapsed" class="text-terminal-text/60 truncate uppercase tracking-tight">
-        {{ trade.Market || '-' }}
-      </div>
-
-      <!-- Col 4: Status -->
+      <!-- Col 3: Status -->
       <div v-if="!collapsed">
         <span :class="['px-1.5 py-0.5 rounded border text-[9px] font-medium uppercase truncate block text-center', statusClass]">
           {{ trade.Status || 'Unk' }}
         </span>
       </div>
 
-      <!-- Col 5: Date -->
+      <!-- Col 4: Date -->
       <div v-if="!collapsed" class="text-right text-terminal-text/60 font-mono text-[10px]">
         {{ displayDate }}
       </div>
 
       <!-- Col 6: Menu -->
-      <div class="relative flex justify-end" ref="menuRef">
+      <div v-if="!collapsed" class="relative flex justify-end" ref="menuRef">
         <button 
           @click="toggleMenu"
           class="p-1 hover:bg-terminal-gray/30 rounded transition-colors text-terminal-text/40 hover:text-terminal-highlight"

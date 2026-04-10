@@ -39,6 +39,16 @@ export interface Trade extends TradeEntry {
   pnl?: number
   mae?: number
   mfe?: number
+  
+  // Behavioral & Execution
+  rulesFollowed?: boolean
+  mentalCategory?: 'A' | 'B' | 'C'
+  emotions?: string[]
+  
+  // Timing
+  entryTime?: string
+  exitTime?: string
+  session?: 'London' | 'New York' | 'Asia' | 'Overnight'
 }
 
 export interface AppConfig {

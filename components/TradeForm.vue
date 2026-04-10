@@ -40,6 +40,13 @@ const initialForm = {
   Status: 'Open',
   Risk: '',
   PNL: '',
+  MAE: '',
+  MFE: '',
+  'Rules Followed': true,
+  'Mental Category': 'A',
+  'Entry Time': '',
+  'Exit Time': '',
+  'Session': '',
   'Before Picture': '',
   'Before Journal': ''
 }
@@ -48,7 +55,7 @@ const form = reactive<any>({ ...initialForm })
 const tags = reactive<Record<string, string[]>>({})
 
 // Specific Chip Categories to show in the form
-const ALLOWED_CHIP_CATEGORIES = ['Strategies', 'Price Action', 'Trade Intention']
+const ALLOWED_CHIP_CATEGORIES = ['Strategies', 'Price Action', 'Trade Intention', 'Emotions']
 
 // Initialize tags based on categories
 watch(() => props.config, (newVal) => {
@@ -189,6 +196,79 @@ const submitTrade = async () => {
                 placeholder="0.00"
                 class="w-full bg-terminal-black border border-terminal-gray rounded-lg hover:border-terminal-gray/50 focus:border-terminal-accent focus:ring-1 focus:ring-terminal-accent/20 text-terminal-highlight px-3 py-2 outline-none font-mono text-sm transition-all"
               />
+            </div>
+          </div>
+
+          <!-- MAE & MFE (Only show if closed) -->
+          <div v-if="form.Status === 'Closed'" class="grid grid-cols-2 gap-4 p-4 bg-terminal-black/30 border border-terminal-gray/30 rounded-xl animate-in fade-in slide-in-from-top-1 duration-300">
+            <div>
+              <label class="block text-[10px] font-bold text-terminal-text/40 mb-1.5 ml-1 uppercase tracking-widest">MAE (Adverse)</label>
+              <input
+                v-model="form.MAE"
+                type="number"
+                step="any"
+                placeholder="0.00"
+                class="w-full bg-terminal-black/50 border border-terminal-gray/50 rounded-lg focus:border-rose-500/50 focus:ring-1 focus:ring-rose-500/10 text-rose-400 px-3 py-2 outline-none font-mono text-sm transition-all"
+              />
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-terminal-text/40 mb-1.5 ml-1 uppercase tracking-widest">MFE (Favorable)</label>
+              <input
+                v-model="form.MFE"
+                type="number"
+                step="any"
+                placeholder="0.00"
+                class="w-full bg-terminal-black/50 border border-terminal-gray/50 rounded-lg focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/10 text-emerald-400 px-3 py-2 outline-none font-mono text-sm transition-all"
+              />
+            </div>
+          </div>
+
+          <!-- Execution & Psychology -->
+          <div class="space-y-4">
+            <h3 class="text-[10px] font-bold text-terminal-text/30 uppercase tracking-[0.2em] mb-2 px-1">Execution & Mindset</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex items-center justify-between p-3 bg-terminal-black/20 border border-terminal-gray/30 rounded-lg">
+                <span class="text-xs text-terminal-text/70 uppercase font-medium">Rules Followed</span>
+                <button 
+                  type="button"
+                  @click="form['Rules Followed'] = !form['Rules Followed']"
+                  :class="['w-10 h-5 rounded-full transition-all relative', form['Rules Followed'] ? 'bg-emerald-500/20 border-emerald-500/50' : 'bg-rose-500/20 border-rose-500/50', 'border']"
+                >
+                  <div :class="['w-3 h-3 rounded-full absolute top-0.5 transition-all', form['Rules Followed'] ? 'right-1 bg-emerald-400' : 'left-1 bg-rose-400']"></div>
+                </button>
+              </div>
+              <div class="flex items-center justify-between p-1 px-3 bg-terminal-black/20 border border-terminal-gray/30 rounded-lg">
+                <span class="text-xs text-terminal-text/70 uppercase font-medium">Mental</span>
+                <select v-model="form['Mental Category']" class="bg-transparent text-terminal-highlight text-xs font-mono outline-none cursor-pointer py-2">
+                  <option value="A">A Game</option>
+                  <option value="B">B Game</option>
+                  <option value="C">C Game</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Timing & Session -->
+          <div class="space-y-4">
+            <h3 class="text-[10px] font-bold text-terminal-text/30 uppercase tracking-[0.2em] mb-2 px-1">Timing & Session</h3>
+            <div class="grid grid-cols-3 gap-3">
+              <div>
+                <label class="block text-[10px] font-bold text-terminal-text/40 mb-1 ml-1 uppercase tracking-wider">Entry</label>
+                <input v-model="form['Entry Time']" type="time" class="w-full bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-xs text-terminal-highlight outline-none focus:border-terminal-accent" />
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-terminal-text/40 mb-1 ml-1 uppercase tracking-wider">Exit</label>
+                <input v-model="form['Exit Time']" type="time" class="w-full bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-xs text-terminal-highlight outline-none focus:border-terminal-accent" />
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-terminal-text/40 mb-1 ml-1 uppercase tracking-wider">Session</label>
+                <select v-model="form.Session" class="w-full bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-xs text-terminal-highlight outline-none focus:border-terminal-accent cursor-pointer">
+                  <option value="">Auto</option>
+                  <option value="London">London</option>
+                  <option value="New York">NY</option>
+                  <option value="Asia">Asia</option>
+                </select>
+              </div>
             </div>
           </div>
 
