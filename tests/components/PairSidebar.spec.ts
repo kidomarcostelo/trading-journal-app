@@ -18,6 +18,22 @@ describe('PairSidebar', () => {
     expect(items[2].text()).toContain('SOL/USD')
   })
 
+  it('filters pairs based on search query', async () => {
+    const wrapper = mount(PairSidebar, {
+      props: {
+        pairs: ['BTC/USD', 'ETH/USD', 'SOL/USD'],
+        selectedPair: 'BTC/USD'
+      }
+    })
+
+    const input = wrapper.find('input')
+    await input.setValue('eth')
+
+    const items = wrapper.findAll('li')
+    expect(items.length).toBe(1)
+    expect(items[0].text()).toContain('ETH/USD')
+  })
+
   it('emits select event when a pair is clicked', async () => {
     const wrapper = mount(PairSidebar, {
       props: {
