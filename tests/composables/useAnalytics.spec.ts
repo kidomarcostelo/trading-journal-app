@@ -10,7 +10,8 @@ describe('useAnalytics', () => {
     calculateAverageRMultiple,
     calculateAverageHoldingTime,
     calculateMaxDrawdown,
-    calculateMaxConsecutiveLosses
+    calculateMaxConsecutiveLosses,
+    filterTradesByTimeframe
   } = useAnalytics()
 
   const mockTrades: Trade[] = [
@@ -68,5 +69,25 @@ describe('useAnalytics', () => {
       { date: '4', equity: 1150 },
     ]
     expect(calculateMaxDrawdown(equityCurve)).toBe(8)
+  })
+  it('filters trades by timeframe', () => {
+    const timeTrades: Trade[] = [
+      { id: '1', status: 'Closed', pnl: 100, createdAt: '2024-01-01', date: '2024-01-01' },
+      { id: '2', status: 'Closed', pnl: 100, createdAt: '2024-02-01', date: '2024-02-01' },
+      { id: '3', status: 'Closed', pnl: 100, createdAt: '2024-03-01', date: '2024-03-01' },
+    ]
+
+    // All Time
+    expect(filterTradesByTimeframe(timeTrades, 'All Time').length).toBe(3)
+
+    // Specific Range (Feb only)
+    const range = { start: new Date('2024-02-01'), end: new Date('2024-02-28') }
+    const filtered = filterTradesByTimeframe(timeTrades, range)
+    expect(filtered.length).toBe(1)
+    expect(filtered[0].id).toBe('2')
+    
+    // Start only
+    const startOnly = { start: new Date('2024-02-15'), end: null }
+    expect(filterTradesByTimeframe(timeTrades, startOnly).length).toBe(1)
   })
 })
