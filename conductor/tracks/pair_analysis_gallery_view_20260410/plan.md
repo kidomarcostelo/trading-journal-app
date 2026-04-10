@@ -13,7 +13,7 @@
   - [ ] Refactor and ensure all tests pass.
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Composables and Data Logic' (Protocol in workflow.md) 98ac20d
 
-## Phase 2: UI Components
+## Phase 2: UI Components [checkpoint: 136cabf]
 - [x] Task: Create `PairSidebar` component. 62da864
   - [ ] Write component render tests for displaying a list of pairs.
   - [ ] Implement a vertical list of unique traded pairs.
@@ -24,7 +24,7 @@
   - [ ] Implement the gallery grid/layout using Tailwind CSS.
   - [ ] Integrate existing UI components (like TradeSummaryCard or similar) into the gallery if applicable.
   - [ ] Refactor and ensure all tests pass.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: UI Components' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: UI Components' (Protocol in workflow.md) 136cabf
 
 ## Phase 3: Page Integration & Wiring
 - [ ] Task: Update Analytics Dashboard.
