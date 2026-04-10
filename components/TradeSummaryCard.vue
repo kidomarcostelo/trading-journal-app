@@ -58,7 +58,25 @@ const actionClass = computed(() => {
 const statusClass = computed(() => {
   const v = String(props.trade.Status).toLowerCase()
   if (v === 'open') return 'border-emerald-500/50 text-emerald-400'
-  if (v === 'closed') return 'border-terminal-gray text-terminal-text/60'
+  
+  if (v === 'closed') {
+    const pnlKey = Object.keys(props.trade).find(k => k.toLowerCase() === 'pnl' || k.toLowerCase() === 'net pnl')
+    const pnlVal = pnlKey ? props.trade[pnlKey] : 0
+    let pnlNum = 0
+    
+    if (typeof pnlVal === 'number') {
+      pnlNum = pnlVal
+    } else if (pnlVal) {
+      const clean = String(pnlVal).replace(/[^0-9.-]/g, '')
+      pnlNum = parseFloat(clean)
+      if (isNaN(pnlNum)) pnlNum = 0
+    }
+
+    if (pnlNum > 0) return 'border-emerald-500/30 text-emerald-400/90'
+    if (pnlNum < 0) return 'border-rose-500/30 text-rose-400/90'
+    return 'border-terminal-gray text-terminal-text/60'
+  }
+
   if (v === 'cancelled' || v === 'missed') return 'border-rose-500/30 text-rose-400/60'
   return 'border-terminal-gray text-terminal-text/40'
 })
