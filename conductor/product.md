@@ -40,6 +40,12 @@ I am building a trading journal where Google Sheets acts as the database.
     *   **Image Carousel:** High-performance Before/After carousel with pagination and looping.
     *   **Theme:** Modern Dark Dashboard (`bg-slate-950`, `text-slate-200`).
 
+4.  **Performance & Risk Analytics**
+    *   **Core Metrics:** Calculation of Profit Factor, Win Rate, Expectancy, and Average R-Multiple.
+    *   **Risk Management:** Real-time calculation of Risk of Ruin, Maximum Drawdown (MDD), and longest losing streaks.
+    *   **Automation:** Automatic backfilling of MAE (Maximum Adverse Excursion) and MFE (Maximum Favorable Excursion) using historical market data.
+    *   **Visualization:** Interactive Equity Curve and PnL heatmaps to identify temporal performance patterns.
+
 **Backend Architecture (Nuxt Nitro):**
 * Create `server/utils/googleSheets.ts` to handle authentication using Service Account credentials.
 * **Endpoints:**
@@ -48,6 +54,8 @@ I am building a trading journal where Google Sheets acts as the database.
     * `POST /api/trades`: Dynamically maps JSON keys to spreadsheet headers. Auto-generates incremental IDs and formats dates as `mm/dd/yyyy`.
     * `PUT /api/trades/batch`: Accepts an array of trade objects for batch updates to Google Sheets.
     * `DELETE /api/trades`: Removes a trade from the Master sheet using its unique ID.
+    * `GET /api/analytics/risk`: Calculates complex risk metrics and generates equity curve time-series.
+    * `POST /api/trades/backfill`: Automatically updates closed trades with historical high/low data from Yahoo Finance.
 
 **Step-by-Step Instructions (Execute in Order):**
 

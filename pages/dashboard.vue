@@ -195,7 +195,7 @@ const formatDate = (val: any) => {
 const listWidth = ref(320)
 const lastListWidth = ref(320)
 const isResizingList = ref(false)
-const isListCollapsed = computed(() => listWidth.value <= 100)
+const isListCollapsed = computed(() => listWidth.value <= 120)
 
 const startListResize = () => {
   isResizingList.value = true
@@ -209,7 +209,7 @@ const doListResize = (e: MouseEvent) => {
   const { sidebarWidth } = useUI()
   const newWidth = Math.max(100, Math.min(e.clientX - sidebarWidth.value, 600))
   listWidth.value = newWidth
-  if (newWidth > 100) lastListWidth.value = newWidth
+  if (newWidth > 120) lastListWidth.value = newWidth
 }
 
 const stopListResize = () => {
@@ -243,9 +243,12 @@ onUnmounted(() => {
       :style="{ width: `${listWidth}px` }"
       class="flex-shrink-0 border-r border-terminal-gray flex flex-col bg-terminal-black overflow-hidden relative"
     >
-      <div class="p-4 border-b border-terminal-gray flex flex-col gap-3 bg-terminal-black">
-        <div class="flex items-center justify-between">
-          <h2 class="font-medium text-terminal-highlight truncate">Trades</h2>
+      <div 
+        class="border-b border-terminal-gray flex flex-col gap-3 bg-terminal-black"
+        :class="isListCollapsed ? 'p-2' : 'p-4'"
+      >
+        <div class="flex items-center" :class="isListCollapsed ? 'flex-col gap-2' : 'justify-between'">
+          <h2 v-if="!isListCollapsed" class="font-medium text-terminal-highlight truncate">Trades</h2>
           <div class="flex items-center gap-1">
             <button @click="toggleListCollapse" class="p-1.5 text-terminal-text/60 hover:text-terminal-highlight transition-all">
               <ChevronsRight v-if="isListCollapsed" class="w-4 h-4" />
