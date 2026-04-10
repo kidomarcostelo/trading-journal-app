@@ -27,7 +27,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: UI Components' (Protocol in workflow.md) 136cabf
 
 ## Phase 3: Page Integration & Wiring
-- [ ] Task: Update Analytics Dashboard.
+- [x] Task: Update Analytics Dashboard. af5bc47
   - [ ] Write failing integration tests for the new Pair Analysis tab/sub-view in `analytics.vue`.
   - [ ] Add navigation/toggle to access the Pair Analysis view.
   - [ ] Wire up the `PairSidebar` and `PairGallery` components within this view.
