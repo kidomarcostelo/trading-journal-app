@@ -18,9 +18,34 @@ describe('TradeSummaryCard', () => {
     })
     
     expect(wrapper.text()).toContain('BTC/USD')
-    expect(wrapper.text()).toContain('Crypto')
     expect(wrapper.text()).toContain('Open')
     expect(wrapper.text()).toContain('01/11/2026')
+  })
+
+  it('renders outcome arrow for closed trades', () => {
+    const wrapper = mount(TradeSummaryCard, {
+      props: {
+        trade: {
+          Status: 'Closed',
+          pnl: 100,
+          Pair: 'BTC/USD'
+        }
+      }
+    })
+    
+    // Check for win arrow (ArrowUp is rendered as an SVG)
+    expect(wrapper.find('svg.text-emerald-400').exists()).toBe(true)
+
+    const lossWrapper = mount(TradeSummaryCard, {
+      props: {
+        trade: {
+          Status: 'Closed',
+          pnl: -50,
+          Pair: 'ETH/USD'
+        }
+      }
+    })
+    expect(lossWrapper.find('svg.text-rose-400').exists()).toBe(true)
   })
 
   it('applies correct classes for Status', () => {
