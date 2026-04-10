@@ -11,7 +11,9 @@ describe('useAnalytics', () => {
     calculateAverageHoldingTime,
     calculateMaxDrawdown,
     calculateMaxConsecutiveLosses,
-    filterTradesByTimeframe
+    filterTradesByTimeframe,
+    getPairStats,
+    getTopProfitablePair
   } = useAnalytics()
 
   const mockTrades: Trade[] = [
@@ -89,5 +91,41 @@ describe('useAnalytics', () => {
     // Start only
     const startOnly = { start: new Date('2024-02-15'), end: null }
     expect(filterTradesByTimeframe(timeTrades, startOnly).length).toBe(1)
+  })
+
+  it('calculates pair stats correctly', () => {
+    const pairTrades: Trade[] = [
+      { id: '1', status: 'Closed', pnl: 100, pair: 'BTC/USD', createdAt: '2024-01-01' },
+      { id: '2', status: 'Closed', pnl: -50, pair: 'BTC/USD', createdAt: '2024-01-02' },
+      { id: '3', status: 'Closed', pnl: 200, pair: 'ETH/USD', createdAt: '2024-01-03' },
+      { id: '4', status: 'Open', pnl: 0, pair: 'BTC/USD', createdAt: '2024-01-04' },
+    ]
+
+    const btcStats = getPairStats(pairTrades, 'BTC/USD', 'All Time')
+    expect(btcStats.winRate).toBe(50) // 1 win, 1 loss (ignoring open)
+    expect(btcStats.pnl).toBe(50)
+    expect(btcStats.count).toBe(2)
+
+    const ethStats = getPairStats(pairTrades, 'ETH/USD', 'All Time')
+    expect(ethStats.winRate).toBe(100)
+    expect(ethStats.pnl).toBe(200)
+    expect(ethStats.count).toBe(1)
+  })
+
+  it('identifies top profitable pair correctly', () => {
+    const pairTrades: Trade[] = [
+      { id: '1', status: 'Closed', pnl: 100, pair: 'BTC/USD', createdAt: '2024-01-01' },
+      { id: '2', status: 'Closed', pnl: -50, pair: 'BTC/USD', createdAt: '2024-01-02' },
+      { id: '3', status: 'Closed', pnl: 200, pair: 'ETH/USD', createdAt: '2024-01-03' },
+      { id: '4', status: 'Closed', pnl: 300, pair: 'SOL/USD', createdAt: '2024-02-01' },
+    ]
+
+    const allTimeTop = getTopProfitablePair(pairTrades, 'All Time')
+    expect(allTimeTop?.pair).toBe('SOL/USD')
+    expect(allTimeTop?.pnl).toBe(300)
+
+    const janOnlyTop = getTopProfitablePair(pairTrades, { start: new Date('2024-01-01'), end: new Date('2024-01-31') })
+    expect(janOnlyTop?.pair).toBe('ETH/USD')
+    expect(janOnlyTop?.pnl).toBe(200)
   })
 })
