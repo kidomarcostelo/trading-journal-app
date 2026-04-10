@@ -1,0 +1,37 @@
+# Implementation Plan: Pair Analysis Gallery View
+
+## Phase 1: Composables and Data Logic
+- [ ] Task: Implement timeframe filtering logic in `useAnalytics` (if not already present).
+  - [ ] Write failing unit tests for filtering by "All Time" vs custom ranges.
+  - [ ] Implement the filter logic.
+  - [ ] Refactor and ensure all tests pass.
+- [ ] Task: Implement Pair Analysis data aggregation.
+  - [ ] Write failing unit tests in `useAnalytics.spec.ts` for calculating win rate and PnL by specific pair.
+  - [ ] Implement `getPairStats(pair, dateRange)` in `useAnalytics`.
+  - [ ] Write failing unit tests for identifying the "Top Profitable Pair".
+  - [ ] Implement `getTopProfitablePair(dateRange)` logic.
+  - [ ] Refactor and ensure all tests pass.
+- [ ] Task: Conductor - User Manual Verification 'Phase 1: Composables and Data Logic' (Protocol in workflow.md)
+
+## Phase 2: UI Components
+- [ ] Task: Create `PairSidebar` component.
+  - [ ] Write component render tests for displaying a list of pairs.
+  - [ ] Implement a vertical list of unique traded pairs.
+  - [ ] Implement click handler to emit the selected pair.
+  - [ ] Refactor and ensure all tests pass.
+- [ ] Task: Create `PairGallery` view component.
+  - [ ] Write component tests verifying it renders trade cards with Before/After images, stats, and chips.
+  - [ ] Implement the gallery grid/layout using Tailwind CSS.
+  - [ ] Integrate existing UI components (like TradeSummaryCard or similar) into the gallery if applicable.
+  - [ ] Refactor and ensure all tests pass.
+- [ ] Task: Conductor - User Manual Verification 'Phase 2: UI Components' (Protocol in workflow.md)
+
+## Phase 3: Page Integration & Wiring
+- [ ] Task: Update Analytics Dashboard.
+  - [ ] Write failing integration tests for the new Pair Analysis tab/sub-view in `analytics.vue`.
+  - [ ] Add navigation/toggle to access the Pair Analysis view.
+  - [ ] Wire up the `PairSidebar` and `PairGallery` components within this view.
+  - [ ] Connect the UI timeframe filter to the aggregated data logic.
+  - [ ] Display the "Top Profitable Pair" metric prominently.
+  - [ ] Refactor and ensure all tests pass.
+- [ ] Task: Conductor - User Manual Verification 'Phase 3: Page Integration & Wiring' (Protocol in workflow.md)
