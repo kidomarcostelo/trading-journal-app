@@ -1,6 +1,6 @@
 <template>
-  <div class="h-full flex flex-col bg-slate-900 border-r border-slate-800 w-64 overflow-y-auto">
-    <div class="p-4 border-b border-slate-800 space-y-4">
+  <div class="h-full flex flex-col bg-slate-900 border-r border-slate-800 w-64">
+    <div class="p-4 border-b border-slate-800 space-y-4 shrink-0">
       <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Pairs</h2>
       <div class="relative">
         <Search class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
@@ -12,7 +12,7 @@
         />
       </div>
     </div>
-    <ul class="flex-1 p-2 space-y-1">
+    <ul class="flex-1 p-2 space-y-1 overflow-y-auto">
       <li 
         v-for="pair in filteredPairs" 
         :key="pair"
