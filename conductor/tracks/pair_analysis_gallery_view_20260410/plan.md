@@ -1,7 +1,7 @@
 # Implementation Plan: Pair Analysis Gallery View
 
 ## Phase 1: Composables and Data Logic
-- [ ] Task: Implement timeframe filtering logic in `useAnalytics` (if not already present).
+- [x] Task: Implement timeframe filtering logic in `useAnalytics` (if not already present). 5fe10cb
   - [ ] Write failing unit tests for filtering by "All Time" vs custom ranges.
   - [ ] Implement the filter logic.
   - [ ] Refactor and ensure all tests pass.
