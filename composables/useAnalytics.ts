@@ -307,6 +307,8 @@ export const useAnalytics = () => {
     fetchRiskData,
     filterTradesByTimeframe,
     getPairStats,
-    getTopProfitablePairs
+    getTopProfitablePairs,
+    getVal,
+    parseNumber
   }
 }
