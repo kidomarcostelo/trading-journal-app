@@ -38,30 +38,38 @@ describe('POST /api/trades', () => {
     vi.mocked(readBody).mockResolvedValue(mockBody)
 
     // 3. Mock Google Sheets Responses
-    const mockGetHeaders = vi.fn().mockResolvedValueOnce({
+    const mockGetHeaders = vi.fn().mockResolvedValue({
       data: { values: [mockHeaders] }
     })
     
+    // Mock Chips Sheet Fetch (for auto-pair creation)
+    const mockGetChips = vi.fn().mockResolvedValue({
+      data: { values: [['Pairs'], ['BTC/USD'], ['ETH/USD']], majorDimension: 'COLUMNS' }
+    })
+
     // Mock ID Column Fetch (assuming ID is Col A)
-    // Returns header + existing IDs
-    const mockGetIds = vi.fn().mockResolvedValueOnce({
+    const mockGetIds = vi.fn().mockResolvedValue({
       data: { values: [['ID'], ['1'], ['5'], ['10']] }
     })
 
     // Combine mocks for consecutive calls to .get()
     const mockGet = vi.fn()
-      .mockImplementationOnce(() => mockGetHeaders()) // 1st call: Headers
-      .mockImplementationOnce(() => mockGetIds())     // 2nd call: ID Column
+      .mockImplementationOnce(() => mockGetHeaders()) // 1st call: Master Headers
+      .mockImplementationOnce(() => mockGetChips())   // 2nd call: Chips Sheet (Pair check)
+      .mockImplementationOnce(() => mockGetIds())     // 3rd call: ID Column
 
     const mockAppend = vi.fn().mockResolvedValue({
       data: { updates: { updatedCells: 1 } }
     })
 
+    const mockUpdate = vi.fn().mockResolvedValue({})
+
     const mockClient = {
       spreadsheets: {
         values: {
           get: mockGet,
-          append: mockAppend
+          append: mockAppend,
+          update: mockUpdate
         }
       }
     }
@@ -73,7 +81,7 @@ describe('POST /api/trades', () => {
     // Verify Date Formatting (mm/dd/yyyy)
     // 2023-01-05 -> 01/05/2023
     
-    expect(mockGet).toHaveBeenCalledTimes(2)
+    expect(mockGet).toHaveBeenCalledTimes(3)
     
     // Check increment logic: Max ID is 10, so next should be 11.
     expect(mockAppend).toHaveBeenCalledWith(expect.objectContaining({
