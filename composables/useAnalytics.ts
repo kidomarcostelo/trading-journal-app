@@ -262,16 +262,24 @@ export const useAnalytics = () => {
     
     if (closedTrades.length === 0) return []
 
-    const pairPnls: Record<string, number> = {}
+    const pairData: Record<string, { pnl: number, count: number }> = {}
 
     closedTrades.forEach(t => {
       const pairStr = String(getVal(t, 'pair') || 'Unknown')
       const pnl = parseNumber(getVal(t, 'pnl'))
-      pairPnls[pairStr] = (pairPnls[pairStr] || 0) + pnl
+      if (!pairData[pairStr]) {
+        pairData[pairStr] = { pnl: 0, count: 0 }
+      }
+      pairData[pairStr].pnl += pnl
+      pairData[pairStr].count++
     })
 
-    const sortedPairs = Object.entries(pairPnls)
-      .map(([pair, pnl]) => ({ pair, pnl: Number(pnl.toFixed(2)) }))
+    const sortedPairs = Object.entries(pairData)
+      .map(([pair, data]) => ({ 
+        pair, 
+        pnl: Number(data.pnl.toFixed(2)),
+        count: data.count
+      }))
       .sort((a, b) => b.pnl - a.pnl)
 
     return sortedPairs.slice(0, limit)

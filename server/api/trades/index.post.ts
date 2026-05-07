@@ -36,6 +36,47 @@ export default defineEventHandler(async (event) => {
       throw new Error('Master sheet has no headers. Cannot append trade.')
     }
 
+    // --- Auto-create New Pair in Chips sheet ---
+    if (body.Pair) {
+      try {
+        const chipsResponse = await client.spreadsheets.values.get({
+          spreadsheetId,
+          range: 'Chips!A:ZZ',
+          majorDimension: 'COLUMNS'
+        })
+
+        const columns = chipsResponse.data.values || []
+        const pairsColIndex = columns.findIndex((col: string[]) => ['pairs', 'pair'].includes(col[0]?.toLowerCase()))
+
+        if (pairsColIndex !== -1) {
+          const pairsCol = columns[pairsColIndex]
+          const existingPairs = pairsCol.slice(1).map((p: string) => p.toLowerCase())
+          
+          if (!existingPairs.includes(body.Pair.toLowerCase())) {
+            console.log(`[Trades POST] New pair detected: ${body.Pair}. Adding to Chips sheet.`)
+            
+            // Find the next empty row in this specific column
+            // We append to the column by updating the range Master!{Col}{LastRow+1}
+            const colLetter = getColumnLetter(pairsColIndex)
+            const nextRow = pairsCol.length + 1
+            
+            await client.spreadsheets.values.update({
+              spreadsheetId,
+              range: `Chips!${colLetter}${nextRow}`,
+              valueInputOption: 'USER_ENTERED',
+              requestBody: {
+                values: [[body.Pair]]
+              }
+            })
+          }
+        }
+      } catch (chipError: any) {
+        console.warn('[Trades POST] Failed to update Chips sheet with new pair:', chipError.message)
+        // Don't fail the whole trade creation if just the chip update fails
+      }
+    }
+    // ------------------------------------------
+
     // --- Dynamic Header Expansion ---
     const missingHeaders: string[] = []
     const existingHeadersLower = headers.map((h: string) => h.toLowerCase())

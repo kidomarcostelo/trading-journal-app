@@ -85,5 +85,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: i want to have a page where i can see all the trades i took in one pair, and display it by gallery view. I want to know how much winrate i have on that pair, how much profit/lose i have. I also want to have that page to be display the top pair that i made profit**
+- [~] **Track: i want to have a page where i can see all the trades i took in one pair, and display it by gallery view. I want to know how much winrate i have on that pair, how much profit/lose i have. I also want to have that page to be display the top pair that i made profit**
 *Link: [./tracks/pair_analysis_gallery_view_20260410/](./tracks/pair_analysis_gallery_view_20260410/)*
