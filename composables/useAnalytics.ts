@@ -14,21 +14,42 @@ export const useAnalytics = () => {
   const getVal = (obj: any, key: string) => {
     if (!obj) return undefined
     const keys = Object.keys(obj)
+    const lowerTarget = key.toLowerCase().trim()
     
-    // Exact or Case-Insensitive Match
-    const foundKey = keys.find(k => k.toLowerCase().trim() === key.toLowerCase().trim())
+    // 1. Exact or Case-Insensitive Match (Highest Priority)
+    const foundKey = keys.find(k => k.toLowerCase().trim() === lowerTarget)
     if (foundKey) return obj[foundKey]
     
-    // Special handling for PnL/Profit
-    const lowerKey = key.toLowerCase().trim()
-    if (lowerKey === 'pnl' || lowerKey === 'net pnl' || lowerKey === 'profit') {
-      const pnlKeys = ['PNL', 'pnl', 'Net Pnl', 'Net PNL', 'Profit', 'Profit/Loss', 'Gain/Loss', 'P/L']
-      const altKey = keys.find(k => pnlKeys.some(pk => pk.toLowerCase().trim() === k.toLowerCase().trim()))
-      if (altKey) return obj[altKey]
+    // 2. Special handling for common aliases with PRIORITY
+    // PnL Aliases
+    if (lowerTarget === 'pnl' || lowerTarget === 'net pnl' || lowerTarget === 'profit') {
+      const pnlKeys = ['Net PNL', 'Net Pnl', 'PNL', 'pnl', 'Profit', 'Profit/Loss', 'Gain/Loss', 'P/L']
+      for (const pk of pnlKeys) {
+        const match = keys.find(k => k.toLowerCase().trim() === pk.toLowerCase().trim())
+        if (match) return obj[match]
+      }
     }
 
-    // Fallback for space-less versions
-    const flatTarget = key.toLowerCase().replace(/\s/g, '')
+    // Mental Category Aliases - Priority to "Mental Game Category"
+    if (lowerTarget === 'mental category' || lowerTarget === 'mental' || lowerTarget === 'mental game category') {
+      const mentalKeys = ['Mental Game Category', 'Mental Category', 'Mental', 'Psychology', 'Mindset']
+      for (const mk of mentalKeys) {
+        const match = keys.find(k => k.toLowerCase().trim() === mk.toLowerCase().trim())
+        if (match) return obj[match]
+      }
+    }
+
+    // Rules Followed Aliases
+    if (lowerTarget === 'rules followed' || lowerTarget === 'execution') {
+      const ruleKeys = ['Rules Followed', 'Rules', 'Execution', 'Followed Rules']
+      for (const rk of ruleKeys) {
+        const match = keys.find(k => k.toLowerCase().trim() === rk.toLowerCase().trim())
+        if (match) return obj[match]
+      }
+    }
+
+    // 3. Fallback for space-less versions
+    const flatTarget = lowerTarget.replace(/\s/g, '')
     const foundFlatKey = keys.find(k => k.toLowerCase().replace(/\s/g, '') === flatTarget)
     return foundFlatKey ? obj[foundFlatKey] : undefined
   }
@@ -184,23 +205,32 @@ export const useAnalytics = () => {
     const closedTrades = trades.filter(isClosed)
     if (closedTrades.length === 0) return {
       executionRate: 0,
-      mentalDistribution: { A: 0, B: 0, C: 0 },
+      mentalDistribution: { 'Untagged': 0 } as Record<string, number>,
       emotionFrequency: {} as Record<string, number>
     }
 
-    const rulesFollowedCount = closedTrades.filter(t => t['Rules Followed'] === true || t.rulesFollowed === true).length
+    const rulesFollowedCount = closedTrades.filter(t => {
+      const val = getVal(t, 'rules followed')
+      return val === true || String(val).toLowerCase().trim() === 'true' || val === 1 || val === '1'
+    }).length
     const executionRate = (rulesFollowedCount / closedTrades.length) * 100
 
-    const mentalDistribution = { A: 0, B: 0, C: 0 }
+    const mentalDistribution: Record<string, number> = {}
     const emotionFrequency: Record<string, number> = {}
 
     closedTrades.forEach(t => {
-      // Mental
-      const cat = (t['Mental Category'] || t.mentalCategory || 'B') as 'A' | 'B' | 'C'
-      if (mentalDistribution[cat] !== undefined) mentalDistribution[cat]++
+      // Dynamic Mental Category based on ACTUAL values in "Mental Game Category"
+      // We manually find the key to avoid getVal's alias fallback picking up older columns (like "Mental Category")
+      const mentalKey = Object.keys(t).find(k => k.toLowerCase().trim() === 'mental game category')
+      const catVal = mentalKey ? t[mentalKey] : undefined
+      const cat = catVal ? String(catVal).trim() : ''
+      
+      // If the value is empty or just whitespace, tag as "Untagged"
+      const label = cat === '' ? 'Untagged' : cat
+      mentalDistribution[label] = (mentalDistribution[label] || 0) + 1
 
       // Emotions
-      const emotionsVal = t.Emotions || t.emotions
+      const emotionsVal = getVal(t, 'emotions')
       if (emotionsVal) {
         const list = Array.isArray(emotionsVal) ? emotionsVal : String(emotionsVal).split(',').map(s => s.trim())
         list.forEach(e => {
@@ -309,6 +339,7 @@ export const useAnalytics = () => {
     getPairStats,
     getTopProfitablePairs,
     getVal,
-    parseNumber
+    parseNumber,
+    isClosed
   }
 }
