@@ -81,25 +81,41 @@ const metrics = computed(() => {
   const avgHold = calculateAverageHoldingTime(props.trades)
   const behavior = calculateBehavioralStats(props.trades)
 
+  // Calculate Total Net PnL
+  const closedTrades = props.trades.filter(t => {
+    const status = String(t.Status || t.status || '').toLowerCase()
+    return status === 'closed'
+  })
+  
+  const totalPnL = closedTrades.reduce((sum, t) => {
+    const pnlVal = t.PNL || t.pnl || t['Net PNL'] || t['Net Pnl'] || 0
+    if (typeof pnlVal === 'number') return sum + pnlVal
+    const clean = String(pnlVal).replace(/[^0-9.-]/g, '')
+    const num = parseFloat(clean)
+    return sum + (isNaN(num) ? 0 : num)
+  }, 0)
+
   return {
     profitFactor,
     winRate,
     expectancy,
     avgR,
     avgHold,
-    behavior
+    behavior,
+    totalPnL: Number(totalPnL.toFixed(2)),
+    closedCount: closedTrades.length
   }
 })
 </script>
 
 <template>
   <div class="analytics-dashboard-wrapper">
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <!-- Profit Factor -->
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      <!-- Net PnL -->
       <div class="bg-terminal-black border border-terminal-gray/30 p-4 rounded-lg">
-        <div class="text-xs text-terminal-text/60 uppercase tracking-wider mb-1">Profit Factor</div>
-        <div class="text-2xl font-bold" :class="metrics.profitFactor >= 2 ? 'text-emerald-400' : metrics.profitFactor >= 1 ? 'text-terminal-highlight' : 'text-rose-400'">
-          {{ metrics.profitFactor }}
+        <div class="text-xs text-terminal-text/60 uppercase tracking-wider mb-1">Net PnL</div>
+        <div class="text-2xl font-bold" :class="metrics.totalPnL >= 0 ? 'text-emerald-400' : 'text-rose-400'">
+          {{ metrics.totalPnL >= 0 ? '+' : '' }}{{ metrics.totalPnL }}
         </div>
       </div>
 
@@ -111,11 +127,27 @@ const metrics = computed(() => {
         </div>
       </div>
 
+      <!-- Profit Factor -->
+      <div class="bg-terminal-black border border-terminal-gray/30 p-4 rounded-lg">
+        <div class="text-xs text-terminal-text/60 uppercase tracking-wider mb-1">Profit Factor</div>
+        <div class="text-2xl font-bold" :class="metrics.profitFactor >= 2 ? 'text-emerald-400' : metrics.profitFactor >= 1 ? 'text-terminal-highlight' : 'text-rose-400'">
+          {{ metrics.profitFactor }}
+        </div>
+      </div>
+
       <!-- Expectancy -->
       <div class="bg-terminal-black border border-terminal-gray/30 p-4 rounded-lg">
         <div class="text-xs text-terminal-text/60 uppercase tracking-wider mb-1">Expectancy</div>
         <div class="text-2xl font-bold" :class="metrics.expectancy > 0 ? 'text-emerald-400' : 'text-rose-400'">
           {{ metrics.expectancy }}
+        </div>
+      </div>
+
+      <!-- Total Trades -->
+      <div class="bg-terminal-black border border-terminal-gray/30 p-4 rounded-lg">
+        <div class="text-xs text-terminal-text/60 uppercase tracking-wider mb-1">Closed Trades</div>
+        <div class="text-2xl font-bold text-terminal-highlight">
+          {{ metrics.closedCount }}
         </div>
       </div>
 
