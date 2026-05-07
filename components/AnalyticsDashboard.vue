@@ -27,10 +27,10 @@ const {
   calculateBehavioralStats,
   fetchRiskData,
   getVal,
-  parseNumber
+  parseNumber,
+  isClosed
 } = useAnalytics()
 
-const { formatDuration } = useDuration()
 const { addToast } = useToast()
 
 const isBackfilling = ref(false)
@@ -80,14 +80,10 @@ const metrics = computed(() => {
   const winRate = calculateWinRate(props.trades)
   const expectancy = calculateExpectancy(props.trades)
   const avgR = calculateAverageRMultiple(props.trades)
-  const avgHold = calculateAverageHoldingTime(props.trades)
   const behavior = calculateBehavioralStats(props.trades)
 
-  // Calculate Total Net PnL
-  const closedTrades = props.trades.filter(t => {
-    const status = String(t.Status || t.status || '').toLowerCase().trim()
-    return status === 'closed'
-  })
+  // Calculate Total Net PnL and Closed trades properly using exported helpers
+  const closedTrades = props.trades.filter(isClosed)
   
   const totalPnL = closedTrades.reduce((sum, t) => {
     const pnlVal = getVal(t, 'pnl') || 0
@@ -99,17 +95,26 @@ const metrics = computed(() => {
     winRate,
     expectancy,
     avgR,
-    avgHold,
     behavior,
     totalPnL: Number(totalPnL.toFixed(2)),
     closedCount: closedTrades.length
   }
 })
+
+// Sort categories for consistent display: Untagged last, others alphabetical
+const sortedMentalCategories = computed(() => {
+  const categories = Object.keys(metrics.value.behavior.mentalDistribution)
+  return categories.sort((a, b) => {
+    if (a === 'Untagged') return 1
+    if (b === 'Untagged') return -1
+    return a.localeCompare(b)
+  })
+})
 </script>
 
 <template>
   <div class="analytics-dashboard-wrapper">
-    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
       <!-- Net PnL -->
       <div class="bg-terminal-black border border-terminal-gray/30 p-4 rounded-lg">
         <div class="text-xs text-terminal-text/60 uppercase tracking-wider mb-1">Net PnL</div>
@@ -143,7 +148,7 @@ const metrics = computed(() => {
       <div class="bg-terminal-black border border-terminal-gray/30 p-4 rounded-lg">
         <div class="text-xs text-terminal-text/60 uppercase tracking-wider mb-1">Profit Factor</div>
         <div class="text-2xl font-bold" :class="metrics.profitFactor >= 2 ? 'text-emerald-400' : metrics.profitFactor >= 1 ? 'text-terminal-highlight' : 'text-rose-400'">
-          {{ metrics.profitFactor }}
+          {{ metrics.closedCount === 0 ? '--' : metrics.profitFactor }}
         </div>
       </div>
 
@@ -151,7 +156,7 @@ const metrics = computed(() => {
       <div class="bg-terminal-black border border-terminal-gray/30 p-4 rounded-lg">
         <div class="text-xs text-terminal-text/60 uppercase tracking-wider mb-1">Expectancy</div>
         <div class="text-2xl font-bold" :class="metrics.expectancy > 0 ? 'text-emerald-400' : 'text-rose-400'">
-          {{ metrics.expectancy }}
+          {{ metrics.closedCount === 0 ? '--' : metrics.expectancy }}
         </div>
       </div>
 
@@ -167,31 +172,7 @@ const metrics = computed(() => {
       <div class="bg-terminal-black border border-terminal-gray/30 p-4 rounded-lg">
         <div class="text-xs text-terminal-text/60 uppercase tracking-wider mb-1">Avg R-Multiple</div>
         <div class="text-2xl font-bold text-terminal-highlight">
-          {{ metrics.avgR }}R
-        </div>
-      </div>
-
-      <!-- Avg Holding Time (Win) -->
-      <div class="bg-terminal-black border border-terminal-gray/30 p-4 rounded-lg">
-        <div class="text-xs text-terminal-text/60 uppercase tracking-wider mb-1">Avg Hold (Win)</div>
-        <div class="text-lg font-medium text-emerald-400/80">
-          {{ formatDuration(metrics.avgHold.wins) }}
-        </div>
-      </div>
-
-      <!-- Avg Holding Time (Loss) -->
-      <div class="bg-terminal-black border border-terminal-gray/30 p-4 rounded-lg">
-        <div class="text-xs text-terminal-text/60 uppercase tracking-wider mb-1">Avg Hold (Loss)</div>
-        <div class="text-lg font-medium text-rose-400/80">
-          {{ formatDuration(metrics.avgHold.losses) }}
-        </div>
-      </div>
-
-      <!-- Execution Rate -->
-      <div class="bg-terminal-black border border-terminal-gray/30 p-4 rounded-lg">
-        <div class="text-xs text-terminal-text/60 uppercase tracking-wider mb-1">Execution %</div>
-        <div class="text-2xl font-bold" :class="metrics.behavior.executionRate >= 90 ? 'text-emerald-400' : 'text-terminal-highlight'">
-          {{ metrics.behavior.executionRate }}%
+          {{ metrics.closedCount === 0 ? '--' : metrics.avgR + 'R' }}
         </div>
       </div>
     </div>
@@ -201,15 +182,16 @@ const metrics = computed(() => {
       <div class="bg-terminal-black/40 border border-terminal-gray/30 rounded-xl p-6">
         <h3 class="text-xs font-bold uppercase tracking-widest text-terminal-text/40 mb-6">Mental Distribution</h3>
         <div class="space-y-4">
-          <div v-for="(count, grade) in metrics.behavior.mentalDistribution" :key="grade" class="flex items-center gap-4">
-            <div class="w-8 font-mono font-bold text-terminal-highlight">{{ grade }}</div>
+          <div v-for="category in sortedMentalCategories" :key="category" class="flex items-center gap-4">
+            <div class="w-24 font-mono font-bold text-terminal-highlight text-xs truncate" :title="category">{{ category }}</div>
             <div class="flex-1 h-2 bg-terminal-gray/20 rounded-full overflow-hidden">
               <div 
-                class="h-full bg-terminal-accent transition-all duration-1000" 
-                :style="{ width: `${(count / (props.trades.filter(t => (t.Status || t.status)?.toLowerCase() === 'closed').length || 1)) * 100}%` }"
+                class="h-full transition-all duration-1000" 
+                :class="category === 'Untagged' ? 'bg-terminal-text/20' : 'bg-terminal-accent'"
+                :style="{ width: `${(metrics.behavior.mentalDistribution[category] / (metrics.closedCount || 1)) * 100}%` }"
               ></div>
             </div>
-            <div class="w-12 text-right text-xs text-terminal-text/60">{{ count }} trades</div>
+            <div class="w-12 text-right text-xs text-terminal-text/60">{{ metrics.behavior.mentalDistribution[category] }}</div>
           </div>
         </div>
       </div>
