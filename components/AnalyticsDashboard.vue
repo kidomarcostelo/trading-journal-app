@@ -83,16 +83,13 @@ const metrics = computed(() => {
 
   // Calculate Total Net PnL
   const closedTrades = props.trades.filter(t => {
-    const status = String(t.Status || t.status || '').toLowerCase()
+    const status = String(t.Status || t.status || '').toLowerCase().trim()
     return status === 'closed'
   })
   
   const totalPnL = closedTrades.reduce((sum, t) => {
-    const pnlVal = t.PNL || t.pnl || t['Net PNL'] || t['Net Pnl'] || 0
-    if (typeof pnlVal === 'number') return sum + pnlVal
-    const clean = String(pnlVal).replace(/[^0-9.-]/g, '')
-    const num = parseFloat(clean)
-    return sum + (isNaN(num) ? 0 : num)
+    const pnlVal = getVal(t, 'pnl') || 0
+    return sum + parseNumber(pnlVal)
   }, 0)
 
   return {
@@ -114,16 +111,29 @@ const metrics = computed(() => {
       <!-- Net PnL -->
       <div class="bg-terminal-black border border-terminal-gray/30 p-4 rounded-lg">
         <div class="text-xs text-terminal-text/60 uppercase tracking-wider mb-1">Net PnL</div>
-        <div class="text-2xl font-bold" :class="metrics.totalPnL >= 0 ? 'text-emerald-400' : 'text-rose-400'">
-          {{ metrics.totalPnL >= 0 ? '+' : '' }}{{ metrics.totalPnL }}
+        <div 
+          class="text-2xl font-bold" 
+          :class="[
+            metrics.closedCount === 0 ? 'text-terminal-text/20' : 
+            metrics.totalPnL > 0 ? 'text-emerald-400' : 
+            metrics.totalPnL < 0 ? 'text-rose-400' : 'text-terminal-highlight'
+          ]"
+        >
+          {{ metrics.closedCount === 0 ? '--' : (metrics.totalPnL >= 0 ? '+' : '') + metrics.totalPnL }}
         </div>
       </div>
 
       <!-- Win Rate -->
       <div class="bg-terminal-black border border-terminal-gray/30 p-4 rounded-lg">
         <div class="text-xs text-terminal-text/60 uppercase tracking-wider mb-1">Win Rate</div>
-        <div class="text-2xl font-bold" :class="metrics.winRate >= 50 ? 'text-emerald-400' : 'text-rose-400'">
-          {{ metrics.winRate }}%
+        <div 
+          class="text-2xl font-bold" 
+          :class="[
+            metrics.closedCount === 0 ? 'text-terminal-text/20' :
+            metrics.winRate >= 50 ? 'text-emerald-400' : 'text-rose-400'
+          ]"
+        >
+          {{ metrics.closedCount === 0 ? '--' : metrics.winRate + '%' }}
         </div>
       </div>
 

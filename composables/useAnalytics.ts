@@ -16,24 +16,25 @@ export const useAnalytics = () => {
     const keys = Object.keys(obj)
     
     // Exact or Case-Insensitive Match
-    const foundKey = keys.find(k => k.toLowerCase() === key.toLowerCase())
+    const foundKey = keys.find(k => k.toLowerCase().trim() === key.toLowerCase().trim())
     if (foundKey) return obj[foundKey]
     
     // Special handling for PnL/Profit
-    if (key.toLowerCase() === 'pnl' || key.toLowerCase() === 'net pnl') {
-      const pnlKeys = ['PNL', 'pnl', 'Net Pnl', 'Net PNL', 'Profit', 'Profit/Loss']
-      const altKey = keys.find(k => pnlKeys.some(pk => pk.toLowerCase() === k.toLowerCase()))
+    const lowerKey = key.toLowerCase().trim()
+    if (lowerKey === 'pnl' || lowerKey === 'net pnl' || lowerKey === 'profit') {
+      const pnlKeys = ['PNL', 'pnl', 'Net Pnl', 'Net PNL', 'Profit', 'Profit/Loss', 'Gain/Loss', 'P/L']
+      const altKey = keys.find(k => pnlKeys.some(pk => pk.toLowerCase().trim() === k.toLowerCase().trim()))
       if (altKey) return obj[altKey]
     }
 
     // Fallback for space-less versions
-    const flatKey = key.toLowerCase().replace(/\s/g, '')
-    const foundFlatKey = keys.find(k => k.toLowerCase().replace(/\s/g, '') === flatKey)
+    const flatTarget = key.toLowerCase().replace(/\s/g, '')
+    const foundFlatKey = keys.find(k => k.toLowerCase().replace(/\s/g, '') === flatTarget)
     return foundFlatKey ? obj[foundFlatKey] : undefined
   }
 
   const isClosed = (t: Trade): boolean => {
-    const status = String(getVal(t, 'status') || '').toLowerCase()
+    const status = String(getVal(t, 'status') || '').toLowerCase().trim()
     return status === 'closed'
   }
 
