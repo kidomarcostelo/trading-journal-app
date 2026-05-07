@@ -43,7 +43,7 @@ const initialForm = {
   MAE: '',
   MFE: '',
   'Rules Followed': true,
-  'Mental Category': 'A',
+  'Mental Category': '',
   'Before Picture': '',
   'Before Journal': ''
 }
@@ -237,9 +237,10 @@ const submitTrade = async () => {
               <div class="flex items-center justify-between p-1 px-3 bg-terminal-black/20 border border-terminal-gray/30 rounded-lg">
                 <span class="text-xs text-terminal-text/70 uppercase font-medium">Mental</span>
                 <select v-model="form['Mental Category']" class="bg-transparent text-terminal-highlight text-xs font-mono outline-none cursor-pointer py-2">
-                  <option value="A">A Game</option>
-                  <option value="B">B Game</option>
-                  <option value="C">C Game</option>
+                  <option value="">None / Untagged</option>
+                  <option value="A Game">A Game</option>
+                  <option value="B Game">B Game</option>
+                  <option value="C Game">C Game</option>
                 </select>
               </div>
             </div>
