@@ -35,6 +35,16 @@ const uniquePairs = computed(() => {
   return Array.from(pairs).sort()
 })
 
+const pairCounts = computed(() => {
+  const counts: Record<string, number> = {}
+  const timeFiltered = filterTradesByTimeframe(tradesList.value, dateRange.value)
+  timeFiltered.forEach(t => {
+    const pair = String(t.pair || t.Pair || 'Unknown')
+    counts[pair] = (counts[pair] || 0) + 1
+  })
+  return counts
+})
+
 // Ensure a selected pair if there are pairs and none selected
 watch(uniquePairs, (newPairs) => {
   if (newPairs.length > 0 && !selectedPair.value) {
@@ -129,7 +139,10 @@ const selectedPairTrades = computed(() => {
           >
             <span class="text-xs font-bold text-emerald-500/50">#{{ index + 1 }}</span>
             <span class="text-sm font-bold text-emerald-400">{{ pair.pair }}</span>
-            <span class="text-sm font-mono text-terminal-highlight ml-1">+{{ pair.pnl }}</span>
+            <div class="flex items-center gap-1.5 ml-1">
+              <span class="text-sm font-mono text-terminal-highlight">+{{ pair.pnl }}</span>
+              <span class="text-[10px] font-mono text-terminal-text/40">({{ pair.count }})</span>
+            </div>
           </div>
         </div>
       </div>
@@ -148,6 +161,7 @@ const selectedPairTrades = computed(() => {
         <div v-else class="flex flex-col lg:flex-row gap-6 h-[800px] border border-terminal-gray/30 rounded-2xl overflow-hidden bg-terminal-black/40">
           <PairSidebar 
             :pairs="uniquePairs" 
+            :counts="pairCounts"
             :selectedPair="selectedPair" 
             @select="selectedPair = $event" 
           />
@@ -163,8 +177,11 @@ const selectedPairTrades = computed(() => {
                 <p :class="['text-2xl font-bold', pairStats.winRate >= 50 ? 'text-emerald-400' : 'text-rose-400']">{{ pairStats.winRate }}%</p>
               </div>
               <div>
-                <p class="text-xs text-terminal-text/50 uppercase tracking-widest font-bold">Net PnL</p>
-                <p :class="['text-2xl font-bold', pairStats.pnl >= 0 ? 'text-emerald-400' : 'text-rose-400']">{{ pairStats.pnl >= 0 ? '+' : '' }}{{ pairStats.pnl }}</p>
+                <p class="text-xs text-terminal-text/50 uppercase tracking-widest font-bold">Net PnL & Trades</p>
+                <div class="flex items-baseline gap-2">
+                  <p :class="['text-2xl font-bold', pairStats.pnl >= 0 ? 'text-emerald-400' : 'text-rose-400']">{{ pairStats.pnl >= 0 ? '+' : '' }}{{ pairStats.pnl }}</p>
+                  <p class="text-sm font-mono text-terminal-text/40">({{ pairStats.count }} trades)</p>
+                </div>
               </div>
             </div>
             
