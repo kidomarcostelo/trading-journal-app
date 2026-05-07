@@ -229,8 +229,8 @@ export const useAnalytics = () => {
       const label = cat === '' ? 'Untagged' : cat
       mentalDistribution[label] = (mentalDistribution[label] || 0) + 1
 
-      // Emotions
-      const emotionsVal = getVal(t, 'emotions')
+      // Emotions - strictly from 'Mental Game' case-sensitive, fallback to 'emotions'
+      const emotionsVal = t['Mental Game'] || getVal(t, 'emotions')
       if (emotionsVal) {
         const list = Array.isArray(emotionsVal) ? emotionsVal : String(emotionsVal).split(',').map(s => s.trim())
         list.forEach(e => {
