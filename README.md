@@ -1,75 +1,93 @@
-# Nuxt Minimal Starter
+# Trading Journal App
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+A robust trading journal application built to track, analyze, and manage your trades, backed by Google Sheets.
 
-## Setup
+## Architecture
 
-Make sure to install dependencies:
+This application is built with a modern, full-stack JavaScript ecosystem:
+
+- **Framework:** [Nuxt 3](https://nuxt.com/) (Vue 3, Composition API)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **Data Storage:** Google Sheets API (used as the primary database)
+- **Language:** TypeScript
+- **Testing:** [Vitest](https://vitest.dev/)
+
+The application relies on Server Routes (`server/api/*`) in Nuxt to handle interactions with the Google Sheets API securely, keeping credentials on the server.
+
+## Setup & Configuration
+
+### Prerequisites
+
+- Node.js (v18 or higher)
+- A Google Cloud Project with the **Google Sheets API** enabled.
+- A Google Service Account with a downloaded JSON key.
+
+### 1. Environment Variables
+
+Create a `.env` file in the root of the project by copying the example:
 
 ```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
+cp .env.example .env
 ```
 
-## Development Server
+Populate the following variables:
+
+```env
+# Google Service Account credentials
+NUXT_GOOGLE_SERVICE_ACCOUNT_EMAIL=your-service-account@your-project.iam.gserviceaccount.com
+# Use the exact private key from the JSON, keeping \n or base64 encoding it
+NUXT_GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+
+# The ID of your Google Spreadsheet (found in the URL)
+NUXT_GOOGLE_SPREADSHEET_ID=your_spreadsheet_id_here
+```
+
+### 2. Multi-Environment Spreadsheet Setup
+
+You can manage different environments (e.g., Development, Staging, Production) simply by using different `NUXT_GOOGLE_SPREADSHEET_ID` values pointing to different Google Sheets.
+
+In your Google Spreadsheet, you must have a sheet named **Master**. This is where the application reads and writes trades.
+
+### 3. Installation
+
+```bash
+npm install
+```
+
+## Seeding the Database (Spreadsheet)
+
+To quickly populate your Google Sheet with standard columns and sample data, use the seeding utility.
+
+```bash
+npm run seed
+```
+
+*Note: This will clear existing data in the `Master` sheet and replace it with sample data.*
+
+## Local Development Server
 
 Start the development server on `http://localhost:3000`:
 
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+## Testing Guide
 
-Build the application for production:
+The project uses Vitest for unit and component testing.
+
+To run the test suite:
 
 ```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+npm run test
 ```
 
-Locally preview production build:
+To run tests in watch mode:
 
 ```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
+npx vitest watch
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct, branching strategy, and the process for submitting pull requests to us.
