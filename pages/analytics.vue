@@ -1,34 +1,43 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
-import { LayoutDashboard, BarChart3, TrendingUp, RefreshCw } from 'lucide-vue-next'
+import { ref, computed, watch, toRef } from 'vue'
+import { LayoutDashboard, BarChart3, TrendingUp, RefreshCw, Filter } from 'lucide-vue-next'
 import type { Trade } from '~/types'
 import AnalyticsDashboard from '~/components/AnalyticsDashboard.vue'
 import PairSidebar from '~/components/PairSidebar.vue'
 import PairGallery from '~/components/PairGallery.vue'
 import CalendarRange from '~/components/CalendarRange.vue'
 import { useAnalytics } from '~/composables/useAnalytics'
+import { useTrades } from '~/composables/useTrades'
 
 const { data: trades, refresh, pending } = useFetch<Trade[]>('/api/trades')
-const tradesList = computed(() => trades.value || [])
 
 const activeTab = ref<'overview' | 'pair'>('overview')
 const selectedPair = ref<string>('')
-const startDate = ref('')
-const endDate = ref('')
 
-const dateRange = computed(() => {
-  if (!startDate.value && !endDate.value) return 'All Time'
-  return { 
-    start: startDate.value ? new Date(startDate.value) : null, 
-    end: endDate.value ? new Date(endDate.value) : null 
-  }
+const { 
+  filterPeriod, 
+  startDate,
+  endDate,
+  customRangeLabel,
+  filteredTrades 
+} = useTrades(computed(() => trades.value || []))
+
+const showCalendar = ref(false)
+watch(filterPeriod, (newVal) => {
+  if (newVal === 'custom') showCalendar.value = true
 })
 
-const { getPairStats, getTopProfitablePairs, filterTradesByTimeframe } = useAnalytics()
+const handleFilterClick = () => {
+  if (filterPeriod.value === 'custom') {
+    showCalendar.value = true
+  }
+}
+
+const { getPairStats, getTopProfitablePairs } = useAnalytics()
 
 const uniquePairs = computed(() => {
   const pairs = new Set<string>()
-  tradesList.value.forEach(t => {
+  filteredTrades.value.forEach(t => {
     const pair = t.pair || t.Pair
     if (pair) pairs.add(String(pair))
   })
@@ -37,8 +46,7 @@ const uniquePairs = computed(() => {
 
 const pairCounts = computed(() => {
   const counts: Record<string, number> = {}
-  const timeFiltered = filterTradesByTimeframe(tradesList.value, dateRange.value)
-  timeFiltered.forEach(t => {
+  filteredTrades.value.forEach(t => {
     const pair = String(t.pair || t.Pair || 'Unknown')
     counts[pair] = (counts[pair] || 0) + 1
   })
@@ -53,18 +61,18 @@ watch(uniquePairs, (newPairs) => {
 }, { immediate: true })
 
 const topProfitablePairs = computed(() => {
-  return getTopProfitablePairs(tradesList.value, dateRange.value, 10)
+  // Pass 'All Time' because filteredTrades is already filtered by date
+  return getTopProfitablePairs(filteredTrades.value, 'All Time', 10)
 })
 
 const pairStats = computed(() => {
   if (!selectedPair.value) return null
-  return getPairStats(tradesList.value, selectedPair.value, dateRange.value)
+  return getPairStats(filteredTrades.value, selectedPair.value, 'All Time')
 })
 
 const selectedPairTrades = computed(() => {
   if (!selectedPair.value) return []
-  const timeFiltered = filterTradesByTimeframe(tradesList.value, dateRange.value)
-  return timeFiltered.filter(t => (t.pair === selectedPair.value || t.Pair === selectedPair.value))
+  return filteredTrades.value.filter(t => (t.pair === selectedPair.value || t.Pair === selectedPair.value))
 })
 </script>
 
@@ -83,7 +91,32 @@ const selectedPairTrades = computed(() => {
         </div>
         
         <div class="flex flex-wrap items-center gap-4">
-          <CalendarRange v-model:start-date="startDate" v-model:end-date="endDate" />
+          <div class="flex items-center gap-2">
+            <div class="relative min-w-[160px]">
+               <select 
+                 v-model="filterPeriod" 
+                 @click="handleFilterClick"
+                 class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded-lg px-4 py-2.5 text-sm text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent outline-none cursor-pointer pr-10"
+               >
+                 <option value="all">All Time</option>
+                 <option value="week">This Week</option>
+                 <option value="last-week">Last Week</option>
+                 <option value="month">This Month</option>
+                 <option value="last-month">Last Month</option>
+                 <option value="custom">
+                   {{ filterPeriod === 'custom' ? customRangeLabel : 'Custom Range' }}
+                 </option>
+               </select>
+               <Filter class="w-4 h-4 absolute right-3 top-3 text-terminal-text/40 pointer-events-none" />
+            </div>
+
+            <CalendarRange 
+              v-if="showCalendar" 
+              v-model:start-date="startDate" 
+              v-model:end-date="endDate" 
+              @close="showCalendar = false"
+            />
+          </div>
           
           <button 
             @click="refresh()" 
@@ -153,9 +186,9 @@ const selectedPairTrades = computed(() => {
         <p class="text-xs font-bold uppercase tracking-[0.3em] animate-pulse">Loading Intelligence...</p>
       </div>
 
-      <div v-else-if="tradesList.length > 0" class="animate-in fade-in slide-in-from-bottom-2 duration-700">
+      <div v-else-if="filteredTrades.length > 0" class="animate-in fade-in slide-in-from-bottom-2 duration-700">
         <div v-if="activeTab === 'overview'">
-          <AnalyticsDashboard :trades="filterTradesByTimeframe(tradesList, dateRange)" />
+          <AnalyticsDashboard :trades="filteredTrades" />
         </div>
         
         <div v-else class="flex flex-col lg:flex-row gap-6 h-[800px] border border-terminal-gray/30 rounded-2xl overflow-hidden bg-terminal-black/40">
@@ -193,8 +226,8 @@ const selectedPairTrades = computed(() => {
       <div v-else class="py-32 text-center border-2 border-dashed border-terminal-gray/20 rounded-2xl opacity-30 flex flex-col items-center gap-4">
         <TrendingUp class="w-12 h-12" />
         <div>
-          <p class="text-lg font-medium">No trade data available.</p>
-          <p class="text-sm">Log some trades in the dashboard to generate analytics.</p>
+          <p class="text-lg font-medium">No trade data available for this period.</p>
+          <p class="text-sm">Log some trades or change the date range to generate analytics.</p>
         </div>
       </div>
     </div>

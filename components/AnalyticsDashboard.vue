@@ -25,7 +25,9 @@ const {
   calculateAverageRMultiple,
   calculateAverageHoldingTime,
   calculateBehavioralStats,
-  fetchRiskData
+  fetchRiskData,
+  getVal,
+  parseNumber
 } = useAnalytics()
 
 const { formatDuration } = useDuration()
