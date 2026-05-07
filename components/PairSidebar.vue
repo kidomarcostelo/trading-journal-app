@@ -17,14 +17,17 @@
         v-for="pair in filteredPairs" 
         :key="pair"
         @click="$emit('select', pair)"
-        class="px-3 py-2 rounded-md cursor-pointer transition-colors text-sm"
+        class="px-3 py-2 rounded-md cursor-pointer transition-colors text-sm flex items-center justify-between"
         :class="[
           selectedPair === pair 
             ? 'bg-slate-800 text-white font-medium' 
             : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-300'
         ]"
       >
-        {{ pair }}
+        <span class="truncate">{{ pair }}</span>
+        <span v-if="counts && counts[pair]" class="text-[10px] font-mono opacity-50 bg-terminal-black/40 px-1.5 py-0.5 rounded border border-terminal-gray/20">
+          {{ counts[pair] }}
+        </span>
       </li>
       <li v-if="filteredPairs.length === 0" class="px-3 py-4 text-center text-slate-500 text-sm">
         No pairs found.
@@ -39,6 +42,7 @@ import { Search } from 'lucide-vue-next'
 
 const props = defineProps<{
   pairs: string[]
+  counts?: Record<string, number>
   selectedPair?: string
 }>()
 

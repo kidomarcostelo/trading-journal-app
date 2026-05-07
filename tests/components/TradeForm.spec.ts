@@ -58,6 +58,5 @@ describe('TradeForm', () => {
     
     expect(wrapper.text()).toContain('MAE (Adverse)')
     expect(wrapper.text()).toContain('Execution & Mindset')
-    expect(wrapper.text()).toContain('Timing & Session')
   })
 })

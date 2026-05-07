@@ -18,12 +18,6 @@ export default defineNuxtConfig({
     port: 3000
   },
 
-  nitro: {
-    devProxy: {
-        host: '0.0.0.0'
-    }
-  },
-
   runtimeConfig: {
     googleSpreadsheetId: process.env.GOOGLE_SPREADSHEET_ID,
     googleServiceAccountEmail: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
