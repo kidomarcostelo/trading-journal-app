@@ -44,9 +44,6 @@ const initialForm = {
   MFE: '',
   'Rules Followed': true,
   'Mental Category': 'A',
-  'Entry Time': '',
-  'Exit Time': '',
-  'Session': '',
   'Before Picture': '',
   'Before Journal': ''
 }
@@ -243,30 +240,6 @@ const submitTrade = async () => {
                   <option value="A">A Game</option>
                   <option value="B">B Game</option>
                   <option value="C">C Game</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <!-- Timing & Session -->
-          <div class="space-y-4">
-            <h3 class="text-[10px] font-bold text-terminal-text/30 uppercase tracking-[0.2em] mb-2 px-1">Timing & Session</h3>
-            <div class="grid grid-cols-3 gap-3">
-              <div>
-                <label class="block text-[10px] font-bold text-terminal-text/40 mb-1 ml-1 uppercase tracking-wider">Entry</label>
-                <input v-model="form['Entry Time']" type="time" class="w-full bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-xs text-terminal-highlight outline-none focus:border-terminal-accent" />
-              </div>
-              <div>
-                <label class="block text-[10px] font-bold text-terminal-text/40 mb-1 ml-1 uppercase tracking-wider">Exit</label>
-                <input v-model="form['Exit Time']" type="time" class="w-full bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-xs text-terminal-highlight outline-none focus:border-terminal-accent" />
-              </div>
-              <div>
-                <label class="block text-[10px] font-bold text-terminal-text/40 mb-1 ml-1 uppercase tracking-wider">Session</label>
-                <select v-model="form.Session" class="w-full bg-terminal-black border border-terminal-gray/30 rounded px-2 py-1.5 text-xs text-terminal-highlight outline-none focus:border-terminal-accent cursor-pointer">
-                  <option value="">Auto</option>
-                  <option value="London">London</option>
-                  <option value="New York">NY</option>
-                  <option value="Asia">Asia</option>
                 </select>
               </div>
             </div>
