@@ -4,8 +4,8 @@ export const useAnalytics = () => {
   
   const parseNumber = (val: any): number => {
     if (typeof val === 'number') return val
-    if (!val) return 0
-    // Remove currency symbols, commas, and spaces, keep - and .
+    if (!val || String(val).trim() === '') return 0
+    // Handle strings: remove currency, commas, and handle negative signs correctly
     const clean = String(val).replace(/[^0-9.-]/g, '')
     const num = parseFloat(clean)
     return isNaN(num) ? 0 : num
@@ -14,10 +14,19 @@ export const useAnalytics = () => {
   const getVal = (obj: any, key: string) => {
     if (!obj) return undefined
     const keys = Object.keys(obj)
+    
+    // Exact or Case-Insensitive Match
     const foundKey = keys.find(k => k.toLowerCase() === key.toLowerCase())
     if (foundKey) return obj[foundKey]
     
-    // Fallback for space-less versions like "exitdate" for "Exit Date"
+    // Special handling for PnL/Profit
+    if (key.toLowerCase() === 'pnl' || key.toLowerCase() === 'net pnl') {
+      const pnlKeys = ['PNL', 'pnl', 'Net Pnl', 'Net PNL', 'Profit', 'Profit/Loss']
+      const altKey = keys.find(k => pnlKeys.some(pk => pk.toLowerCase() === k.toLowerCase()))
+      if (altKey) return obj[altKey]
+    }
+
+    // Fallback for space-less versions
     const flatKey = key.toLowerCase().replace(/\s/g, '')
     const foundFlatKey = keys.find(k => k.toLowerCase().replace(/\s/g, '') === flatKey)
     return foundFlatKey ? obj[foundFlatKey] : undefined
