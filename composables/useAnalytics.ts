@@ -206,7 +206,9 @@ export const useAnalytics = () => {
     if (closedTrades.length === 0) return {
       executionRate: 0,
       mentalDistribution: { 'Untagged': 0 } as Record<string, number>,
-      emotionFrequency: {} as Record<string, number>
+      emotionFrequency: {} as Record<string, number>,
+      tacticalCategoryDistribution: { 'Untagged': 0 } as Record<string, number>,
+      tacticalSkillFrequency: {} as Record<string, number>
     }
 
     const rulesFollowedCount = closedTrades.filter(t => {
@@ -217,6 +219,8 @@ export const useAnalytics = () => {
 
     const mentalDistribution: Record<string, number> = {}
     const emotionFrequency: Record<string, number> = {}
+    const tacticalCategoryDistribution: Record<string, number> = {}
+    const tacticalSkillFrequency: Record<string, number> = {}
 
     closedTrades.forEach(t => {
       // Dynamic Mental Category based on ACTUAL values in "Mental Game Category"
@@ -237,12 +241,29 @@ export const useAnalytics = () => {
           if (e) emotionFrequency[e] = (emotionFrequency[e] || 0) + 1
         })
       }
+
+      // Tactical Skill Category - strictly case-sensitive
+      const tacticalCatVal = t['Tactical Skill Category']
+      const tacticalCat = tacticalCatVal ? String(tacticalCatVal).trim() : ''
+      const tacticalLabel = tacticalCat === '' ? 'Untagged' : tacticalCat
+      tacticalCategoryDistribution[tacticalLabel] = (tacticalCategoryDistribution[tacticalLabel] || 0) + 1
+
+      // Tactical Skill - strictly case-sensitive, treat as single string
+      const tacticalSkillVal = t['Tactical Skill']
+      if (tacticalSkillVal) {
+        const skill = String(tacticalSkillVal).trim()
+        if (skill) {
+          tacticalSkillFrequency[skill] = (tacticalSkillFrequency[skill] || 0) + 1
+        }
+      }
     })
 
     return {
       executionRate: Number(executionRate.toFixed(1)),
       mentalDistribution,
-      emotionFrequency
+      emotionFrequency,
+      tacticalCategoryDistribution,
+      tacticalSkillFrequency
     }
   }
 
