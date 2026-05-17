@@ -1,21 +1,55 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { Plus, Trash2, Save, Loader2, AlertCircle } from 'lucide-vue-next'
+import { ref, watch, onMounted, computed } from 'vue'
+import { Plus, Trash2, Save, Loader2, AlertCircle, RefreshCw } from 'lucide-vue-next'
 import { useSettings } from '~/composables/useSettings'
 import { useToast } from '~/composables/useToast'
-import type { ChecklistRule, TierThreshold } from '~/types'
+import type { ChecklistRule, TierThreshold, ChipCategory } from '~/types'
 
-const { checklistRules, tierThresholds, isLoading, saveChecklistConfig } = useSettings()
+const { strategyChecklists, isLoading, saveChecklistConfig } = useSettings()
 const { addToast } = useToast()
+
+const { data: config, pending: configPending } = useFetch<ChipCategory[]>('/api/config')
+
+const strategies = computed(() => {
+  const strategyCat = config.value?.find(c => c.id.toLowerCase() === 'strategies')
+  return strategyCat ? ['Default', ...strategyCat.values] : ['Default']
+})
+
+const selectedStrategy = ref('Default')
 
 const localRules = ref<ChecklistRule[]>([])
 const localTiers = ref<TierThreshold[]>([])
 
-onMounted(() => {
-  // Deep clone to avoid mutating global state until saved
-  localRules.value = JSON.parse(JSON.stringify(checklistRules.value || []))
-  localTiers.value = JSON.parse(JSON.stringify(tierThresholds.value || []))
+// When strategy changes, load its specific rules or default to empty
+watch(selectedStrategy, (newStrategy) => {
+  const config = strategyChecklists.value[newStrategy]
+  if (config) {
+    localRules.value = JSON.parse(JSON.stringify(config.rules || []))
+    localTiers.value = JSON.parse(JSON.stringify(config.tiers || []))
+  } else {
+    localRules.value = []
+    localTiers.value = []
+  }
 })
+
+// Initialize on mount
+onMounted(() => {
+  const config = strategyChecklists.value['Default']
+  if (config) {
+    localRules.value = JSON.parse(JSON.stringify(config.rules || []))
+    localTiers.value = JSON.parse(JSON.stringify(config.tiers || []))
+  }
+})
+
+// Watch strategyChecklists globally just in case they load later
+watch(strategyChecklists, (newChecklists) => {
+  const config = newChecklists[selectedStrategy.value]
+  if (config) {
+    localRules.value = JSON.parse(JSON.stringify(config.rules || []))
+    localTiers.value = JSON.parse(JSON.stringify(config.tiers || []))
+  }
+}, { deep: true })
+
 
 const addRule = () => {
   localRules.value.push({ description: '', weight: 1, isMandatory: false })
@@ -35,7 +69,6 @@ const removeTier = (index: number) => {
 
 const handleSave = async () => {
   try {
-    // Basic validation
     if (localRules.value.some(r => !r.description.trim())) {
       addToast({ title: 'Validation Error', message: 'All rules must have a description.', type: 'error' })
       return
@@ -45,13 +78,11 @@ const handleSave = async () => {
       return
     }
 
-    // Sort tiers descending by threshold for logical consistency
     const sortedTiers = [...localTiers.value].sort((a, b) => b.threshold - a.threshold)
 
-    await saveChecklistConfig(localRules.value, sortedTiers)
-    addToast({ title: 'Success', message: 'Checklist configuration saved successfully.', type: 'success' })
+    await saveChecklistConfig(selectedStrategy.value, localRules.value, sortedTiers)
+    addToast({ title: 'Success', message: `Checklist configuration for ${selectedStrategy.value} saved successfully.`, type: 'success' })
     
-    // Update local state with sorted
     localTiers.value = sortedTiers
   } catch (error: any) {
     addToast({ title: 'Error', message: error.message || 'Failed to save configuration.', type: 'error' })
@@ -62,6 +93,24 @@ const handleSave = async () => {
 <template>
   <div class="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
     
+    <!-- Strategy Selector -->
+    <div class="flex items-center gap-4 bg-terminal-dark/50 border border-terminal-gray/30 p-4 rounded-xl">
+      <label class="text-sm font-bold text-terminal-highlight uppercase tracking-widest shrink-0">Strategy Context:</label>
+      <div class="relative flex-1 max-w-xs">
+        <select 
+          v-model="selectedStrategy"
+          class="w-full appearance-none bg-terminal-black border border-terminal-gray/30 rounded-lg px-4 py-2.5 text-sm text-terminal-text hover:border-terminal-gray/50 focus:border-terminal-accent outline-none cursor-pointer transition-all"
+        >
+          <option v-if="configPending" value="Default" disabled>Loading strategies...</option>
+          <option v-for="strat in strategies" :key="strat" :value="strat">{{ strat }}</option>
+        </select>
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-terminal-text/50">
+          <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+        </div>
+      </div>
+      <div v-if="configPending" class="text-terminal-text/40 animate-spin"><RefreshCw class="w-4 h-4" /></div>
+    </div>
+
     <!-- Rules Configuration -->
     <div class="bg-terminal-black/40 border border-terminal-gray/30 rounded-xl p-6">
       <div class="flex items-center justify-between mb-6">
