@@ -8,11 +8,18 @@ export default defineEventHandler(async (event) => {
   if (!settings.chip_layout) {
     settings.chip_layout = { panels: [] }
   }
-  if (!settings.checklistRules) {
-    settings.checklistRules = []
-  }
-  if (!settings.tierThresholds) {
-    settings.tierThresholds = []
+  if (!settings.strategyChecklists) {
+    // Migration fallback if old format exists
+    if (settings.checklistRules || settings.tierThresholds) {
+      settings.strategyChecklists = {
+        'Default': {
+          rules: settings.checklistRules || [],
+          tiers: settings.tierThresholds || []
+        }
+      }
+    } else {
+      settings.strategyChecklists = {}
+    }
   }
   
   return settings
