@@ -34,7 +34,7 @@
 - [x] Task: Update `composables/useSettings.ts` and API routes to handle saving and loading the new `strategyChecklists` map structure. d4cb38c
 - [x] Task: Refactor `SettingsChecklist.vue` to include a Strategy Selector and update the forms to edit the rules/tiers for the selected strategy. cd3aa6c
 - [x] Task: Refactor `FloatingChecklist.vue` to receive the trade's selected strategy and dynamically compute the correct rules and tiers. cd3aa6c
-- [ ] Task: Conductor - User Manual Verification 'Phase 3b: Refactor for Strategy-Specific Checklists' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3b: Refactor for Strategy-Specific Checklists' (Protocol in workflow.md) cd3aa6c
 
 ## Phase 4: Data Persistence & UI Integration
 - [ ] Task: Update `useTrades.ts` composable to handle saving `checklistScore` and `tier` payload when creating/updating a trade.
