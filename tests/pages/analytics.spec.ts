@@ -2,6 +2,9 @@ import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import { ref } from 'vue'
 import AnalyticsPage from '../../pages/analytics.vue'
+import AnalyticsDashboard from '../../components/AnalyticsDashboard.vue'
+import PairSidebar from '../../components/PairSidebar.vue'
+import PairGallery from '../../components/PairGallery.vue'
 
 const globalStubs = {
   NuxtLink: true,
@@ -17,13 +20,25 @@ const globalStubs = {
 
 describe('Analytics Page', () => {
   beforeAll(() => {
+    const today = new Date().toISOString()
     vi.stubGlobal('useFetch', () => ({
       data: ref([
-        { id: '1', pair: 'BTC/USD', pnl: 100, status: 'Closed' },
-        { id: '2', pair: 'ETH/USD', pnl: 200, status: 'Closed' }
+        { id: '1', pair: 'BTC/USD', pnl: 100, status: 'Closed', date: today },
+        { id: '2', pair: 'ETH/USD', pnl: 200, status: 'Closed', date: today }
       ]),
       refresh: vi.fn(),
       pending: ref(false)
+    }))
+
+    // Mock useAnalytics to avoid issues with missing functions or API calls
+    vi.mock('~/composables/useAnalytics', () => ({
+      useAnalytics: () => ({
+        getPairStats: () => ({ winRate: 100, pnl: 100, count: 1 }),
+        getTopProfitablePairs: () => [
+          { pair: 'BTC/USD', pnl: 100, count: 1 },
+          { pair: 'ETH/USD', pnl: 200, count: 1 }
+        ]
+      })
     }))
   })
 
@@ -46,8 +61,8 @@ describe('Analytics Page', () => {
     })
 
     // Initially shows AnalyticsDashboard
-    expect(wrapper.findComponent({ name: 'AnalyticsDashboard' }).exists()).toBe(true)
-    expect(wrapper.findComponent({ name: 'PairSidebar' }).exists()).toBe(false)
+    expect(wrapper.findComponent(AnalyticsDashboard).exists()).toBe(true)
+    expect(wrapper.findComponent(PairSidebar).exists()).toBe(false)
 
     // Click Pair Analysis tab
     const tabs = wrapper.findAll('button')
@@ -58,8 +73,8 @@ describe('Analytics Page', () => {
     await flushPromises()
 
     // Now shows Pair view
-    expect(wrapper.findComponent({ name: 'AnalyticsDashboard' }).exists()).toBe(false)
-    expect(wrapper.findComponent({ name: 'PairSidebar' }).exists()).toBe(true)
-    expect(wrapper.findComponent({ name: 'PairGallery' }).exists()).toBe(true)
+    expect(wrapper.findComponent(AnalyticsDashboard).exists()).toBe(false)
+    expect(wrapper.findComponent(PairSidebar).exists()).toBe(true)
+    expect(wrapper.findComponent(PairGallery).exists()).toBe(true)
   })
 })

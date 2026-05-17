@@ -3,26 +3,54 @@ import { mount } from '@vue/test-utils'
 import AnalyticsDashboard from '../../components/AnalyticsDashboard.vue'
 
 // Mock useAnalytics
-vi.mock('~/composables/useAnalytics', () => ({
-  useAnalytics: () => ({
-    calculateProfitFactor: () => 2.5,
-    calculateWinRate: () => 60.0,
-    calculateExpectancy: () => 150.0,
-    calculateAverageRMultiple: () => 0,
-    calculateAverageHoldingTime: () => ({ wins: 86400000, losses: 172800000 }), // 1d, 2d
-    calculateBehavioralStats: () => ({
-      executionRate: 95.0,
-      mentalDistribution: { A: 10, B: 5, C: 2 },
-      emotionFrequency: { 'Calm': 8, 'Greed': 3 }
-    }),
-    fetchRiskData: vi.fn().mockResolvedValue({
-      riskOfRuin: 0.05,
-      equityCurve: []
-    }),
-    calculateMaxDrawdown: vi.fn().mockReturnValue(5.0),
-    calculateMaxConsecutiveLosses: vi.fn().mockReturnValue(2)
-  })
-}))
+vi.mock('~/composables/useAnalytics', () => {
+  const parseNumber = (val: any): number => {
+    if (typeof val === 'number') return val
+    if (!val) return 0
+    const clean = String(val).replace(/[^0-9.-]/g, '')
+    const num = parseFloat(clean)
+    return isNaN(num) ? 0 : num
+  }
+
+  const getVal = (obj: any, key: string) => {
+    if (!obj) return undefined
+    const keys = Object.keys(obj)
+    const lowerTarget = key.toLowerCase().trim()
+    const foundKey = keys.find(k => k.toLowerCase().trim() === lowerTarget)
+    return foundKey ? obj[foundKey] : undefined
+  }
+
+  const isClosed = (t: any) => {
+    const status = String(getVal(t, 'status') || '').toLowerCase().trim()
+    return status === 'closed'
+  }
+
+  return {
+    useAnalytics: () => ({
+      calculateProfitFactor: () => 2.5,
+      calculateWinRate: () => 60.0,
+      calculateExpectancy: () => 150.0,
+      calculateAverageRMultiple: () => 0,
+      calculateAverageHoldingTime: () => ({ wins: 86400000, losses: 172800000 }), // 1d, 2d
+      calculateBehavioralStats: () => ({
+        executionRate: 95.0,
+        mentalDistribution: { A: 10, B: 5, C: 2 },
+        emotionFrequency: { 'Calm': 8, 'Greed': 3 },
+        tacticalCategoryDistribution: { 'A': 5 },
+        tacticalSkillFrequency: { 'X': 2 }
+      }),
+      fetchRiskData: vi.fn().mockResolvedValue({
+        riskOfRuin: 0.05,
+        equityCurve: []
+      }),
+      calculateMaxDrawdown: vi.fn().mockReturnValue(5.0),
+      calculateMaxConsecutiveLosses: vi.fn().mockReturnValue(2),
+      parseNumber,
+      getVal,
+      isClosed
+    })
+  }
+})
 
 // Mock useToast
 vi.mock('~/composables/useToast', () => ({

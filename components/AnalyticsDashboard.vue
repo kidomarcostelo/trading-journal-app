@@ -32,6 +32,7 @@ const {
 } = useAnalytics()
 
 const { addToast } = useToast()
+const { formatDuration } = useDuration()
 
 const isBackfilling = ref(false)
 const equityCurve = ref<{ date: string, equity: number }[]>([])
@@ -81,6 +82,7 @@ const metrics = computed(() => {
   const expectancy = calculateExpectancy(props.trades)
   const avgR = calculateAverageRMultiple(props.trades)
   const behavior = calculateBehavioralStats(props.trades)
+  const holdingTime = calculateAverageHoldingTime(props.trades)
 
   // Calculate Total Net PnL and Closed trades properly using exported helpers
   const closedTrades = props.trades.filter(isClosed)
@@ -96,6 +98,7 @@ const metrics = computed(() => {
     expectancy,
     avgR,
     behavior,
+    holdingTime,
     totalPnL: Number(totalPnL.toFixed(2)),
     closedCount: closedTrades.length
   }
@@ -173,6 +176,30 @@ const sortedMentalCategories = computed(() => {
         <div class="text-xs text-terminal-text/60 uppercase tracking-wider mb-1">Avg R-Multiple</div>
         <div class="text-2xl font-bold text-terminal-highlight">
           {{ metrics.closedCount === 0 ? '--' : metrics.avgR + 'R' }}
+        </div>
+      </div>
+
+      <!-- Execution % -->
+      <div class="bg-terminal-black border border-terminal-gray/30 p-4 rounded-lg">
+        <div class="text-xs text-terminal-text/60 uppercase tracking-wider mb-1">Execution %</div>
+        <div class="text-2xl font-bold text-terminal-highlight">
+          {{ metrics.closedCount === 0 ? '--' : metrics.behavior.executionRate + '%' }}
+        </div>
+      </div>
+
+      <!-- Avg Hold (Win) -->
+      <div class="bg-terminal-black border border-terminal-gray/30 p-4 rounded-lg">
+        <div class="text-xs text-terminal-text/60 uppercase tracking-wider mb-1">Avg Hold (Win)</div>
+        <div class="text-2xl font-bold text-emerald-400">
+          {{ metrics.closedCount === 0 ? '--' : formatDuration(metrics.holdingTime.wins) }}
+        </div>
+      </div>
+
+      <!-- Avg Hold (Loss) -->
+      <div class="bg-terminal-black border border-terminal-gray/30 p-4 rounded-lg">
+        <div class="text-xs text-terminal-text/60 uppercase tracking-wider mb-1">Avg Hold (Loss)</div>
+        <div class="text-2xl font-bold text-rose-400">
+          {{ metrics.closedCount === 0 ? '--' : formatDuration(metrics.holdingTime.losses) }}
         </div>
       </div>
     </div>
