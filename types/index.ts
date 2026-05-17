@@ -21,6 +21,17 @@ export interface TradeEntry {
   createdAt?: string
 }
 
+export interface ChecklistRule {
+  description: string
+  weight: number
+  isMandatory: boolean
+}
+
+export interface TierThreshold {
+  label: string
+  threshold: number
+}
+
 export interface Trade extends TradeEntry {
   id: string
   createdAt: string
@@ -31,6 +42,10 @@ export interface Trade extends TradeEntry {
   market?: TradeMarket
   direction?: TradeDirection
   date?: string
+  
+  // Checklist & Tier
+  checklistScore?: number
+  tier?: string
   
   // Metrics
   entryPrice?: number
