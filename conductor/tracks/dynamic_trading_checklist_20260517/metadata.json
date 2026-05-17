@@ -1,0 +1,8 @@
+{
+  "track_id": "dynamic_trading_checklist_20260517",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-05-17T00:00:00Z",
+  "updated_at": "2026-05-17T00:00:00Z",
+  "description": "I want a dynamic trading checklist that calculates a total score based on weighted rules, which then maps to a specific \"Tier\" (e.g., S Tier, A Tier, B Tier). Crucially, this system must be fully customizable. I need to be able to add/edit/delete rules, change their point weights, and adjust the tier thresholds via a settings UI, rather than hardcoding them."
+}
