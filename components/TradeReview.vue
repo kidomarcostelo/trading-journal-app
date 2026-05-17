@@ -103,7 +103,41 @@ const handleScreenshotsUpdate = (data: any) => {
 </script>
 
 <template>
-  <div class="space-y-6 pb-12">
+  <div class="relative space-y-6 pb-12">
+    <!-- Floating Checklist Widget -->
+    <div class="fixed bottom-12 right-12 z-50 flex flex-col items-end">
+      <transition
+        enter-active-class="transition duration-200 ease-out"
+        enter-from-class="transform translate-y-4 opacity-0"
+        enter-to-class="transform translate-y-0 opacity-100"
+        leave-active-class="transition duration-150 ease-in"
+        leave-from-class="transform translate-y-0 opacity-100"
+        leave-to-class="transform translate-y-4 opacity-0"
+      >
+        <div v-if="showChecklist" class="mb-4">
+          <FloatingChecklist 
+            :modelValue="Array.isArray(form.checklistRulesChecked) ? form.checklistRulesChecked : form.checklistRulesChecked ? form.checklistRulesChecked.split(', ') : []"
+            @update:modelValue="(val) => updateField('checklistRulesChecked', val)"
+            @update:score="(score) => updateField('checklistScore', score)"
+            @update:tier="(tier) => updateField('tier', tier)"
+            @update:isValid="(valid) => updateField('isChecklistValid', valid)"
+          />
+        </div>
+      </transition>
+      
+      <button 
+        @click="showChecklist = !showChecklist"
+        class="flex items-center gap-2 px-4 py-3 bg-terminal-highlight text-terminal-black font-bold rounded-full shadow-[0_0_20px_rgba(52,211,153,0.3)] hover:bg-white hover:scale-105 transition-all"
+      >
+        <CheckCircle2 v-if="!showChecklist" class="w-5 h-5" />
+        <X v-else class="w-5 h-5" />
+        <span class="hidden sm:inline">{{ showChecklist ? 'Close Checklist' : 'Setup Checklist' }}</span>
+        <span v-if="form.tier" class="ml-2 px-2 py-0.5 bg-terminal-black/20 text-terminal-black rounded-md text-xs font-bold">
+          {{ form.tier }}
+        </span>
+      </button>
+    </div>
+
     <!-- Grading Section -->
     <CollapsibleSection title="Review Grading">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
