@@ -18,15 +18,15 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Settings UI for Checklist Configuration' (Protocol in workflow.md) f4a1c18
 
 ## Phase 3: Trade Entry - Floating Checklist Widget
-- [ ] Task: Create a new component `FloatingChecklist.vue`.
-    - [ ] Sub-task: Implement the UI to display the rules fetched from settings.
-    - [ ] Sub-task: Implement live scoring logic as checkboxes are toggled.
-    - [ ] Sub-task: Implement tier calculation based on the current score.
-- [ ] Task: Integrate `FloatingChecklist.vue` into the Detail Pane (`TradeReview.vue` or `Pane3`).
-    - [ ] Sub-task: Ensure it opens as a floating widget/popover without obstructing charts.
-- [ ] Task: Implement "Blocker Rule" validation.
-    - [ ] Sub-task: Prevent saving/finalizing a tier if a mandatory rule is unchecked.
-- [ ] Task: Create tests for `FloatingChecklist.vue` scoring and validation logic.
+- [x] Task: Create a new component `FloatingChecklist.vue`. 4bf0f96
+    - [x] Sub-task: Implement the UI to display the rules fetched from settings.
+    - [x] Sub-task: Implement live scoring logic as checkboxes are toggled.
+    - [x] Sub-task: Implement tier calculation based on the current score.
+- [x] Task: Integrate `FloatingChecklist.vue` into the Detail Pane (`TradeReview.vue` or `Pane3`). 4bf0f96
+    - [x] Sub-task: Ensure it opens as a floating widget/popover without obstructing charts.
+- [x] Task: Implement "Blocker Rule" validation. 4bf0f96
+    - [x] Sub-task: Prevent saving/finalizing a tier if a mandatory rule is unchecked.
+- [x] Task: Create tests for `FloatingChecklist.vue` scoring and validation logic. 4bf0f96
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Trade Entry - Floating Checklist Widget' (Protocol in workflow.md)
 
 ## Phase 4: Data Persistence & UI Integration
