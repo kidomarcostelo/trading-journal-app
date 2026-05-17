@@ -4,8 +4,8 @@ import { CheckCircle2, ShieldAlert, ClipboardCheck } from 'lucide-vue-next'
 import { useSettings } from '~/composables/useSettings'
 
 const props = defineProps<{
-  modelValue: string[] // Array of checked rule descriptions
-  strategy?: string | string[] // The strategy context for this checklist
+  modelValue: string[] 
+  strategy?: string | string[] 
 }>()
 
 const emit = defineEmits<{
@@ -32,7 +32,6 @@ const tierThresholds = computed(() => activeConfig.value.tiers || [])
 
 const checkedRules = ref<Set<string>>(new Set(props.modelValue))
 
-// Keep local state in sync with prop
 watch(() => props.modelValue, (newVal) => {
   checkedRules.value = new Set(newVal)
 }, { deep: true })
@@ -62,15 +61,13 @@ const missingMandatoryRules = computed(() => {
 })
 
 const isValid = computed(() => {
-  if (checkedRules.value.size === 0) return true // Cleared checklist is valid (just no tier)
+  if (checkedRules.value.size === 0) return true 
   return missingMandatoryRules.value.length === 0
 })
 
 const currentTier = computed(() => {
-  // If no rules are checked or it's invalid, no tier.
   if (checkedRules.value.size === 0 || !isValid.value || !tierThresholds.value || tierThresholds.value.length === 0) return null
   
-  // Tiers should already be sorted descending by threshold from settings
   const sortedTiers = [...tierThresholds.value].sort((a, b) => b.threshold - a.threshold)
   
   for (const tier of sortedTiers) {
@@ -78,10 +75,9 @@ const currentTier = computed(() => {
       return tier.label
     }
   }
-  return null // Did not meet any tier
+  return null 
 })
 
-// Emit updates whenever calculations change
 watch([currentScore, currentTier, isValid], () => {
   emit('update:score', currentScore.value)
   emit('update:tier', currentTier.value)
@@ -92,7 +88,6 @@ watch([currentScore, currentTier, isValid], () => {
 
 <template>
   <div class="bg-terminal-black/90 backdrop-blur-md border border-terminal-gray/40 rounded-xl overflow-hidden shadow-2xl flex flex-col w-80 max-h-[500px]">
-    <!-- Header -->
     <div class="p-4 border-b border-terminal-gray/30 bg-terminal-dark/50 shrink-0 flex items-center justify-between">
       <h3 class="text-sm font-bold tracking-wide text-terminal-highlight flex items-center gap-2">
         <ClipboardCheck class="w-4 h-4" /> Entry Checklist
@@ -102,12 +97,10 @@ watch([currentScore, currentTier, isValid], () => {
       </span>
     </div>
 
-    <!-- Empty State -->
     <div v-if="!checklistRules || checklistRules.length === 0" class="p-8 text-center text-terminal-text/50">
       <p class="text-sm">No checklist rules configured.</p>
     </div>
 
-    <!-- Rules List -->
     <div v-else class="p-4 overflow-y-auto custom-scrollbar flex-1 space-y-3">
       <label 
         v-for="rule in checklistRules" 
@@ -118,7 +111,7 @@ watch([currentScore, currentTier, isValid], () => {
         <div class="pt-0.5">
           <input 
             type="checkbox" 
-            class="sr-only"
+            class="hidden"
             :checked="checkedRules.has(rule.description)"
             @change="toggleRule(rule.description)"
           />
@@ -146,7 +139,6 @@ watch([currentScore, currentTier, isValid], () => {
       </label>
     </div>
 
-    <!-- Footer Summary -->
     <div v-if="checklistRules && checklistRules.length > 0" class="p-4 border-t border-terminal-gray/30 bg-terminal-dark/80 shrink-0">
       <div class="flex items-center justify-between mb-2">
         <span class="text-xs font-bold text-terminal-text/50 uppercase tracking-widest">Total Score</span>
