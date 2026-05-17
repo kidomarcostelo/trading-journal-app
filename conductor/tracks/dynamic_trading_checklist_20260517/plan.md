@@ -2,11 +2,11 @@
 
 ## Phase 1: Settings Data & API Extension
 - [x] Task: Update `types/index.ts` to include interface definitions for `ChecklistRule`, `TierThreshold`, and update `Trade` interface to store `checklistScore` and `tier`. 85619ae
-- [ ] Task: Update `server/utils/googleSheets.ts` to fetch and parse checklist configuration from the `Settings` sheet.
-    - [ ] Sub-task: Add parsing logic for rules, weights, and mandatory flags.
-    - [ ] Sub-task: Add parsing logic for tier thresholds and labels.
-- [ ] Task: Update `/api/settings` and `/api/config` endpoints to serve the new checklist configuration.
-- [ ] Task: Create tests for the updated Google Sheets parsing and API endpoints.
+- [x] Task: Update `server/utils/googleSheets.ts` to fetch and parse checklist configuration from the `Settings` sheet. 1871333
+    - [x] Sub-task: Add parsing logic for rules, weights, and mandatory flags.
+    - [x] Sub-task: Add parsing logic for tier thresholds and labels.
+- [x] Task: Update `/api/settings` and `/api/config` endpoints to serve the new checklist configuration. 1871333
+- [x] Task: Create tests for the updated Google Sheets parsing and API endpoints. 1871333
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Settings Data & API Extension' (Protocol in workflow.md)
 
 ## Phase 2: Settings UI for Checklist Configuration
