@@ -29,7 +29,8 @@ vi.mock('lucide-vue-next', () => ({
   ArrowUpDown: { render: () => h('div') },
   ArrowUp: { render: () => h('div', { 'data-testid': 'arrow-up' }) },
   ArrowDown: { render: () => h('div', { 'data-testid': 'arrow-down' }) },
-  LogOut: { render: () => h('div') }
+  LogOut: { render: () => h('div') },
+  ClipboardCheck: { render: () => h('div') }
 }))
 
 // Mock useFetch
