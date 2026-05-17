@@ -113,6 +113,13 @@ const saveTrades = async (dirtyIds: Set<string>) => {
   const tradesToSave = trades.value?.filter(t => dirtyIds.has(t.ID || t.id)) || []
   if (tradesToSave.length === 0) return
 
+  // Blocker Validation
+  const invalidTrade = tradesToSave.find(t => t.isChecklistValid === false)
+  if (invalidTrade) {
+    addToast({ title: 'Validation Error', message: `Trade ${invalidTrade.Pair || 'entry'} is missing mandatory checklist rules.`, type: 'error' })
+    throw new Error('Checklist validation failed')
+  }
+
   const payload = tradesToSave.map(trade => {
     const tradeData: any = { ...trade }
     for (const key in tradeData) {
