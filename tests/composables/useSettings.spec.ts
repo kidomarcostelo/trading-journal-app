@@ -26,10 +26,9 @@ describe('useSettings Composable', () => {
   })
 
   it('initializes with default state', () => {
-    const { settings, checklistRules, tierThresholds, isLoading } = useSettings()
+    const { settings, strategyChecklists, isLoading } = useSettings()
     expect(settings.value).toEqual({ panels: [] })
-    expect(checklistRules.value).toEqual([])
-    expect(tierThresholds.value).toEqual([])
+    expect(strategyChecklists.value).toEqual({})
     expect(isLoading.value).toBe(false)
   })
 
@@ -39,17 +38,25 @@ describe('useSettings Composable', () => {
     ]
     mockFetch.mockResolvedValue({ 
       chip_layout: { panels: mockPanels },
-      checklistRules: [{ description: 'Rule 1', weight: 1, isMandatory: false }],
-      tierThresholds: [{ label: 'S Tier', threshold: 10 }]
+      strategyChecklists: {
+        'Default': {
+          rules: [{ description: 'Rule 1', weight: 1, isMandatory: false }],
+          tiers: [{ label: 'S Tier', threshold: 10 }]
+        }
+      }
     })
 
-    const { fetchSettings, settings, checklistRules, tierThresholds } = useSettings()
+    const { fetchSettings, settings, strategyChecklists } = useSettings()
     await fetchSettings()
 
     expect(mockFetch).toHaveBeenCalledWith('/api/settings')
     expect(settings.value).toEqual({ panels: mockPanels })
-    expect(checklistRules.value).toEqual([{ description: 'Rule 1', weight: 1, isMandatory: false }])
-    expect(tierThresholds.value).toEqual([{ label: 'S Tier', threshold: 10 }])
+    expect(strategyChecklists.value).toEqual({
+      'Default': {
+        rules: [{ description: 'Rule 1', weight: 1, isMandatory: false }],
+        tiers: [{ label: 'S Tier', threshold: 10 }]
+      }
+    })
   })
 
   it('saves settings using $fetch with key format', async () => {
@@ -72,23 +79,25 @@ describe('useSettings Composable', () => {
   it('saves checklist config using $fetch', async () => {
     mockFetch.mockResolvedValue({ success: true })
 
-    const { saveChecklistConfig, checklistRules, tierThresholds } = useSettings()
+    const { saveChecklistConfig, strategyChecklists } = useSettings()
 
     const mockRules = [{ description: 'Rule 2', weight: 2, isMandatory: true }]
     const mockTiers = [{ label: 'A Tier', threshold: 5 }]
 
-    await saveChecklistConfig(mockRules, mockTiers)
+    await saveChecklistConfig('Breakout', mockRules, mockTiers)
 
     expect(mockFetch).toHaveBeenCalledWith('/api/settings', {
       method: 'POST',
-      body: { key: 'checklistRules', value: mockRules }
+      body: { 
+        key: 'strategyChecklists', 
+        value: {
+          'Breakout': { rules: mockRules, tiers: mockTiers }
+        }
+      }
     })
-    expect(mockFetch).toHaveBeenCalledWith('/api/settings', {
-      method: 'POST',
-      body: { key: 'tierThresholds', value: mockTiers }
+    expect(strategyChecklists.value).toEqual({
+      'Breakout': { rules: mockRules, tiers: mockTiers }
     })
-    expect(checklistRules.value).toEqual(mockRules)
-    expect(tierThresholds.value).toEqual(mockTiers)
   })
 
   it('updateLayout updates local state', () => {
