@@ -126,6 +126,7 @@ const mountSuspense = () => {
             props: ['title']
         },
         SaveControls: true,
+        FloatingChecklist: true,
         DeleteConfirmationModal: true,
         ChipPanel: true,
         NuxtLink: true,

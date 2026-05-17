@@ -9,7 +9,9 @@ import {
   Filter,
   ArrowUp,
   ArrowDown,
-  Trash2
+  Trash2,
+  X,
+  ClipboardCheck
 } from 'lucide-vue-next'
 import TradeForm from '~/components/TradeForm.vue'
 import TradeList from '~/components/TradeList.vue'
@@ -82,6 +84,7 @@ const handleFilterClick = () => {
 }
 
 const activeDetailTab = ref<'journal' | 'charts' | 'review' | 'analytics'>('journal')
+const showChecklist = ref(false)
 
 const activeTrade = computed(() => {
   return filteredTrades.value.find(t => (t.ID || t.id) === selectedTradeId.value)
@@ -434,6 +437,40 @@ onUnmounted(() => {
     </main>
 
         <SaveControls v-if="selectedTradeId" v-model="saveMode" :is-dirty="isDirty" :is-loading="isLoading" :dirty-count="dirtyTradeIds.size" @save="triggerSave" />
+
+        <!-- Floating Checklist Widget -->
+        <div v-if="selectedTradeId" class="fixed bottom-24 right-6 z-40 flex flex-col items-end">
+          <transition
+            enter-active-class="transition duration-200 ease-out"
+            enter-from-class="transform translate-y-4 opacity-0"
+            enter-to-class="transform translate-y-0 opacity-100"
+            leave-active-class="transition duration-150 ease-in"
+            leave-from-class="transform translate-y-0 opacity-100"
+            leave-to-class="transform translate-y-4 opacity-0"
+          >
+            <div v-if="showChecklist" class="mb-4">
+              <FloatingChecklist 
+                :modelValue="Array.isArray(activeTrade?.checklistRulesChecked) ? activeTrade.checklistRulesChecked : activeTrade?.checklistRulesChecked ? activeTrade.checklistRulesChecked.split(', ') : []"
+                @update:modelValue="(val) => handleTradeUpdate({ checklistRulesChecked: val })"
+                @update:score="(score) => handleTradeUpdate({ checklistScore: score })"
+                @update:tier="(tier) => handleTradeUpdate({ tier: tier })"
+                @update:isValid="(valid) => handleTradeUpdate({ isChecklistValid: valid })"
+              />
+            </div>
+          </transition>
+          
+          <button 
+            @click="showChecklist = !showChecklist"
+            class="group relative flex items-center justify-center bg-terminal-highlight text-terminal-black rounded-full p-4 shadow-lg shadow-terminal-highlight/20 hover:shadow-terminal-highlight/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
+            title="Setup Checklist"
+          >
+            <X v-if="showChecklist" class="w-6 h-6" />
+            <ClipboardCheck v-else class="w-6 h-6" />
+            <span v-if="activeTrade?.tier && !showChecklist" class="absolute -top-1 -right-1 min-w-[20px] h-[20px] px-1 bg-emerald-500 rounded-full border-2 border-terminal-black flex items-center justify-center text-[10px] font-bold text-white shadow-sm">
+              {{ activeTrade.tier.charAt(0) }}
+            </span>
+          </button>
+        </div>
 
         <DeleteConfirmationModal :is-open="showDeleteModal" :is-deleting="isDeletingTrade" @close="showDeleteModal = false" @confirm="executeDelete" />
 
