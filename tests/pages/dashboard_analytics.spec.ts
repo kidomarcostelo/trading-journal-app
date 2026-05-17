@@ -20,7 +20,8 @@ vi.mock('lucide-vue-next', () => ({
   ArrowDown: { render: () => h('div') },
   LogOut: { render: () => h('div') },
   Trash2: { render: () => h('div') },
-  MoreVertical: { render: () => h('div') }
+  MoreVertical: { render: () => h('div') },
+  ClipboardCheck: { render: () => h('div') }
 }))
 
 // Mock useFetch

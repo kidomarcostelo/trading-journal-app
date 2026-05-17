@@ -19,7 +19,8 @@ vi.mock('lucide-vue-next', () => ({
   TrendingDown: { render: () => h('div') },
   RefreshCcw: { render: () => h('div') },
   ShieldCheck: { render: () => h('div') },
-  AlertCircle: { render: () => h('div') }
+  AlertCircle: { render: () => h('div') },
+  ClipboardCheck: { render: () => h('div') }
 }))
 
 // Mock Data
