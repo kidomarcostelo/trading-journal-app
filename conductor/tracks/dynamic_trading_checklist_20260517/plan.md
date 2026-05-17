@@ -1,13 +1,13 @@
 # Implementation Plan: Dynamic Trading Checklist & Tier System
 
-## Phase 1: Settings Data & API Extension
+## Phase 1: Settings Data & API Extension [checkpoint: 0fba4e9]
 - [x] Task: Update `types/index.ts` to include interface definitions for `ChecklistRule`, `TierThreshold`, and update `Trade` interface to store `checklistScore` and `tier`. 85619ae
 - [x] Task: Update `server/utils/googleSheets.ts` to fetch and parse checklist configuration from the `Settings` sheet. 1871333
     - [x] Sub-task: Add parsing logic for rules, weights, and mandatory flags.
     - [x] Sub-task: Add parsing logic for tier thresholds and labels.
 - [x] Task: Update `/api/settings` and `/api/config` endpoints to serve the new checklist configuration. 1871333
 - [x] Task: Create tests for the updated Google Sheets parsing and API endpoints. 1871333
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Settings Data & API Extension' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Settings Data & API Extension' (Protocol in workflow.md) 0fba4e9
 
 ## Phase 2: Settings UI for Checklist Configuration
 - [ ] Task: Create new components in `pages/settings.vue` (or as a separate component `SettingsChecklist.vue`) to manage rules.
