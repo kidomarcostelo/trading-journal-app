@@ -39,8 +39,7 @@ describe('Settings API Endpoints', () => {
       expect(settingsUtils.getSettings).toHaveBeenCalled()
       expect(response).toEqual({
         chip_layout: { panels: [{ id: '1', title: 'Test', categories: ['A'] }] },
-        checklistRules: [],
-        tierThresholds: []
+        strategyChecklists: {}
       })
     })
 
@@ -52,8 +51,7 @@ describe('Settings API Endpoints', () => {
 
       expect(response).toEqual({
         chip_layout: { panels: [] },
-        checklistRules: [],
-        tierThresholds: []
+        strategyChecklists: {}
       })
     })
   })

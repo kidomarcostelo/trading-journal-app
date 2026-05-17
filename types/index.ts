@@ -32,6 +32,11 @@ export interface TierThreshold {
   threshold: number
 }
 
+export type StrategyChecklistConfig = Record<string, {
+  rules: ChecklistRule[]
+  tiers: TierThreshold[]
+}>
+
 export interface Trade extends TradeEntry {
   id: string
   createdAt: string

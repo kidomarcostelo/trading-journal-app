@@ -1,12 +1,11 @@
-import type { ChecklistRule, TierThreshold } from '../types'
+import type { ChecklistRule, TierThreshold, StrategyChecklistConfig } from '../types'
 
 export const useSettings = () => {
   const settings = useState('settings-layout', () => ({
     panels: [] as { id: string, title: string, categories: string[] }[]
   }))
   
-  const checklistRules = useState<ChecklistRule[]>('settings-checklist-rules', () => [])
-  const tierThresholds = useState<TierThreshold[]>('settings-tier-thresholds', () => [])
+  const strategyChecklists = useState<StrategyChecklistConfig>('settings-strategy-checklists', () => ({}))
   
   const isLoading = useState('settings-loading', () => false)
   const error = useState<any>('settings-error', () => null)
@@ -29,8 +28,16 @@ export const useSettings = () => {
           settings.value = layoutData.panels ? layoutData : { panels: [] }
         }
         
-        if (data.checklistRules) checklistRules.value = data.checklistRules
-        if (data.tierThresholds) tierThresholds.value = data.tierThresholds
+        if (data.strategyChecklists) {
+          strategyChecklists.value = data.strategyChecklists
+        } else if (data.checklistRules || data.tierThresholds) {
+          strategyChecklists.value = {
+            'Default': {
+              rules: data.checklistRules || [],
+              tiers: data.tierThresholds || []
+            }
+          }
+        }
       }
     } catch (e) {
       error.value = e
@@ -58,14 +65,16 @@ export const useSettings = () => {
     }
   }
 
-  const saveChecklistConfig = async (rules: ChecklistRule[], tiers: TierThreshold[]) => {
+  const saveChecklistConfig = async (strategyName: string, rules: ChecklistRule[], tiers: TierThreshold[]) => {
     isLoading.value = true
     error.value = null
     try {
-      await $fetch('/api/settings', { method: 'POST', body: { key: 'checklistRules', value: rules } })
-      await $fetch('/api/settings', { method: 'POST', body: { key: 'tierThresholds', value: tiers } })
-      checklistRules.value = rules
-      tierThresholds.value = tiers
+      const updatedConfig = { ...strategyChecklists.value }
+      updatedConfig[strategyName] = { rules, tiers }
+      
+      await $fetch('/api/settings', { method: 'POST', body: { key: 'strategyChecklists', value: updatedConfig } })
+      
+      strategyChecklists.value = updatedConfig
     } catch (e) {
       error.value = e
       console.error('Failed to save checklist config:', e)
@@ -81,8 +90,7 @@ export const useSettings = () => {
 
   return {
     settings,
-    checklistRules,
-    tierThresholds,
+    strategyChecklists,
     isLoading,
     error,
     fetchSettings,
