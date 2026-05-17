@@ -17,7 +17,7 @@
 - [x] Task: Create tests for `SettingsChecklist.vue` functionality. 46db252
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Settings UI for Checklist Configuration' (Protocol in workflow.md) f4a1c18
 
-## Phase 3: Trade Entry - Floating Checklist Widget
+## Phase 3: Trade Entry - Floating Checklist Widget [checkpoint: cdbbd6c]
 - [x] Task: Create a new component `FloatingChecklist.vue`. 4bf0f96
     - [x] Sub-task: Implement the UI to display the rules fetched from settings.
     - [x] Sub-task: Implement live scoring logic as checkboxes are toggled.
@@ -27,7 +27,14 @@
 - [x] Task: Implement "Blocker Rule" validation. 4bf0f96
     - [x] Sub-task: Prevent saving/finalizing a tier if a mandatory rule is unchecked.
 - [x] Task: Create tests for `FloatingChecklist.vue` scoring and validation logic. 4bf0f96
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Trade Entry - Floating Checklist Widget' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Trade Entry - Floating Checklist Widget' (Protocol in workflow.md) cdbbd6c
+
+## Phase 3b: Refactor for Strategy-Specific Checklists
+- [ ] Task: Update `types/index.ts` to define `StrategyChecklistConfig` representing a dictionary of rules and tiers mapped by strategy name.
+- [ ] Task: Update `composables/useSettings.ts` and API routes to handle saving and loading the new `strategyChecklists` map structure.
+- [ ] Task: Refactor `SettingsChecklist.vue` to include a Strategy Selector and update the forms to edit the rules/tiers for the selected strategy.
+- [ ] Task: Refactor `FloatingChecklist.vue` to receive the trade's selected strategy and dynamically compute the correct rules and tiers.
+- [ ] Task: Conductor - User Manual Verification 'Phase 3b: Refactor for Strategy-Specific Checklists' (Protocol in workflow.md)
 
 ## Phase 4: Data Persistence & UI Integration
 - [ ] Task: Update `useTrades.ts` composable to handle saving `checklistScore` and `tier` payload when creating/updating a trade.
