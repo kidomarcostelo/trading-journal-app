@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { CheckCircle2, AlertCircle, ShieldAlert } from 'lucide-vue-next'
+import { CheckCircle2, ShieldAlert, ClipboardCheck } from 'lucide-vue-next'
 import { useSettings } from '~/composables/useSettings'
 
 const props = defineProps<{
   modelValue: string[] // Array of checked rule descriptions
+  strategy?: string | string[] // The strategy context for this checklist
 }>()
 
 const emit = defineEmits<{
@@ -14,7 +15,20 @@ const emit = defineEmits<{
   (e: 'update:isValid', isValid: boolean): void
 }>()
 
-const { checklistRules, tierThresholds } = useSettings()
+const { strategyChecklists } = useSettings()
+
+const currentStrategy = computed(() => {
+  if (!props.strategy) return 'Default'
+  if (Array.isArray(props.strategy)) return props.strategy[0] || 'Default'
+  return props.strategy
+})
+
+const activeConfig = computed(() => {
+  return strategyChecklists.value[currentStrategy.value] || strategyChecklists.value['Default'] || { rules: [], tiers: [] }
+})
+
+const checklistRules = computed(() => activeConfig.value.rules || [])
+const tierThresholds = computed(() => activeConfig.value.tiers || [])
 
 const checkedRules = ref<Set<string>>(new Set(props.modelValue))
 
@@ -35,7 +49,6 @@ const toggleRule = (description: string) => {
 }
 
 const currentScore = computed(() => {
-  if (!checklistRules.value) return 0
   return checklistRules.value.reduce((score, rule) => {
     if (checkedRules.value.has(rule.description)) {
       return score + rule.weight
@@ -45,7 +58,6 @@ const currentScore = computed(() => {
 })
 
 const missingMandatoryRules = computed(() => {
-  if (!checklistRules.value) return []
   return checklistRules.value.filter(rule => rule.isMandatory && !checkedRules.value.has(rule.description))
 })
 
@@ -58,7 +70,7 @@ const currentTier = computed(() => {
   // If no rules are checked or it's invalid, no tier.
   if (checkedRules.value.size === 0 || !isValid.value || !tierThresholds.value || tierThresholds.value.length === 0) return null
   
-  // Tiers should already be sorted descending by threshold from settings, but let's be safe
+  // Tiers should already be sorted descending by threshold from settings
   const sortedTiers = [...tierThresholds.value].sort((a, b) => b.threshold - a.threshold)
   
   for (const tier of sortedTiers) {
@@ -81,10 +93,13 @@ watch([currentScore, currentTier, isValid], () => {
 <template>
   <div class="bg-terminal-black/90 backdrop-blur-md border border-terminal-gray/40 rounded-xl overflow-hidden shadow-2xl flex flex-col w-80 max-h-[500px]">
     <!-- Header -->
-    <div class="p-4 border-b border-terminal-gray/30 bg-terminal-dark/50 shrink-0">
+    <div class="p-4 border-b border-terminal-gray/30 bg-terminal-dark/50 shrink-0 flex items-center justify-between">
       <h3 class="text-sm font-bold tracking-wide text-terminal-highlight flex items-center gap-2">
-        <CheckCircle2 class="w-4 h-4" /> Entry Checklist
+        <ClipboardCheck class="w-4 h-4" /> Entry Checklist
       </h3>
+      <span class="text-[10px] font-bold uppercase tracking-widest text-terminal-text/40 bg-terminal-black/50 px-2 py-0.5 rounded border border-terminal-gray/20">
+        {{ currentStrategy }}
+      </span>
     </div>
 
     <!-- Empty State -->
@@ -116,7 +131,7 @@ watch([currentScore, currentTier, isValid], () => {
         </div>
         
         <div class="flex-1 min-w-0">
-          <p class="text-sm text-terminal-text group-hover:text-white transition-colors" :class="{ 'line-through opacity-50': false }">
+          <p class="text-sm text-terminal-text group-hover:text-white transition-colors">
             {{ rule.description }}
           </p>
           <div class="flex items-center gap-2 mt-1">

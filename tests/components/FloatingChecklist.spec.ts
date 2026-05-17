@@ -13,21 +13,39 @@ describe('FloatingChecklist', () => {
     vi.clearAllMocks()
     // @ts-ignore
     useSettings.mockReturnValue({
-      checklistRules: ref([
-        { description: 'Rule 1', weight: 2, isMandatory: false },
-        { description: 'Rule 2', weight: 3, isMandatory: true }
-      ]),
-      tierThresholds: ref([
-        { label: 'S Tier', threshold: 5 },
-        { label: 'A Tier', threshold: 2 }
-      ])
+      strategyChecklists: ref({
+        'Default': {
+          rules: [
+            { description: 'Rule 1', weight: 2, isMandatory: false },
+            { description: 'Rule 2', weight: 3, isMandatory: true }
+          ],
+          tiers: [
+            { label: 'S Tier', threshold: 5 },
+            { label: 'A Tier', threshold: 2 }
+          ]
+        },
+        'Breakout': {
+          rules: [
+            { description: 'Momentum', weight: 10, isMandatory: true }
+          ],
+          tiers: [
+            { label: 'God Tier', threshold: 10 }
+          ]
+        }
+      })
     })
   })
 
-  it('renders the checklist rules', () => {
+  it('renders the checklist rules for default strategy', () => {
     const wrapper = mount(FloatingChecklist, { props: { modelValue: [] } })
     expect(wrapper.text()).toContain('Rule 1')
-    expect(wrapper.text()).toContain('Rule 2')
+    expect(wrapper.text()).toContain('Default')
+  })
+
+  it('switches rules when strategy prop changes', async () => {
+    const wrapper = mount(FloatingChecklist, { props: { modelValue: [], strategy: 'Breakout' } })
+    expect(wrapper.text()).toContain('Momentum')
+    expect(wrapper.text()).toContain('Breakout')
   })
 
   it('calculates score and tier correctly', async () => {
@@ -38,8 +56,7 @@ describe('FloatingChecklist', () => {
     await checkboxes[0].setValue(true)
     
     expect(wrapper.text()).toContain('Score: 2')
-    // Wait, Rule 2 is mandatory! So even if score is 2 (A Tier threshold), it shouldn't allow tier selection if mandatory is missing.
-    // The component should show "Missing Mandatory" or similar.
+    // Wait, Rule 2 is mandatory! So even if score is 2, it shouldn't allow tier selection if mandatory is missing.
     expect(wrapper.text()).toContain('Missing Mandatory')
 
     // Check second rule (Weight 3) -> Total 5 -> S Tier, and all mandatory checked
@@ -61,8 +78,7 @@ describe('FloatingChecklist', () => {
   it('handles empty settings gracefully', () => {
     // @ts-ignore
     useSettings.mockReturnValue({
-        checklistRules: ref([]),
-        tierThresholds: ref([])
+        strategyChecklists: ref({})
     })
     const wrapper = mount(FloatingChecklist, { props: { modelValue: [] } })
     expect(wrapper.text()).toContain('No checklist rules')
