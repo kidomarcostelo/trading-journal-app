@@ -4,7 +4,7 @@ import { ref } from 'vue'
 import SettingsChecklist from '../../components/SettingsChecklist.vue'
 import { useSettings } from '../../composables/useSettings'
 
-// Mock useSettings
+// Mock dependencies
 vi.mock('../../composables/useSettings', () => ({
   useSettings: vi.fn()
 }))
@@ -13,22 +13,37 @@ vi.mock('../../composables/useToast', () => ({
   useToast: () => ({ addToast: vi.fn() })
 }))
 
+vi.stubGlobal('useFetch', vi.fn())
+
 describe('SettingsChecklist', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     // @ts-ignore
     useSettings.mockReturnValue({
-      checklistRules: ref([
-        { description: 'Rule 1', weight: 1, isMandatory: false }
+      strategyChecklists: ref({
+        'Default': {
+          rules: [{ description: 'Rule 1', weight: 1, isMandatory: false }],
+          tiers: [{ label: 'S Tier', threshold: 10 }]
+        },
+        'Breakout': {
+          rules: [{ description: 'Momentum', weight: 5, isMandatory: true }],
+          tiers: []
+        }
+      }),
+      saveChecklistConfig: vi.fn().mockResolvedValue(true),
+      isLoading: ref(false)
+    })
+
+    // @ts-ignore
+    useFetch.mockReturnValue({
+      data: ref([
+        { id: 'Strategies', values: ['Breakout', 'Mean Reversion'] }
       ]),
-      tierThresholds: ref([
-        { label: 'S Tier', threshold: 10 }
-      ]),
-      saveChecklistConfig: vi.fn().mockResolvedValue(true)
+      pending: ref(false)
     })
   })
 
-  it('renders existing rules and tiers', async () => {
+  it('renders existing rules for default strategy', async () => {
     const wrapper = mount(SettingsChecklist)
     await flushPromises()
     
@@ -36,28 +51,31 @@ describe('SettingsChecklist', () => {
     const values = inputs.map(i => i.element.value)
     expect(values).toContain('Rule 1')
     expect(values).toContain('S Tier')
+    expect(wrapper.text()).toContain('Default')
   })
 
-  it('can add a new rule', async () => {
+  it('switches rules when strategy is selected', async () => {
     const wrapper = mount(SettingsChecklist)
-    
-    // Find Add Rule button
-    const buttons = wrapper.findAll('button')
-    const addBtn = buttons.find(b => b.text().includes('Add Rule'))
-    if (!addBtn) throw new Error('Add Rule button not found')
-    
-    await addBtn.trigger('click')
     await flushPromises()
     
-    // Should render a new rule input
+    const select = wrapper.find('select')
+    await select.setValue('Breakout')
+    await flushPromises()
+    
     const inputs = wrapper.findAll('input[type="text"]')
-    // There should be at least two inputs (one for the existing rule, one for the new one)
-    expect(inputs.length).toBeGreaterThanOrEqual(2) 
+    const values = inputs.map(i => i.element.value)
+    expect(values).toContain('Momentum')
+    expect(values).not.toContain('Rule 1')
   })
 
-  it('calls saveChecklistConfig when saving', async () => {
+  it('calls saveChecklistConfig with the selected strategy', async () => {
     const wrapper = mount(SettingsChecklist)
+    await flushPromises()
+    
     const { saveChecklistConfig } = useSettings()
+
+    const select = wrapper.find('select')
+    await select.setValue('Breakout')
 
     // Find Save button
     const buttons = wrapper.findAll('button')
@@ -65,6 +83,6 @@ describe('SettingsChecklist', () => {
     if (!saveBtn) throw new Error('Save button not found')
 
     await saveBtn.trigger('click')
-    expect(saveChecklistConfig).toHaveBeenCalled()
+    expect(saveChecklistConfig).toHaveBeenCalledWith('Breakout', expect.any(Array), expect.any(Array))
   })
 })
