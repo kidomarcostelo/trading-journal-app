@@ -37,15 +37,15 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 3b: Refactor for Strategy-Specific Checklists' (Protocol in workflow.md) cd3aa6c
 
 ## Phase 4: Data Persistence & UI Integration
-- [ ] Task: Update `useTrades.ts` composable to handle saving `checklistScore` and `tier` payload when creating/updating a trade.
-- [ ] Task: Update `TradeList.vue` (Pane 2) to display the Tier badge.
-- [ ] Task: Update `TradeSummaryCard.vue` (Pane 3) to prominently display the calculated Tier.
-- [ ] Task: Update backend `POST /api/trades` and `PUT /api/trades/batch` to save the new fields to the `Master` sheet.
+- [~] Task: Update `useTrades.ts` composable to handle saving `checklistScore` and `tier` payload when creating/updating a trade.
+- [~] Task: Update `TradeList.vue` (Pane 2) to display the Tier badge.
+- [~] Task: Update `TradeSummaryCard.vue` (Pane 3) to prominently display the calculated Tier.
+- [~] Task: Update backend `POST /api/trades` and `PUT /api/trades/batch` to save the new fields to the `Master` sheet.
 - [ ] Task: Create tests for updated Composables and UI components.
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Data Persistence & UI Integration' (Protocol in workflow.md)
 
 ## Phase 5: Analytics Integration
-- [ ] Task: Update `useAnalytics.ts` and `AnalyticsDashboard.vue` to support grouping and filtering by Tier.
-- [ ] Task: Update relevant charts (e.g., PerformanceHeatmap, TradeStats) to reflect tier-based analysis.
+- [~] Task: Update `useAnalytics.ts` and `AnalyticsDashboard.vue` to support grouping and filtering by Tier.
+- [~] Task: Update relevant charts (e.g., PerformanceHeatmap, TradeStats) to reflect tier-based analysis.
 - [ ] Task: Create tests for tier-based analytics functions.
 - [ ] Task: Conductor - User Manual Verification 'Phase 5: Analytics Integration' (Protocol in workflow.md)
