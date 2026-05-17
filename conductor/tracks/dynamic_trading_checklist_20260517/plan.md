@@ -10,11 +10,11 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Settings Data & API Extension' (Protocol in workflow.md) 0fba4e9
 
 ## Phase 2: Settings UI for Checklist Configuration
-- [ ] Task: Create new components in `pages/settings.vue` (or as a separate component `SettingsChecklist.vue`) to manage rules.
-    - [ ] Sub-task: Form to Add/Edit/Delete rules with description, weight, and mandatory toggles.
-    - [ ] Sub-task: Form to configure Tier thresholds and labels.
-- [ ] Task: Integrate settings UI with the backend API to save changes to the `Settings` sheet.
-- [ ] Task: Create tests for `SettingsChecklist.vue` functionality.
+- [x] Task: Create new components in `pages/settings.vue` (or as a separate component `SettingsChecklist.vue`) to manage rules. 46db252
+    - [x] Sub-task: Form to Add/Edit/Delete rules with description, weight, and mandatory toggles.
+    - [x] Sub-task: Form to configure Tier thresholds and labels.
+- [x] Task: Integrate settings UI with the backend API to save changes to the `Settings` sheet. 46db252
+- [x] Task: Create tests for `SettingsChecklist.vue` functionality. 46db252
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Settings UI for Checklist Configuration' (Protocol in workflow.md)
 
 ## Phase 3: Trade Entry - Floating Checklist Widget
