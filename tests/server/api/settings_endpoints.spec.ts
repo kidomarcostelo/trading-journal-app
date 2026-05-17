@@ -38,7 +38,9 @@ describe('Settings API Endpoints', () => {
 
       expect(settingsUtils.getSettings).toHaveBeenCalled()
       expect(response).toEqual({
-        panels: [{ id: '1', title: 'Test', categories: ['A'] }]
+        chip_layout: { panels: [{ id: '1', title: 'Test', categories: ['A'] }] },
+        checklistRules: [],
+        tierThresholds: []
       })
     })
 
@@ -49,7 +51,9 @@ describe('Settings API Endpoints', () => {
       const response = await getHandler({} as any)
 
       expect(response).toEqual({
-        panels: []
+        chip_layout: { panels: [] },
+        checklistRules: [],
+        tierThresholds: []
       })
     })
   })
