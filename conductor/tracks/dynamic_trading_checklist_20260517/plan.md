@@ -1,7 +1,7 @@
 # Implementation Plan: Dynamic Trading Checklist & Tier System
 
 ## Phase 1: Settings Data & API Extension
-- [ ] Task: Update `types/index.ts` to include interface definitions for `ChecklistRule`, `TierThreshold`, and update `Trade` interface to store `checklistScore` and `tier`.
+- [x] Task: Update `types/index.ts` to include interface definitions for `ChecklistRule`, `TierThreshold`, and update `Trade` interface to store `checklistScore` and `tier`. 85619ae
 - [ ] Task: Update `server/utils/googleSheets.ts` to fetch and parse checklist configuration from the `Settings` sheet.
     - [ ] Sub-task: Add parsing logic for rules, weights, and mandatory flags.
     - [ ] Sub-task: Add parsing logic for tier thresholds and labels.
