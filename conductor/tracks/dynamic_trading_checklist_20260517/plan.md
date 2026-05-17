@@ -9,13 +9,13 @@
 - [x] Task: Create tests for the updated Google Sheets parsing and API endpoints. 1871333
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Settings Data & API Extension' (Protocol in workflow.md) 0fba4e9
 
-## Phase 2: Settings UI for Checklist Configuration
+## Phase 2: Settings UI for Checklist Configuration [checkpoint: f4a1c18]
 - [x] Task: Create new components in `pages/settings.vue` (or as a separate component `SettingsChecklist.vue`) to manage rules. 46db252
     - [x] Sub-task: Form to Add/Edit/Delete rules with description, weight, and mandatory toggles.
     - [x] Sub-task: Form to configure Tier thresholds and labels.
 - [x] Task: Integrate settings UI with the backend API to save changes to the `Settings` sheet. 46db252
 - [x] Task: Create tests for `SettingsChecklist.vue` functionality. 46db252
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Settings UI for Checklist Configuration' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Settings UI for Checklist Configuration' (Protocol in workflow.md) f4a1c18
 
 ## Phase 3: Trade Entry - Floating Checklist Widget
 - [ ] Task: Create a new component `FloatingChecklist.vue`.
