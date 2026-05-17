@@ -11,7 +11,9 @@ const { addToast } = useToast()
 const { data: config, pending: configPending } = useFetch<ChipCategory[]>('/api/config')
 
 const strategies = computed(() => {
-  const strategyCat = config.value?.find(c => c.id.toLowerCase() === 'strategies')
+  const strategyCat = config.value?.find(c => 
+    ['strategies', 'strategy', 'entry strategies', 'setups', 'setup'].includes(c.id.toLowerCase())
+  )
   return strategyCat ? ['Default', ...strategyCat.values] : ['Default']
 })
 

@@ -90,5 +90,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Dynamic Trading Checklist**
+- [~] **Track: Dynamic Trading Checklist**
 *Link: [./tracks/dynamic_trading_checklist_20260517/](./tracks/dynamic_trading_checklist_20260517/)*

@@ -451,7 +451,7 @@ onUnmounted(() => {
             <div v-if="showChecklist" class="mb-4">
               <FloatingChecklist 
                 :modelValue="Array.isArray(activeTrade?.checklistRulesChecked) ? activeTrade.checklistRulesChecked : activeTrade?.checklistRulesChecked ? activeTrade.checklistRulesChecked.split(', ') : []"
-                :strategy="activeTrade?.Strategies"
+                :strategy="activeTrade?.['Entry Strategies'] || activeTrade?.Strategies"
                 @update:modelValue="(val) => handleTradeUpdate({ checklistRulesChecked: val })"
                 @update:score="(score) => handleTradeUpdate({ checklistScore: score })"
                 @update:tier="(tier) => handleTradeUpdate({ tier: tier })"
