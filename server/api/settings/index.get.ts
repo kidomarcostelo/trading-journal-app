@@ -3,6 +3,17 @@ import { getSettings } from '../../utils/settings'
 
 export default defineEventHandler(async (event) => {
   const settings = await getSettings()
-  // Return the full layout object
-  return settings.chip_layout || { panels: [] }
+  
+  // Ensure defaults exist for expected keys
+  if (!settings.chip_layout) {
+    settings.chip_layout = { panels: [] }
+  }
+  if (!settings.checklistRules) {
+    settings.checklistRules = []
+  }
+  if (!settings.tierThresholds) {
+    settings.tierThresholds = []
+  }
+  
+  return settings
 })

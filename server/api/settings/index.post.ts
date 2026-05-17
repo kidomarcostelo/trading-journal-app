@@ -11,7 +11,13 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // Save the full settings object (including panels array with titles)
+  // Allow saving an arbitrary key/value pair
+  if (body.key && body.value !== undefined) {
+    await saveSettings(body.key, body.value)
+    return { success: true }
+  }
+
+  // Legacy fallback: Save the full body as chip_layout
   await saveSettings('chip_layout', body)
   
   return { success: true }
