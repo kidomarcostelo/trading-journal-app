@@ -42,7 +42,7 @@ describe('AnalyticsDashboard', () => {
   it('renders core metrics correctly', () => {
     const wrapper = mount(AnalyticsDashboard, {
       props: {
-        trades: []
+        trades: [{ id: '1', status: 'Closed' } as any]
       }
     })
 
@@ -59,7 +59,7 @@ describe('AnalyticsDashboard', () => {
   it('renders average holding times', () => {
     const wrapper = mount(AnalyticsDashboard, {
       props: {
-        trades: []
+        trades: [{ id: '1', status: 'Closed' } as any]
       }
     })
 
@@ -73,7 +73,7 @@ describe('AnalyticsDashboard', () => {
   it('renders backfill section', () => {
     const wrapper = mount(AnalyticsDashboard, {
       props: {
-        trades: []
+        trades: [{ id: '1', status: 'Closed' } as any]
       }
     })
 
@@ -102,7 +102,7 @@ describe('AnalyticsDashboard', () => {
   it('renders behavioral metrics', () => {
     const wrapper = mount(AnalyticsDashboard, {
       props: {
-        trades: []
+        trades: [{ id: '1', status: 'Closed' } as any]
       }
     })
 
