@@ -36,7 +36,8 @@ describe('Settings Page', () => {
             stubs: {
               ToastNotification: true,
               NuxtLink: true,
-              AppSidebar: true
+              AppSidebar: true,
+              SettingsChecklist: true
             }
           }
         })
@@ -50,7 +51,8 @@ describe('Settings Page', () => {
               ToastNotification: true,
               NuxtLink: true,
               AppSidebar: true,
-              TransitionGroup: true
+              TransitionGroup: true,
+              SettingsChecklist: true
             }
           }
         })

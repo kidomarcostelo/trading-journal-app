@@ -419,6 +419,16 @@ const addCategoryToPanel = (catId: string, panelId: string) => {
               <Plus class="w-4 h-4" /> Create First Panel
             </button>
           </div>
+
+          <div class="pt-12 mt-12 border-t border-terminal-gray/30">
+            <div class="flex justify-between items-center mb-8">
+              <h3 class="text-xs font-bold uppercase tracking-[0.2em] text-terminal-text/40 flex items-center gap-2">
+                  <Check class="w-4 h-4" /> Checklist & Tiers Configuration
+              </h3>
+            </div>
+            <SettingsChecklist />
+          </div>
+
         </div>
       </div>
     </div>

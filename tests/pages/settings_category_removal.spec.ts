@@ -58,7 +58,8 @@ describe('Settings Page Category Removal', () => {
               ExternalLink: true,
               Save: true,
               ArrowLeft: true,
-              SettingsIcon: true
+              SettingsIcon: true,
+              SettingsChecklist: true
             }
           }
         })
