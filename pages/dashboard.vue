@@ -75,7 +75,7 @@ const activeDetailTab = ref<'journal' | 'charts' | 'review' | 'analytics'>('jour
 const showChecklist = ref(false)
 
 const activeTrade = computed(() => {
-  return filteredTrades.value.find(t => (t.ID || t.id) === selectedTradeId.value)
+  return filteredTrades.value.find(t => String(t.ID || t.id) === String(selectedTradeId.value))
 })
 
 // Force re-render for live duration every minute
@@ -135,7 +135,7 @@ const { saveMode, isDirty, dirtyTradeIds, isLoading, trackChange, triggerSave, o
 
 const handleTradeUpdate = (fieldsToUpdate: any) => {
   if (!activeTrade.value || !trades.value) return
-  const index = trades.value.findIndex(t => (t.ID || t.id) === selectedTradeId.value)
+  const index = trades.value.findIndex(t => String(t.ID || t.id) === String(selectedTradeId.value))
   if (index !== -1) {
     const currentTrade = trades.value[index]
     
@@ -177,9 +177,9 @@ const executeDelete = async () => {
     await $fetch('/api/trades', { method: 'DELETE', query: { id: tradeToDeleteId.value } })
     addToast({ title: 'Deleted', message: 'Trade removed', type: 'success' })
     if (trades.value) {
-      trades.value = trades.value.filter(t => (t.ID || t.id) !== tradeToDeleteId.value)
+      trades.value = trades.value.filter(t => String(t.ID || t.id) !== String(tradeToDeleteId.value))
     }
-    selectedTradeId.value = trades.value?.[0]?.ID || null
+    selectedTradeId.value = trades.value?.[0]?.ID?.toString() || null
     showDeleteModal.value = false
   } catch (err) {
     addToast({ title: 'Error', message: 'Failed to delete trade', type: 'error' })
