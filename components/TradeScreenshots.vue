@@ -15,6 +15,7 @@ const newBeforeImage = ref('')
 const newAfterImage = ref('')
 const currentBeforeIndex = ref(0)
 const currentAfterIndex = ref(0)
+const fullscreenImage = ref<string | null>(null)
 
 // Local form state for journals
 const form = ref({ ...props.trade })
@@ -155,8 +156,9 @@ const openOriginal = (url: string) => {
           <img 
             :key="beforeImages[currentBeforeIndex]"
             :src="beforeImages[currentBeforeIndex]" 
-            class="w-full h-auto block" 
+            class="w-full h-auto block cursor-pointer" 
             alt="Before Setup" 
+            @click="fullscreenImage = beforeImages[currentBeforeIndex]"
           />
           
           <!-- Carousel Controls -->
@@ -259,8 +261,9 @@ const openOriginal = (url: string) => {
           <img 
             :key="afterImages[currentAfterIndex]"
             :src="afterImages[currentAfterIndex]" 
-            class="w-full h-auto block" 
+            class="w-full h-auto block cursor-pointer" 
             alt="After Result" 
+            @click="fullscreenImage = afterImages[currentAfterIndex]"
           />
           
           <!-- Carousel Controls -->
@@ -363,6 +366,28 @@ const openOriginal = (url: string) => {
       ></textarea>
     </div>
   </div>
+
+  <!-- Fullscreen Image Modal -->
+  <transition name="fade">
+    <div 
+      v-if="fullscreenImage" 
+      class="fixed inset-0 z-30 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-8 cursor-zoom-out"
+      @click="fullscreenImage = null"
+    >
+      <img :src="fullscreenImage" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl" />
+      <button 
+        class="absolute top-6 right-6 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
+        @click.stop="fullscreenImage = null"
+      >
+        <X class="w-6 h-6" />
+      </button>
+      
+      <!-- Instructional Note -->
+      <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/60 text-white/60 text-xs rounded-full backdrop-blur-sm pointer-events-none">
+        Click anywhere to close
+      </div>
+    </div>
+  </transition>
 </template>
 
 <style scoped>
