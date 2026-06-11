@@ -14,6 +14,9 @@ import {
   ClipboardCheck
 } from 'lucide-vue-next'
 import type { ChipCategory } from '~/types'
+import SaveControls from '~/components/ui/SaveControls.vue'
+import DeleteConfirmationModal from '~/components/ui/DeleteConfirmationModal.vue'
+import FloatingChecklist from '~/components/FloatingChecklist.vue'
 import { useUI } from '~/composables/useUI'
 import { useSettings } from '~/composables/useSettings'
 
