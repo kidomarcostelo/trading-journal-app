@@ -112,7 +112,7 @@ watch([currentScore, currentTier, isValid], () => {
       <label 
         v-for="rule in checklistRules" 
         :key="rule.description"
-        class="flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-all hover:bg-terminal-gray/10 group"
+        class="relative flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-all hover:bg-terminal-gray/10 group"
         :class="checkedRules.has(rule.description) ? 'border-terminal-accent/30 bg-terminal-accent/5' : 'border-terminal-gray/20 bg-terminal-black/30'"
       >
         <div class="pt-0.5">

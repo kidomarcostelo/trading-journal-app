@@ -162,7 +162,7 @@ const handleSave = async () => {
 
           <!-- Mandatory -->
           <div class="w-full sm:w-32 flex items-center justify-between sm:justify-center gap-2 pt-1 sm:pt-5">
-            <label class="flex items-center gap-2 cursor-pointer group/label">
+            <label class="relative flex items-center gap-2 cursor-pointer group/label">
               <input 
                 v-model="rule.isMandatory" 
                 type="checkbox" 
