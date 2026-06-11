@@ -66,7 +66,13 @@ onUnmounted(() => {
 // Normalize modelValue to array for consistent handling internally
 const selectedValues = computed(() => {
   if (Array.isArray(props.modelValue)) return props.modelValue
-  return props.modelValue ? [props.modelValue] : []
+  if (props.modelValue && typeof props.modelValue === 'string') {
+    if (props.multiple && props.modelValue.includes(',')) {
+      return props.modelValue.split(',').map(s => s.trim()).filter(Boolean)
+    }
+    return [props.modelValue]
+  }
+  return []
 })
 
 const filteredOptions = computed(() => {
