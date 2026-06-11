@@ -13,18 +13,6 @@ import {
   X,
   ClipboardCheck
 } from 'lucide-vue-next'
-import TradeForm from '~/components/TradeForm.vue'
-import TradeList from '~/components/TradeList.vue'
-import TradeDataTable from '~/components/TradeDataTable.vue'
-import TradeStats from '~/components/TradeStats.vue'
-import AnalyticsDashboard from '~/components/AnalyticsDashboard.vue'
-import TradeScreenshots from '~/components/TradeScreenshots.vue'
-import TradeReview from '~/components/TradeReview.vue'
-import ChipPanel from '~/components/ChipPanel.vue'
-import CalendarRange from '~/components/CalendarRange.vue'
-import CollapsibleSection from '~/components/CollapsibleSection.vue'
-import SaveControls from '~/components/ui/SaveControls.vue'
-import DeleteConfirmationModal from '~/components/ui/DeleteConfirmationModal.vue'
 import type { ChipCategory } from '~/types'
 import { useUI } from '~/composables/useUI'
 import { useSettings } from '~/composables/useSettings'
@@ -164,6 +152,17 @@ const selectTrade = async (id: string) => {
   await onNavigate()
   isCreatingTrade.value = false
   selectedTradeId.value = id
+}
+
+const handleTradeCreated = async (newTrade: any) => {
+  await refresh()
+  isCreatingTrade.value = false
+  if (newTrade) {
+    const idKey = Object.keys(newTrade).find(k => k.toLowerCase() === 'id')
+    if (idKey && newTrade[idKey]) {
+      selectedTradeId.value = newTrade[idKey].toString()
+    }
+  }
 }
 
 const confirmDelete = (id: string) => {
@@ -356,7 +355,7 @@ onUnmounted(() => {
           </button>
         </div>
         <div class="flex-1 min-h-0">
-          <TradeForm :config="config || []" @success="refresh(); isCreatingTrade = false" />
+          <TradeForm :config="config || []" @success="handleTradeCreated" />
         </div>
       </div>
 
