@@ -45,8 +45,6 @@ const initialForm = {
   PNL: '',
   MAE: '',
   MFE: '',
-  'Rules Followed': true,
-  'Mental Category': '',
   'Before Picture': '',
   'Before Journal': ''
 }
@@ -223,31 +221,7 @@ const submitTrade = async () => {
             </div>
           </div>
 
-          <!-- Execution & Psychology -->
-          <div class="space-y-4">
-            <h3 class="text-[10px] font-bold text-terminal-text/30 uppercase tracking-[0.2em] mb-2 px-1">Execution & Mindset</h3>
-            <div class="grid grid-cols-2 gap-4">
-              <div class="flex items-center justify-between p-3 bg-terminal-black/20 border border-terminal-gray/30 rounded-lg">
-                <span class="text-xs text-terminal-text/70 uppercase font-medium">Rules Followed</span>
-                <button 
-                  type="button"
-                  @click="form['Rules Followed'] = !form['Rules Followed']"
-                  :class="['w-10 h-5 rounded-full transition-all relative', form['Rules Followed'] ? 'bg-emerald-500/20 border-emerald-500/50' : 'bg-rose-500/20 border-rose-500/50', 'border']"
-                >
-                  <div :class="['w-3 h-3 rounded-full absolute top-0.5 transition-all', form['Rules Followed'] ? 'right-1 bg-emerald-400' : 'left-1 bg-rose-400']"></div>
-                </button>
-              </div>
-              <div class="flex items-center justify-between p-1 px-3 bg-terminal-black/20 border border-terminal-gray/30 rounded-lg">
-                <span class="text-xs text-terminal-text/70 uppercase font-medium">Mental</span>
-                <select v-model="form['Mental Category']" class="bg-transparent text-terminal-highlight text-xs font-mono outline-none cursor-pointer py-2">
-                  <option value="">None / Untagged</option>
-                  <option value="A Game">A Game</option>
-                  <option value="B Game">B Game</option>
-                  <option value="C Game">C Game</option>
-                </select>
-              </div>
-            </div>
-          </div>
+
 
           <!-- Before Picture URL -->
           <div>
