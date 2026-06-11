@@ -99,7 +99,11 @@ const tradeTags = computed(() => {
     } else if (typeof val === 'string' && !isBasicInfoColumn(key) && !isImageColumn(key) && !isJournalColumn(key)) {
       // Catch single string tags like 'Mental Category'
       if (val.trim() && val !== 'None / Untagged' && val !== 'false' && val !== 'true') {
-        tags.push({ category: key, values: [val] })
+        if (val.includes(',')) {
+          tags.push({ category: key, values: val.split(',').map((s: string) => s.trim()).filter(Boolean) })
+        } else {
+          tags.push({ category: key, values: [val] })
+        }
       }
     }
   })
