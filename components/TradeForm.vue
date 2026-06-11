@@ -53,7 +53,7 @@ const form = reactive<any>({ ...initialForm })
 const tags = reactive<Record<string, string[]>>({})
 
 // Specific Chip Categories to show in the form
-const visibleCategories = computed(() => settings.value?.visibleTradeFormChips || ['Strategies', 'Price Action', 'Trade Intention', 'Emotions'])
+const visibleCategories = computed(() => settings.value?.visibleTradeFormChips || ['Strategies', 'Price Action'])
 
 // Initialize tags based on categories
 watch(() => props.config, (newVal) => {
