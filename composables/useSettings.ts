@@ -3,7 +3,7 @@ import type { ChecklistRule, TierThreshold, StrategyChecklistConfig } from '../t
 export const useSettings = () => {
   const settings = useState('settings-layout', () => ({
     panels: [] as { id: string, title: string, categories: string[] }[],
-    visibleTradeFormChips: ['Strategies', 'Price Action', 'Trade Intention', 'Emotions'] as string[]
+    visibleTradeFormChips: ['Strategies', 'Price Action'] as string[]
   }))
   
   const strategyChecklists = useState<StrategyChecklistConfig>('settings-strategy-checklists', () => ({}))
@@ -19,7 +19,7 @@ export const useSettings = () => {
       if (data) {
         // Migration logic for old chip_layout or if data is the old layout itself
         const layoutData = data.chip_layout || data
-        const defaultChips = ['Strategies', 'Price Action', 'Trade Intention', 'Emotions']
+        const defaultChips = ['Strategies', 'Price Action']
         
         if (layoutData.strategy || layoutData.psychology) {
           const migratedPanels = []
