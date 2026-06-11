@@ -6,9 +6,10 @@
 
     <div v-else class="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-6">
       <div 
-        v-for="trade in trades" 
+        v-for="(trade, index) in trades" 
         :key="trade.id || trade.ID" 
-        class="trade-card bg-terminal-dark border border-terminal-gray/50 rounded-xl overflow-hidden shadow-sm hover:shadow-md hover:border-terminal-gray transition-all flex flex-col group"
+        @click="openModal(index)"
+        class="trade-card bg-terminal-dark border border-terminal-gray/50 rounded-xl overflow-hidden shadow-sm hover:shadow-md hover:border-terminal-accent/50 transition-all flex flex-col group cursor-pointer"
       >
         <!-- Header -->
         <div class="p-4 flex items-center justify-between border-b border-terminal-gray/30 bg-terminal-black/20">
@@ -64,13 +65,32 @@
         </div>
       </div>
     </div>
+
+    <!-- Carousel Modal Overlay -->
+    <TradeCarouselModal
+      :is-open="isModalOpen"
+      :trades="trades"
+      :initial-index="selectedTradeIndex"
+      @close="isModalOpen = false"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
+import TradeCarouselModal from './TradeCarouselModal.vue'
+
 const props = defineProps<{
   trades: any[]
 }>()
+
+const isModalOpen = ref(false)
+const selectedTradeIndex = ref(0)
+
+const openModal = (index: number) => {
+  selectedTradeIndex.value = index
+  isModalOpen.value = true
+}
 
 const getPnLClass = (trade: any) => {
   const pnlKey = Object.keys(trade).find(k => k.toLowerCase().includes('pnl') || k.includes('%'))
