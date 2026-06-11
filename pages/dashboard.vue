@@ -31,7 +31,7 @@ import { useSettings } from '~/composables/useSettings'
 
 const { activeTab } = useUI()
 const { settings, fetchSettings, isLoading: isSettingsLoading } = useSettings()
-const showForm = ref(false)
+const isCreatingTrade = ref(false)
 const selectedTradeId = ref<string | null>(null)
 
 onMounted(async () => {
@@ -162,6 +162,7 @@ const handleTradeUpdate = (fieldsToUpdate: any) => {
 const selectTrade = async (id: string) => {
   if (selectedTradeId.value === id) return
   await onNavigate()
+  isCreatingTrade.value = false
   selectedTradeId.value = id
 }
 
@@ -267,7 +268,7 @@ onUnmounted(() => {
             <button @click="() => refresh()" class="p-1.5 text-terminal-text/60 hover:text-terminal-highlight transition-all" :disabled="pending">
               <RefreshCw :class="['w-4 h-4', pending ? 'animate-spin' : '']" />
             </button>
-            <button v-if="!isListCollapsed" @click="showForm = true" class="p-1.5 text-terminal-accent hover:bg-terminal-accent/10 rounded-md transition-all">
+            <button v-if="!isListCollapsed" @click="isCreatingTrade = true; selectedTradeId = null" class="p-1.5 text-terminal-accent hover:bg-terminal-accent/10 rounded-md transition-all">
               <PlusCircle class="w-4 h-4" />
             </button>
           </div>
@@ -346,17 +347,20 @@ onUnmounted(() => {
     ></div>
 
     <!-- Pane 3: Main Detail View -->
-    <main data-testid="pane-detail" class="flex-1 bg-terminal-dark overflow-y-auto relative">
-      <div v-if="showForm" class="absolute inset-0 z-50 bg-terminal-black/80 backdrop-blur-sm flex items-center justify-center p-6">
-        <div class="bg-terminal-dark border border-terminal-gray rounded-xl shadow-2xl w-full max-w-[90vw] h-[85vh] relative overflow-hidden">
-          <button @click="showForm = false" class="absolute top-4 right-4 text-terminal-text/40 hover:text-terminal-text z-10">
-            <PlusCircle class="w-6 h-6 rotate-45" />
+    <main data-testid="pane-detail" class="flex-1 bg-terminal-dark overflow-y-auto relative flex flex-col">
+      <div v-if="isCreatingTrade" class="flex-1 flex flex-col w-full h-full">
+        <div class="flex items-center justify-between p-6 border-b border-terminal-gray/30 bg-terminal-black/20 shrink-0">
+          <h2 class="text-xl font-bold text-terminal-highlight">Log New Trade</h2>
+          <button @click="isCreatingTrade = false" class="text-terminal-text/40 hover:text-terminal-text transition-colors">
+            <X class="w-5 h-5" />
           </button>
-          <TradeForm :config="config || []" @success="refresh(); showForm = false" />
+        </div>
+        <div class="flex-1 min-h-0">
+          <TradeForm :config="config || []" @success="refresh(); isCreatingTrade = false" />
         </div>
       </div>
 
-      <div v-if="activeTrade" class="p-8 w-full">
+      <div v-else-if="activeTrade" class="p-8 w-full flex-1">
         <!-- Active Trade Detail Rendering -->
         <div class="mb-8 flex flex-col gap-6">
            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
