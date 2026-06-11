@@ -2,7 +2,8 @@ import type { ChecklistRule, TierThreshold, StrategyChecklistConfig } from '../t
 
 export const useSettings = () => {
   const settings = useState('settings-layout', () => ({
-    panels: [] as { id: string, title: string, categories: string[] }[]
+    panels: [] as { id: string, title: string, categories: string[] }[],
+    visibleTradeFormChips: ['Strategies', 'Price Action', 'Trade Intention', 'Emotions'] as string[]
   }))
   
   const strategyChecklists = useState<StrategyChecklistConfig>('settings-strategy-checklists', () => ({}))
@@ -18,14 +19,15 @@ export const useSettings = () => {
       if (data) {
         // Migration logic for old chip_layout or if data is the old layout itself
         const layoutData = data.chip_layout || data
+        const defaultChips = ['Strategies', 'Price Action', 'Trade Intention', 'Emotions']
         
         if (layoutData.strategy || layoutData.psychology) {
           const migratedPanels = []
           if (layoutData.strategy) migratedPanels.push({ id: 'strategy-' + Date.now(), title: 'Strategy & Tags', categories: layoutData.strategy })
           if (layoutData.psychology) migratedPanels.push({ id: 'psychology-' + Date.now(), title: 'Psychology', categories: layoutData.psychology })
-          settings.value = { panels: migratedPanels }
+          settings.value = { panels: migratedPanels, visibleTradeFormChips: layoutData.visibleTradeFormChips || defaultChips }
         } else {
-          settings.value = layoutData.panels ? layoutData : { panels: [] }
+          settings.value = layoutData.panels ? { ...layoutData, visibleTradeFormChips: layoutData.visibleTradeFormChips || defaultChips } : { panels: [], visibleTradeFormChips: defaultChips }
         }
         
         if (data.strategyChecklists) {

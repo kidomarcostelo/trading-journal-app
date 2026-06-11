@@ -33,12 +33,16 @@ interface Panel {
 
 const localPanels = ref<Panel[]>([])
 const localChips = ref<ChipCategory[]>([])
+const localTradeFormChips = ref<string[]>([])
 const isSavingLibrary = ref(false)
 
 const initLocalState = async () => {
     await fetchSettings()
     if (settings.value?.panels) {
         localPanels.value = JSON.parse(JSON.stringify(settings.value.panels))
+    }
+    if (settings.value?.visibleTradeFormChips) {
+        localTradeFormChips.value = JSON.parse(JSON.stringify(settings.value.visibleTradeFormChips))
     }
     if (config.value) {
         localChips.value = JSON.parse(JSON.stringify(config.value))
@@ -80,7 +84,7 @@ const removeCategory = (catId: string, panelId: string) => {
 
 const handleSaveLayout = async () => {
     try {
-        settings.value = { panels: localPanels.value }
+        settings.value = { panels: localPanels.value, visibleTradeFormChips: localTradeFormChips.value }
         await saveSettings()
         addToast({ title: 'Success', message: 'Layout saved successfully', type: 'success' })
     } catch (e) {
@@ -418,6 +422,23 @@ const addCategoryToPanel = (catId: string, panelId: string) => {
             >
               <Plus class="w-4 h-4" /> Create First Panel
             </button>
+          </div>
+
+          <div class="pt-12 mt-12 border-t border-terminal-gray/30">
+            <div class="flex justify-between items-center mb-8">
+              <h3 class="text-xs font-bold uppercase tracking-[0.2em] text-terminal-text/40 flex items-center gap-2">
+                  <Layers class="w-4 h-4" /> Trade Form Preferences
+              </h3>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 p-8 border border-terminal-gray/30 rounded-2xl bg-terminal-black/20">
+              <label v-for="cat in localChips" :key="cat.id" class="relative flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all hover:bg-terminal-gray/10 group" :class="localTradeFormChips.includes(cat.id) ? 'border-terminal-accent/30 bg-terminal-accent/5' : 'border-terminal-gray/20 bg-terminal-black/30'">
+                <input type="checkbox" :value="cat.id" v-model="localTradeFormChips" class="sr-only" />
+                <div class="w-4 h-4 rounded border flex items-center justify-center transition-colors group-hover:border-terminal-accent" :class="localTradeFormChips.includes(cat.id) ? 'bg-terminal-accent/20 border-terminal-accent' : 'border-terminal-gray/50'">
+                  <div v-if="localTradeFormChips.includes(cat.id)" class="w-2 h-2 rounded-sm bg-terminal-accent"></div>
+                </div>
+                <span class="text-sm font-medium">{{ cat.id }}</span>
+              </label>
+            </div>
           </div>
 
           <div class="pt-12 mt-12 border-t border-terminal-gray/30">
