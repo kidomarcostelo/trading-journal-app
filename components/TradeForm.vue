@@ -2,12 +2,15 @@
 import { ref, reactive, computed, watch } from 'vue'
 import type { ChipCategory } from '~/types'
 import { Save, Loader2, Image as ImageIcon } from 'lucide-vue-next'
+import { useSettings } from '~/composables/useSettings'
 
 const props = defineProps<{
   config?: ChipCategory[]
 }>()
 
 const emit = defineEmits(['success'])
+
+const { settings } = useSettings()
 
 // Initialize tags based on categories
 const categories = computed(() => props.config || [])
@@ -52,13 +55,13 @@ const form = reactive<any>({ ...initialForm })
 const tags = reactive<Record<string, string[]>>({})
 
 // Specific Chip Categories to show in the form
-const ALLOWED_CHIP_CATEGORIES = ['Strategies', 'Price Action', 'Trade Intention', 'Emotions']
+const visibleCategories = computed(() => settings.value?.visibleTradeFormChips || ['Strategies', 'Price Action', 'Trade Intention', 'Emotions'])
 
 // Initialize tags based on categories
 watch(() => props.config, (newVal) => {
   if (newVal) {
     newVal.forEach(cat => {
-      if (ALLOWED_CHIP_CATEGORIES.some(allowed => cat.id.toLowerCase().includes(allowed.toLowerCase()))) {
+      if (visibleCategories.value.some(allowed => cat.id.toLowerCase().includes(allowed.toLowerCase()))) {
         if (!tags[cat.id]) tags[cat.id] = []
       }
     })
@@ -73,7 +76,7 @@ const pairCategory = computed(() => {
 // Filter for requested strategy/psych chips
 const filteredCategories = computed(() => {
   return categories.value?.filter(cat => 
-    ALLOWED_CHIP_CATEGORIES.some(allowed => cat.id.toLowerCase() === allowed.toLowerCase())
+    visibleCategories.value.some(allowed => cat.id.toLowerCase() === allowed.toLowerCase())
   ) || []
 })
 
