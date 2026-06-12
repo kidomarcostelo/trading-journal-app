@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { h, nextTick, ref, computed, Suspense, defineComponent } from 'vue'
 import Dashboard from '../../pages/dashboard.vue'
+import AnalyticsDashboard from '../../components/AnalyticsDashboard.vue'
 
 // Mock icons
 vi.mock('lucide-vue-next', () => ({
@@ -73,6 +74,7 @@ const mountSuspense = () => {
     render() { return h(Suspense, null, { default: h(Dashboard), fallback: h('div', 'Loading...') }) }
   }), {
     global: {
+      components: { AnalyticsDashboard },
       stubs: {
         TradeForm: true,
         TradeList: { template: '<div class="trade-list-stub"><div v-for="t in trades" :key="t.id" :class="`trade-item-${t.id}`" @click="$emit(\'select\', t.id)"></div></div>', props: ['trades'] },
