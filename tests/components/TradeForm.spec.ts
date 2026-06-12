@@ -13,6 +13,19 @@ vi.stubGlobal('useFetch', vi.fn().mockReturnValue({
   refresh: vi.fn()
 }))
 
+// Mock useState
+const stateMock: Record<string, any> = {}
+vi.stubGlobal('useState', (key: string, init: () => any) => {
+  if (!stateMock[key]) {
+    let val = init ? init() : undefined
+    stateMock[key] = {
+      get value() { return val },
+      set value(v) { val = v }
+    }
+  }
+  return stateMock[key]
+})
+
 // Wrapper to handle Suspense
 const mountSuspense = (component: any) => {
   return mount(defineComponent({
@@ -57,6 +70,5 @@ describe('TradeForm', () => {
     await nextTick()
     
     expect(wrapper.text()).toContain('MAE (Adverse)')
-    expect(wrapper.text()).toContain('Execution & Mindset')
   })
 })

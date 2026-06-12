@@ -27,7 +27,7 @@ describe('useSettings Composable', () => {
 
   it('initializes with default state', () => {
     const { settings, strategyChecklists, isLoading } = useSettings()
-    expect(settings.value).toEqual({ panels: [] })
+    expect(settings.value).toEqual({ panels: [], visibleTradeFormChips: ['Strategies', 'Price Action'] })
     expect(strategyChecklists.value).toEqual({})
     expect(isLoading.value).toBe(false)
   })
@@ -37,7 +37,7 @@ describe('useSettings Composable', () => {
         { id: 'p1', title: 'Test', categories: ['A'] }
     ]
     mockFetch.mockResolvedValue({ 
-      chip_layout: { panels: mockPanels },
+      chip_layout: { panels: mockPanels, visibleTradeFormChips: ['Strategies', 'Price Action'] },
       strategyChecklists: {
         'Default': {
           rules: [{ description: 'Rule 1', weight: 1, isMandatory: false }],
@@ -50,7 +50,7 @@ describe('useSettings Composable', () => {
     await fetchSettings()
 
     expect(mockFetch).toHaveBeenCalledWith('/api/settings')
-    expect(settings.value).toEqual({ panels: mockPanels })
+    expect(settings.value).toEqual({ panels: mockPanels, visibleTradeFormChips: ['Strategies', 'Price Action'] })
     expect(strategyChecklists.value).toEqual({
       'Default': {
         rules: [{ description: 'Rule 1', weight: 1, isMandatory: false }],
@@ -66,13 +66,13 @@ describe('useSettings Composable', () => {
     
     // Set some state
     const mockPanels = [{ id: 'p1', title: 'Test', categories: ['C'] }]
-    settings.value = { panels: mockPanels }
+    settings.value = { panels: mockPanels, visibleTradeFormChips: ['Strategies', 'Price Action'] }
 
     await saveSettings()
 
     expect(mockFetch).toHaveBeenCalledWith('/api/settings', {
       method: 'POST',
-      body: { key: 'chip_layout', value: { panels: mockPanels } }
+      body: { key: 'chip_layout', value: { panels: mockPanels, visibleTradeFormChips: ['Strategies', 'Price Action'] } }
     })
   })
   
@@ -102,7 +102,7 @@ describe('useSettings Composable', () => {
 
   it('updateLayout updates local state', () => {
       const { updateLayout, settings } = useSettings()
-      const mockPanels = { panels: [{ id: 'p1', title: 'Test', categories: ['New'] }] }
+      const mockPanels = { panels: [{ id: 'p1', title: 'Test', categories: ['New'] }], visibleTradeFormChips: ['Strategies', 'Price Action'] }
       updateLayout(mockPanels)
       expect(settings.value).toEqual(mockPanels)
   })
