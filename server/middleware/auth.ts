@@ -1,7 +1,7 @@
 import { defineEventHandler, createError, sendRedirect } from 'h3'
 
 export default defineEventHandler(async (event) => {
-  const publicRoutes = ['/login', '/api/auth/google']
+  const publicRoutes = ['/login', '/api/auth/google', '/api/auth/guest']
   // Match both exact path and paths starting with public prefix
   const isPublicRoute = publicRoutes.some(route => event.path === route || event.path.startsWith(route + '/'))
   const isPublicAsset = event.path.startsWith('/_nuxt/') || event.path.startsWith('/_ipx/') || event.path.includes('.')
@@ -23,6 +23,11 @@ export default defineEventHandler(async (event) => {
       })
     }
     return sendRedirect(event, '/login')
+  }
+
+  // Allow guest sessions in demo mode or when authenticated as guest
+  if (session.user.isGuest || session.user.email === 'guest@portfolio.demo' || config.demoMode) {
+    return
   }
 
   // If ALLOWED_EMAIL is set, check if the user's email is in the list

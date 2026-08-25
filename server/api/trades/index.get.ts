@@ -1,18 +1,23 @@
 import { defineEventHandler, createError } from 'h3'
 import { getSheetsClient } from '../../utils/googleSheets'
+import { getMockTrades } from '../../utils/mockData'
 import type { Trade } from '../../../types'
 
 export default defineEventHandler(async (event) => {
   try {
+    const config = typeof useRuntimeConfig === 'function' ? useRuntimeConfig() : ({} as any)
+    const session = typeof getUserSession === 'function' ? await getUserSession(event) : null
+    const isGuest = session?.user?.isGuest || session?.user?.email === 'guest@portfolio.demo'
+
+    if (config?.demoMode || isGuest || !config?.googleSpreadsheetId) {
+      return getMockTrades()
+    }
+
     const client = await getSheetsClient()
-    const config = useRuntimeConfig()
     const spreadsheetId = config.googleSpreadsheetId
 
     if (!spreadsheetId) {
-      throw createError({
-        statusCode: 500,
-        statusMessage: 'Google Spreadsheet ID is not configured.'
-      })
+      return getMockTrades()
     }
 
     const response = await client.spreadsheets.values.get({

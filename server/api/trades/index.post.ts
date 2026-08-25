@@ -14,8 +14,24 @@ function getColumnLetter(index: number): string {
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody<TradeEntry>(event)
+    const config = typeof useRuntimeConfig === 'function' ? useRuntimeConfig() : ({} as any)
+    const session = typeof getUserSession === 'function' ? await getUserSession(event) : null
+    const isGuest = session?.user?.isGuest || session?.user?.email === 'guest@portfolio.demo'
+
+    if (config?.demoMode || isGuest) {
+      const now = new Date()
+      const mm = String(now.getMonth() + 1).padStart(2, '0')
+      const dd = String(now.getDate()).padStart(2, '0')
+      const yyyy = now.getFullYear()
+      const generatedCreatedAt = `${mm}/${dd}/${yyyy}`
+      return {
+        id: `demo-${Date.now()}`,
+        date: generatedCreatedAt,
+        ...body
+      }
+    }
+
     const client = await getSheetsClient()
-    const config = useRuntimeConfig()
     const spreadsheetId = config.googleSpreadsheetId
 
     if (!spreadsheetId) {

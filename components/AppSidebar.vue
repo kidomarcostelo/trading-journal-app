@@ -49,6 +49,13 @@ const logout = async () => {
     
     <!-- User Section / Logout -->
     <div class="p-2 border-t border-terminal-gray bg-terminal-black/50 flex-shrink-0">
+      <div v-if="!isSidebarCollapsed && (user?.isGuest || user?.email === 'guest@portfolio.demo')" class="px-2 py-1 mb-1.5">
+        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold bg-terminal-accent/10 text-terminal-accent border border-terminal-accent/20">
+          <span class="w-1.5 h-1.5 rounded-full bg-terminal-accent animate-pulse"></span>
+          Live Demo Sandbox
+        </span>
+      </div>
+
       <button 
         @click="logout"
         class="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-rose-500/10 text-terminal-text/60 hover:text-rose-400 transition-all group"
@@ -56,7 +63,7 @@ const logout = async () => {
         :title="isSidebarCollapsed ? 'Logout' : ''"
       >
         <LogOut class="w-5 h-5 group-hover:rotate-12 transition-transform" />
-        <span v-if="!isSidebarCollapsed" class="text-sm font-medium truncate">{{ user?.email?.split('@')[0] || 'Logout' }}</span>
+        <span v-if="!isSidebarCollapsed" class="text-sm font-medium truncate">{{ (user?.isGuest || user?.email === 'guest@portfolio.demo') ? 'Exit Demo' : (user?.email?.split('@')[0] || 'Logout') }}</span>
       </button>
     </div>
   </div>

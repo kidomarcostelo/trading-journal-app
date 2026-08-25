@@ -5,22 +5,30 @@ import type { TradeEntry } from '../../../types'
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody<TradeEntry>(event)
+    
+    const tradeId = body?.ID || body?.id
+    if (!tradeId) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Trade ID is required for updates.'
+      })
+    }
+
+    const config = typeof useRuntimeConfig === 'function' ? useRuntimeConfig() : ({} as any)
+    const session = typeof getUserSession === 'function' ? await getUserSession(event) : null
+    const isGuest = session?.user?.isGuest || session?.user?.email === 'guest@portfolio.demo'
+
+    if (config?.demoMode || isGuest) {
+      return { success: true, row: body }
+    }
+
     const client = await getSheetsClient()
-    const config = useRuntimeConfig()
     const spreadsheetId = config.googleSpreadsheetId
 
     if (!spreadsheetId) {
       throw createError({
         statusCode: 500,
         statusMessage: 'Google Spreadsheet ID is not configured.'
-      })
-    }
-
-    const tradeId = body.ID || body.id
-    if (!tradeId) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Trade ID is required for updates.'
       })
     }
 

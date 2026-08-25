@@ -26,8 +26,15 @@ export default defineEventHandler(async (event) => {
       return { success: true, count: 0 }
     }
 
+    const config = typeof useRuntimeConfig === 'function' ? useRuntimeConfig() : ({} as any)
+    const session = typeof getUserSession === 'function' ? await getUserSession(event) : null
+    const isGuest = session?.user?.isGuest || session?.user?.email === 'guest@portfolio.demo'
+
+    if (config?.demoMode || isGuest) {
+      return { success: true, count: body.length }
+    }
+
     const client = await getSheetsClient()
-    const config = useRuntimeConfig()
     const spreadsheetId = config.googleSpreadsheetId
 
     if (!spreadsheetId) {

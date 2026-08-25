@@ -20,6 +20,7 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    demoMode: process.env.DEMO_MODE === 'true',
     googleSpreadsheetId: process.env.GOOGLE_SPREADSHEET_ID,
     googleServiceAccountEmail: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
     googlePrivateKey: process.env.GOOGLE_PRIVATE_KEY,
@@ -29,6 +30,9 @@ export default defineNuxtConfig({
         secure: process.env.NUXT_SESSION_SECURE === undefined ? true : process.env.NUXT_SESSION_SECURE === 'true',
         sameSite: 'lax'
       }
+    },
+    public: {
+      demoMode: process.env.DEMO_MODE === 'true'
     }
   }
 })
