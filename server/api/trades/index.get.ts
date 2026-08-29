@@ -1,6 +1,7 @@
 import { defineEventHandler, createError } from 'h3'
 import { getSheetsClient } from '../../utils/googleSheets'
 import { getMockTrades } from '../../utils/mockData'
+import { seedSpreadsheet } from '../../utils/seeder'
 import type { Trade } from '../../../types'
 
 export default defineEventHandler(async (event) => {
@@ -19,7 +20,7 @@ export default defineEventHandler(async (event) => {
             valueRenderOption: 'FORMULA',
           })
           const rows = response.data.values
-          if (rows && rows.length > 0) {
+          if (rows && rows.length > 1) {
             const headers = rows[0]
             const dataRows = rows.slice(1)
             return dataRows.map((row: string[], rowIndex: number) => {
@@ -38,6 +39,10 @@ export default defineEventHandler(async (event) => {
               }
               return trade
             }) as Trade[]
+          } else {
+            console.log('[Trades API] Demo spreadsheet is empty. Auto-seeding...')
+            seedSpreadsheet(client, config.demoSpreadsheetId).catch((err: any) => console.error('Auto-seed error:', err.message))
+            return getMockTrades()
           }
         } catch (e: any) {
           console.warn('Failed to fetch from demo spreadsheet, fallback to mock data:', e.message)

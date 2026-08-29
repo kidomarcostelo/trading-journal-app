@@ -1,78 +1,10 @@
-import { google } from 'googleapis'
-import dotenv from 'dotenv'
-import { getMockTrades, DEFAULT_MOCK_CHIPS, DEFAULT_MOCK_SETTINGS } from '../server/utils/mockData'
+﻿import { getMockTrades, DEFAULT_MOCK_CHIPS, DEFAULT_MOCK_SETTINGS } from './mockData'
 
-import { execSync } from 'child_process'
-
-dotenv.config()
-
-async function seed() {
-  const serviceAccountEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || process.env.NUXT_GOOGLE_SERVICE_ACCOUNT_EMAIL
-  let privateKey = process.env.GOOGLE_PRIVATE_KEY || process.env.NUXT_GOOGLE_PRIVATE_KEY
-  let accessToken = process.env.ACCESS_TOKEN
-  const spreadsheetId = process.env.DEMO_SPREADSHEET_ID || process.env.GOOGLE_SPREADSHEET_ID || process.env.NUXT_GOOGLE_SPREADSHEET_ID || '1jK13-Hx5HtvrFue9eg4SbB8JWrnAznua6xkNB2pinEw'
-
-  let client: any
-
-  if (serviceAccountEmail && privateKey) {
-    privateKey = privateKey.trim()
-    if (privateKey.startsWith('"') && privateKey.endsWith('"')) {
-      privateKey = privateKey.slice(1, -1)
-    }
-    if (!privateKey.startsWith('-----')) {
-      try {
-        const decoded = Buffer.from(privateKey, 'base64').toString('utf-8')
-        if (decoded.includes('-----BEGIN PRIVATE KEY-----')) {
-          privateKey = decoded
-        }
-      } catch (e) {
-        // Ignore
-      }
-    }
-    const header = '-----BEGIN PRIVATE KEY-----'
-    const footer = '-----END PRIVATE KEY-----'
-    if (privateKey.includes(header) && privateKey.includes(footer)) {
-      const startIdx = privateKey.indexOf(header) + header.length
-      const endIdx = privateKey.indexOf(footer)
-      let body = privateKey.substring(startIdx, endIdx)
-      body = body.replace(/\\n/g, '')
-      body = body.replace(/\s/g, '')
-      privateKey = `${header}\n${body}\n${footer}`
-    }
-
-    const auth = new google.auth.GoogleAuth({
-      credentials: {
-        client_email: serviceAccountEmail,
-        private_key: privateKey,
-      },
-      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-    })
-    client = google.sheets({ version: 'v4', auth: await auth.getClient() as any })
-  } else {
-    if (!accessToken) {
-      try {
-        accessToken = execSync('gcloud auth print-access-token', { encoding: 'utf-8' }).trim()
-      } catch (e) {
-        // Ignore
-      }
-    }
-
-    if (accessToken) {
-      const oauth2Client = new google.auth.OAuth2()
-      oauth2Client.setCredentials({ access_token: accessToken })
-      client = google.sheets({ version: 'v4', auth: oauth2Client })
-    } else {
-      console.error('Missing credentials. Please configure GOOGLE_SERVICE_ACCOUNT_EMAIL + GOOGLE_PRIVATE_KEY or login via gcloud.')
-      process.exit(1)
-    }
-  }
-
-  console.log('Seeding trading journal spreadsheet...')
-
+export async function seedSpreadsheet(client: any, spreadsheetId: string): Promise<boolean> {
   try {
     // 1. Ensure sheets exist
     const spreadsheet = await client.spreadsheets.get({ spreadsheetId })
-    const existingSheets = spreadsheet.data.sheets?.map(s => s.properties?.title) || []
+    const existingSheets = spreadsheet.data.sheets?.map((s: any) => s.properties?.title) || []
 
     const requiredSheets = ['Master', 'Chips', 'Settings']
     const addSheetRequests = requiredSheets
@@ -80,7 +12,6 @@ async function seed() {
       .map(title => ({ addSheet: { properties: { title } } }))
 
     if (addSheetRequests.length > 0) {
-      console.log(`Creating missing sheets: ${addSheetRequests.map(r => r.addSheet.properties.title).join(', ')}`)
       await client.spreadsheets.batchUpdate({
         spreadsheetId,
         requestBody: { requests: addSheetRequests }
@@ -88,7 +19,6 @@ async function seed() {
     }
 
     // 2. Seed Master Sheet with rich dummy trades
-    console.log('Seeding Master sheet with realistic trade history...')
     await client.spreadsheets.values.clear({ spreadsheetId, range: 'Master' })
 
     const headers = [
@@ -98,7 +28,7 @@ async function seed() {
     ]
 
     const mockTrades = getMockTrades()
-    const rows = mockTrades.map((trade, idx) => [
+    const rows = mockTrades.map((trade: any, idx: number) => [
       String(idx + 1),
       trade.date || '',
       trade.pair || '',
@@ -130,7 +60,6 @@ async function seed() {
     })
 
     // 3. Seed Chips Sheet
-    console.log('Seeding Chips sheet with default tags...')
     await client.spreadsheets.values.clear({ spreadsheetId, range: 'Chips' })
 
     const maxRows = Math.max(...DEFAULT_MOCK_CHIPS.map(c => c.values.length)) + 1
@@ -155,7 +84,6 @@ async function seed() {
     })
 
     // 4. Seed Settings Sheet
-    console.log('Seeding Settings sheet with default configurations...')
     await client.spreadsheets.values.clear({ spreadsheetId, range: 'Settings' })
 
     const settingsRows = [
@@ -171,11 +99,10 @@ async function seed() {
       requestBody: { values: settingsRows }
     })
 
-    console.log('✅ Successfully seeded the entire spreadsheet with full dummy data, chips, and settings!')
+    console.log(`[Seeder] Successfully seeded spreadsheet: ${spreadsheetId}`)
+    return true
   } catch (err: any) {
-    console.error('Error seeding spreadsheet:', err.message)
-    process.exit(1)
+    console.error(`[Seeder] Error seeding spreadsheet ${spreadsheetId}:`, err.message)
+    return false
   }
 }
-
-seed()
