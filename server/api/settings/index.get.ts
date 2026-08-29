@@ -6,29 +6,34 @@ export default defineEventHandler(async (event) => {
   const config = typeof useRuntimeConfig === 'function' ? useRuntimeConfig() : ({} as any)
   const session = typeof getUserSession === 'function' ? await getUserSession(event) : null
   const isGuest = session?.user?.isGuest || session?.user?.email === 'guest@portfolio.demo'
-  const isDemo = config?.demoMode || isGuest
-  const spreadsheetId = isDemo ? (config?.demoSpreadsheetId || config?.googleSpreadsheetId) : (config?.googleSpreadsheetId || config?.demoSpreadsheetId)
 
-  let settings: any = {}
-  try {
-    if (spreadsheetId) {
-      settings = await getSettings(spreadsheetId)
-    } else {
-      settings = JSON.parse(JSON.stringify(DEFAULT_MOCK_SETTINGS))
+  if (config?.demoMode || isGuest) {
+    if (config?.demoSpreadsheetId) {
+      try {
+        const demoSettings = await getSettings(config.demoSpreadsheetId)
+        if (demoSettings && Object.keys(demoSettings).length > 0) {
+          if (!demoSettings.chip_layout) {
+            demoSettings.chip_layout = DEFAULT_MOCK_SETTINGS.chip_layout
+          }
+          if (!demoSettings.strategyChecklists) {
+            demoSettings.strategyChecklists = DEFAULT_MOCK_SETTINGS.strategyChecklists
+          }
+          return demoSettings
+        }
+      } catch (e) {
+        // Fallback to mock settings
+      }
     }
-  } catch (err: any) {
-    if (isDemo) {
-      settings = JSON.parse(JSON.stringify(DEFAULT_MOCK_SETTINGS))
-    } else {
-      throw err
-    }
+    return JSON.parse(JSON.stringify(DEFAULT_MOCK_SETTINGS))
   }
+
+  const settings = await getSettings()
   
   // Ensure defaults exist for expected keys
-  if (!settings.chip_layout || !settings.chip_layout.panels) {
-    settings.chip_layout = DEFAULT_MOCK_SETTINGS.chip_layout
+  if (!settings.chip_layout) {
+    settings.chip_layout = { panels: [] }
   }
-  if (!settings.strategyChecklists || Object.keys(settings.strategyChecklists).length === 0) {
+  if (!settings.strategyChecklists) {
     // Migration fallback if old format exists
     if (settings.checklistRules || settings.tierThresholds) {
       settings.strategyChecklists = {
@@ -38,7 +43,7 @@ export default defineEventHandler(async (event) => {
         }
       }
     } else {
-      settings.strategyChecklists = DEFAULT_MOCK_SETTINGS.strategyChecklists
+      settings.strategyChecklists = {}
     }
   }
   
