@@ -17,7 +17,13 @@
 
 Explore the live deployed application on Google Cloud Run with **Instant Guest Mode** — no Google account required:
 
-👉 **[Launch Live Demo](https://trading-journal-app-1057422967117.us-central1.run.app)** *(Click "Explore Live Demo (Guest)" on the login screen to enter with pre-loaded mock trades and analytics).*
+👉 **[Launch Live Demo](https://trading-journal-app-459603451938.us-central1.run.app)** *(Click "Explore Live Demo (Guest)" on the login screen to enter with pre-loaded mock trades and analytics).*
+
+### 📸 Application Previews
+
+| 3-Pane Trade Workspace & Strategy Panels | Trade Review, Psychology & Chart Analysis |
+|:---:|:---:|
+| ![Trade Journal Workspace](./docs/images/dashboard-journal-preview.jpeg) | ![Trade Review & Charts](./docs/images/trade-review-preview.jpeg) |
 
 ---
 
