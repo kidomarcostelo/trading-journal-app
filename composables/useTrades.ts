@@ -6,7 +6,7 @@ export type SortField = 'Status' | 'Date' | 'Pair'
 export type SortDir = 'asc' | 'desc'
 
 export const useTrades = (trades: Ref<Trade[]>) => {
-  const filterPeriod = ref<FilterPeriod>('week')
+  const filterPeriod = ref<FilterPeriod>('all')
   const startDate = ref<string>('')
   const endDate = ref<string>('')
   const sortBy = ref<SortField>('Date')

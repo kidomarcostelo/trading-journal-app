@@ -45,10 +45,10 @@ async function ensureSettingsSheetExists(client: any, spreadsheetId: string) {
   }
 }
 
-export async function getSettings() {
+export async function getSettings(customSpreadsheetId?: string) {
   const client = await getSheetsClient()
-  const config = useRuntimeConfig()
-  const spreadsheetId = config.googleSpreadsheetId
+  const config = typeof useRuntimeConfig === 'function' ? useRuntimeConfig() : ({} as any)
+  const spreadsheetId = customSpreadsheetId || config?.googleSpreadsheetId
 
   if (!spreadsheetId) {
     throw createError({

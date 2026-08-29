@@ -21,6 +21,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     demoMode: process.env.DEMO_MODE === 'true',
+    demoSpreadsheetId: process.env.DEMO_SPREADSHEET_ID || '1jK13-Hx5HtvrFue9eg4SbB8JWrnAznua6xkNB2pinEw',
     googleSpreadsheetId: process.env.GOOGLE_SPREADSHEET_ID,
     googleServiceAccountEmail: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
     googlePrivateKey: process.env.GOOGLE_PRIVATE_KEY,
@@ -32,7 +33,8 @@ export default defineNuxtConfig({
       }
     },
     public: {
-      demoMode: process.env.DEMO_MODE === 'true'
+      demoMode: process.env.DEMO_MODE === 'true',
+      demoSpreadsheetId: process.env.DEMO_SPREADSHEET_ID || '1jK13-Hx5HtvrFue9eg4SbB8JWrnAznua6xkNB2pinEw'
     }
   }
 })

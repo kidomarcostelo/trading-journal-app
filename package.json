@@ -9,7 +9,7 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "seed": "tsx scripts/seed-spreadsheet.ts",
-    "test": "vitest"
+    "test": "vitest run"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.7.5",

@@ -30,12 +30,10 @@ describe('useTrades Composable', () => {
 
   it('initializes with default values', () => {
     const { filterPeriod, sortBy, filteredTrades } = useTrades(mockTrades)
-    expect(filterPeriod.value).toBe('week')
+    expect(filterPeriod.value).toBe('all')
     expect(sortBy.value).toBe('Date')
-    // Defaults to week, should filter immediately. 
-    // Jan 15 is system date (Thu). Week starts Sun Jan 11.
-    // Trades in week: 1 (Jan 14), 4 (Jan 12), 6 (Jan 11).
-    expect(filteredTrades.value.length).toBe(3) 
+    // Defaults to 'all', should include all mock trades
+    expect(filteredTrades.value.length).toBe(7) 
   })
 
   it('filters by Week (Current Week starts Sunday Jan 11)', () => {
